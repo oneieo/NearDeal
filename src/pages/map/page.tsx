@@ -353,6 +353,15 @@ export default function MapPage() {
     [navigate]
   );
 
+  const handleMarkerClick = useCallback((markerId: string) => {
+    console.log("Marker clicked:", markerId);
+
+    // 상점 마커인 경우 (현재 위치 마커가 아닌 경우)
+    if (markerId.startsWith("store-")) {
+      setShowBottomSheet(true);
+    }
+  }, []);
+
   const handleMyLocation = useCallback(() => {
     if (currentLocation) {
       console.log("지도 중심을 현재 위치로 이동:", currentLocation);
@@ -623,6 +632,7 @@ export default function MapPage() {
             zoom={15}
             markers={mapMarkers}
             className="absolute inset-0"
+            onMarkerClick={handleMarkerClick}
           />
           <MapButtons />
         </div>
