@@ -265,7 +265,6 @@ export default function MapPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortType, setSortType] = useState<SortType>("distance");
   const [mapCenter, setMapCenter] = useState<Location>(DEFAULT_LOCATION);
-  const [mapKey, setMapKey] = useState(0); // 강제 리렌더링을 위한 key
 
   // Custom hooks
   const { currentLocation, locationError, getCurrentLocation } =
@@ -273,6 +272,7 @@ export default function MapPage() {
 
   // Computed values
   const filteredStores = useMemo(() => {
+    console.log("Filtering stores with categories:", selectedCategories);
     return ALL_STORES.filter((store) => {
       const matchesCategory =
         selectedCategories.length === 0 ||
@@ -310,7 +310,7 @@ export default function MapPage() {
         lng: currentLocation.lng,
         title: "현재 위치",
         content: createCurrentLocationMarkerContent(),
-        id: "current-location", // 고유 ID 추가
+        id: "current-location",
       });
     }
 
@@ -320,21 +320,30 @@ export default function MapPage() {
       lng: store.lng,
       title: store.name,
       content: createStoreMarkerContent(store),
-      id: `store-${store.id}`, // 고유 ID 추가
+      id: `store-${store.id}`,
+      category: store.category, // 디버깅을 위해 카테고리 정보 추가
     }));
 
     markers.push(...storeMarkers);
+    console.log(
+      "Final markers:",
+      markers.length,
+      markers.map((m) => ({ id: m.id, category: m.category }))
+    );
 
     return markers;
   }, [currentLocation, filteredStores]);
 
   // Event handlers
   const handleCategoryToggle = useCallback((categoryId: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(categoryId)
+    console.log("Category toggle:", categoryId);
+    setSelectedCategories((prev) => {
+      const newCategories = prev.includes(categoryId)
         ? prev.filter((id) => id !== categoryId)
-        : [...prev, categoryId]
-    );
+        : [...prev, categoryId];
+      console.log("New categories:", newCategories);
+      return newCategories;
+    });
   }, []);
 
   const handleStoreClick = useCallback(
@@ -346,19 +355,12 @@ export default function MapPage() {
 
   const handleMyLocation = useCallback(() => {
     if (currentLocation) {
-      // 현재 위치가 있다면 지도 중심을 현재 위치로 이동
       console.log("지도 중심을 현재 위치로 이동:", currentLocation);
-
-      // 강제로 새로운 객체 생성해서 React가 변경을 감지하도록 함
       setMapCenter({
         lat: currentLocation.lat,
         lng: currentLocation.lng,
       });
-
-      // 지도 컴포넌트 강제 리렌더링
-      setMapKey((prev) => prev + 1);
     } else {
-      // 현재 위치가 없다면 다시 가져오기 시도
       getCurrentLocation();
     }
   }, [currentLocation, getCurrentLocation]);
@@ -615,7 +617,6 @@ export default function MapPage() {
       <div className="pt-40 h-screen relative">
         <div className="w-full h-full relative overflow-hidden">
           <NaverMapComponent
-            key={`map-${mapKey}-${mapCenter.lat}-${mapCenter.lng}`}
             width="100%"
             height="100%"
             center={mapCenter}
