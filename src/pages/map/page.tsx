@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import TopNavigation from "../../components/feature/TopNavigation";
 import BottomNavigation from "../../components/feature/BottomNavigation";
 import Card from "../../components/base/Card";
 import NaverMapComponent from "../../components/feature/NaverMapComponent";
 
+// Types
 interface Store {
   id: string;
   name: string;
@@ -26,18 +27,32 @@ interface Store {
 interface Category {
   id: string;
   name: string;
-  active: boolean;
 }
 
-const categories: Category[] = [
-  { id: "favorite", name: "즐겨찾기", active: false },
-  { id: "super", name: "슈퍼", active: false },
-  { id: "cafe", name: "카페", active: true },
-  { id: "restaurant", name: "음식점", active: false },
-  { id: "partner", name: "제휴", active: false },
+interface Location {
+  lat: number;
+  lng: number;
+}
+
+type SortType = "popularity" | "distance";
+
+// Constants
+const CATEGORIES: Category[] = [
+  { id: "favorite", name: "즐겨찾기" },
+  { id: "partner", name: "제휴" },
+  { id: "restaurant", name: "음식점" },
+  { id: "cafe", name: "카페" },
+  { id: "store", name: "마트" },
+  { id: "convenient", name: "편의점" },
+  { id: "hairshop", name: "미용실" },
 ];
 
-const allStores: Store[] = [
+const DEFAULT_LOCATION: Location = {
+  lat: 35.8407943328,
+  lng: 127.1320319577, // 전북대 기본 위치
+};
+
+const ALL_STORES: Store[] = [
   {
     id: "1",
     name: "스타벅스 역삼점",
@@ -46,10 +61,7 @@ const allStores: Store[] = [
     distance: "120m",
     category: "cafe",
     address: "서울 강남구 역삼동 123-45",
-    mainCoupon: {
-      title: "아메리카노 1+1",
-      remaining: 15,
-    },
+    mainCoupon: { title: "아메리카노 1+1", remaining: 15 },
     lat: 37.5665,
     lng: 127.0295,
     distanceInM: 120,
@@ -63,10 +75,7 @@ const allStores: Store[] = [
     distance: "250m",
     category: "cafe",
     address: "서울 강남구 테헤란로 456",
-    mainCoupon: {
-      title: "케이크 30% 할인",
-      remaining: 8,
-    },
+    mainCoupon: { title: "케이크 30% 할인", remaining: 8 },
     lat: 37.5655,
     lng: 127.0305,
     distanceInM: 250,
@@ -80,10 +89,7 @@ const allStores: Store[] = [
     distance: "320m",
     category: "cafe",
     address: "서울 강남구 강남대로 789",
-    mainCoupon: {
-      title: "음료 2000원 할인",
-      remaining: 23,
-    },
+    mainCoupon: { title: "음료 2000원 할인", remaining: 23 },
     lat: 37.5645,
     lng: 127.0285,
     distanceInM: 320,
@@ -97,10 +103,7 @@ const allStores: Store[] = [
     distance: "180m",
     category: "super",
     address: "서울 강남구 역삼동 456-78",
-    mainCoupon: {
-      title: "생필품 10% 할인",
-      remaining: 30,
-    },
+    mainCoupon: { title: "생필품 10% 할인", remaining: 30 },
     lat: 37.567,
     lng: 127.03,
     distanceInM: 180,
@@ -114,177 +117,483 @@ const allStores: Store[] = [
     distance: "350m",
     category: "restaurant",
     address: "서울 강남구 테헤란로 234",
-    mainCoupon: {
-      title: "빅맥세트 20% 할인",
-      remaining: 12,
-    },
+    mainCoupon: { title: "빅맥세트 20% 할인", remaining: 12 },
     lat: 37.564,
     lng: 127.031,
     distanceInM: 350,
     popularity: 82,
   },
+  {
+    id: "6",
+    name: "여유",
+    rating: 4.3,
+    reviewCount: 245,
+    distance: "350m",
+    category: "partner",
+    address: "전북 전주시 덕진구 백제대로 595",
+    mainCoupon: { title: "아메리카노 또는 아이스티 5+1", remaining: 12 },
+    lat: 35.841623778922376,
+    lng: 127.13476044104675,
+    distanceInM: 350,
+    popularity: 82,
+  },
+  {
+    id: "7",
+    name: "네커피",
+    rating: 4.3,
+    reviewCount: 245,
+    distance: "350m",
+    category: "partner",
+    address: "전북 전주시 덕진구 삼송5길 14-18 네커피",
+    mainCoupon: { title: "쿠폰 8개만 채워도 혜택 적용", remaining: 12 },
+    lat: 35.843521847759625,
+    lng: 127.13791834621006,
+    distanceInM: 350,
+    popularity: 82,
+  },
+  {
+    id: "8",
+    name: "인솔커피",
+    rating: 4.3,
+    reviewCount: 245,
+    distance: "350m",
+    category: "partner",
+    address: "전북 전주시 덕진구 권삼득로 315 1층 인솔커피 전북대점",
+    mainCoupon: { title: "만 원 이상 구매 시 쿠키 증정", remaining: 12 },
+    lat: 35.84374510140307,
+    lng: 127.12754418572484,
+    distanceInM: 350,
+    popularity: 82,
+  },
+  {
+    id: "9",
+    name: "온앤오프",
+    rating: 4.3,
+    reviewCount: 245,
+    distance: "350m",
+    category: "partner",
+    address: "전북 전주시 덕진구 명륜3길 14 3층",
+    mainCoupon: { title: "평일 1500원, 주말 1800원", remaining: 12 },
+    lat: 35.842401975476896,
+    lng: 127.12778278511642,
+    distanceInM: 350,
+    popularity: 82,
+  },
 ];
 
-type SortType = "popularity" | "distance";
+// Utility functions
+const getCategoryIcon = (category: string): string => {
+  const icons = {
+    cafe: "ri-cup-fill",
+    super: "ri-shopping-cart-fill",
+    restaurant: "ri-restaurant-fill",
+    default: "ri-store-fill",
+  };
+  return icons[category as keyof typeof icons] || icons.default;
+};
 
+const createStoreMarkerContent = (store: Store): string => `
+  <div style="padding: 12px; min-width: 200px;">
+    <h4 style="margin: 0 0 8px 0; font-weight: bold; color: #333;">${store.name}</h4>
+    <p style="margin: 0 0 4px 0; font-size: 12px; color: #666;">${store.address}</p>
+    <div style="display: flex; align-items: center; margin: 4px 0;">
+      <span style="color: #ff6b00; font-weight: bold;">★ ${store.rating}</span>
+      <span style="margin-left: 8px; font-size: 12px; color: #666;">리뷰 ${store.reviewCount}개</span>
+    </div>
+    <p style="margin: 8px 0 0 0; color: #0066cc; font-weight: bold; font-size: 13px;">${store.mainCoupon.title}</p>
+    <p style="margin: 4px 0 0 0; color: #ff6b00; font-size: 12px;">${store.mainCoupon.remaining}개 남음</p>
+  </div>
+`;
+
+const createCurrentLocationMarkerContent = (): string => `
+  <div style="padding: 12px; min-width: 150px; text-align: center;">
+    <h4 style="margin: 0 0 8px 0; font-weight: bold; color: #0066cc;">📍 현재 위치</h4>
+    <p style="margin: 0; font-size: 12px; color: #666;">여기에 계신가요?</p>
+  </div>
+`;
+
+// Custom hooks
+const useCurrentLocation = () => {
+  const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+
+  const getCurrentLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      setLocationError("이 브라우저는 위치 서비스를 지원하지 않습니다");
+      setCurrentLocation(DEFAULT_LOCATION);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCurrentLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setLocationError(null);
+      },
+      (error) => {
+        console.error("위치 정보를 가져올 수 없습니다:", error);
+        setLocationError("위치 정보를 가져올 수 없습니다");
+        setCurrentLocation(DEFAULT_LOCATION);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000, // 5분간 캐시 사용
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    getCurrentLocation();
+  }, [getCurrentLocation]);
+
+  return { currentLocation, locationError, getCurrentLocation };
+};
+
+// Main component
 export default function MapPage() {
   const navigate = useNavigate();
+
+  // State
   const [selectedCategories, setSelectedCategories] = useState<string[]>([
-    "cafe",
+    "partner",
   ]);
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [showListView, setShowListView] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortType, setSortType] = useState<SortType>("distance");
-  const [currentLocation, setCurrentLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
-  const [locationError, setLocationError] = useState<string | null>(null);
+  const [mapCenter, setMapCenter] = useState<Location>(DEFAULT_LOCATION);
+  const [mapKey, setMapKey] = useState(0); // 강제 리렌더링을 위한 key
 
-  // 현재 위치 가져오기
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCurrentLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-          setLocationError(null);
-        },
-        (error) => {
-          console.error("위치 정보를 가져올 수 없습니다:", error);
-          setLocationError("위치 정보를 가져올 수 없습니다");
-          // 기본 위치 설정 (서울시청)
-          setCurrentLocation({
-            lat: 37.5665,
-            lng: 126.978,
-          });
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 300000, // 5분간 캐시 사용
-        }
-      );
-    } else {
-      setLocationError("이 브라우저는 위치 서비스를 지원하지 않습니다");
-      // 기본 위치 설정
-      setCurrentLocation({
-        lat: 37.5665,
-        lng: 126.978,
+  // Custom hooks
+  const { currentLocation, locationError, getCurrentLocation } =
+    useCurrentLocation();
+
+  // Computed values
+  const filteredStores = useMemo(() => {
+    return ALL_STORES.filter((store) => {
+      const matchesCategory =
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(store.category);
+      const matchesSearch =
+        searchQuery === "" ||
+        store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        store.mainCoupon.title
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+
+      return matchesCategory && matchesSearch;
+    });
+  }, [selectedCategories, searchQuery]);
+
+  const sortedStores = useMemo(() => {
+    return [...filteredStores].sort((a, b) => {
+      return sortType === "distance"
+        ? a.distanceInM - b.distanceInM
+        : b.popularity - a.popularity;
+    });
+  }, [filteredStores, sortType]);
+
+  const mapMarkers = useMemo(() => {
+    console.log(
+      "Computing map markers with filtered stores:",
+      filteredStores.length
+    );
+    const markers = [];
+
+    // 현재 위치 마커
+    if (currentLocation) {
+      markers.push({
+        lat: currentLocation.lat,
+        lng: currentLocation.lng,
+        title: "현재 위치",
+        content: createCurrentLocationMarkerContent(),
+        id: "current-location", // 고유 ID 추가
       });
     }
-  }, []);
 
-  const toggleCategory = (categoryId: string) => {
+    // 매장 마커들 - filteredStores가 변경될 때마다 새로 생성
+    const storeMarkers = filteredStores.map((store) => ({
+      lat: store.lat,
+      lng: store.lng,
+      title: store.name,
+      content: createStoreMarkerContent(store),
+      id: `store-${store.id}`, // 고유 ID 추가
+    }));
+
+    markers.push(...storeMarkers);
+
+    return markers;
+  }, [currentLocation, filteredStores]);
+
+  // Event handlers
+  const handleCategoryToggle = useCallback((categoryId: string) => {
     setSelectedCategories((prev) =>
       prev.includes(categoryId)
         ? prev.filter((id) => id !== categoryId)
         : [...prev, categoryId]
     );
-  };
+  }, []);
 
-  // 필터링된 매장 목록
-  const filteredStores = allStores.filter((store) => {
-    const matchesCategory =
-      selectedCategories.length === 0 ||
-      selectedCategories.includes(store.category);
-    const matchesSearch =
-      searchQuery === "" ||
-      store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      store.mainCoupon.title.toLowerCase().includes(searchQuery.toLowerCase());
+  const handleStoreClick = useCallback(
+    (storeId: string) => {
+      navigate(`/store/${storeId}`);
+    },
+    [navigate]
+  );
 
-    return matchesCategory && matchesSearch;
-  });
-
-  // 정렬된 매장 목록
-  const sortedStores = [...filteredStores].sort((a, b) => {
-    if (sortType === "distance") {
-      return a.distanceInM - b.distanceInM;
-    } else {
-      return b.popularity - a.popularity;
-    }
-  });
-
-  // 지도에 표시할 마커들
-  const mapMarkers = [
-    // 현재 위치 마커
-    ...(currentLocation
-      ? [
-          {
-            lat: currentLocation.lat,
-            lng: currentLocation.lng,
-            title: "현재 위치",
-            content: `
-              <div style="padding: 12px; min-width: 150px; text-align: center;">
-                <h4 style="margin: 0 0 8px 0; font-weight: bold; color: #0066cc;">📍 현재 위치</h4>
-                <p style="margin: 0; font-size: 12px; color: #666;">여기에 계신가요?</p>
-              </div>
-            `,
-          },
-        ]
-      : []),
-    // 매장 마커들
-    ...filteredStores.map((store) => ({
-      lat: store.lat,
-      lng: store.lng,
-      title: store.name,
-      content: `
-        <div style="padding: 12px; min-width: 200px;">
-          <h4 style="margin: 0 0 8px 0; font-weight: bold; color: #333;">${store.name}</h4>
-          <p style="margin: 0 0 4px 0; font-size: 12px; color: #666;">${store.address}</p>
-          <div style="display: flex; align-items: center; margin: 4px 0;">
-            <span style="color: #ff6b00; font-weight: bold;">★ ${store.rating}</span>
-            <span style="margin-left: 8px; font-size: 12px; color: #666;">리뷰 ${store.reviewCount}개</span>
-          </div>
-          <p style="margin: 8px 0 0 0; color: #0066cc; font-weight: bold; font-size: 13px;">${store.mainCoupon.title}</p>
-          <p style="margin: 4px 0 0 0; color: #ff6b00; font-size: 12px;">${store.mainCoupon.remaining}개 남음</p>
-        </div>
-      `,
-    })),
-  ];
-
-  // 지도 중심점 (현재 위치 우선, 없으면 첫 번째 매장, 그것도 없으면 기본값)
-  const mapCenter =
-    currentLocation ||
-    (filteredStores.length > 0
-      ? { lat: filteredStores[0].lat, lng: filteredStores[0].lng }
-      : { lat: 37.5665, lng: 126.978 });
-
-  const handleStoreClick = (storeId: string) => {
-    navigate(`/store/${storeId}`);
-  };
-
-  const handleMyLocation = () => {
+  const handleMyLocation = useCallback(() => {
     if (currentLocation) {
-      // 이미 현재 위치가 있다면 지도를 해당 위치로 이동
-      console.log("현재 위치로 이동:", currentLocation);
+      // 현재 위치가 있다면 지도 중심을 현재 위치로 이동
+      console.log("지도 중심을 현재 위치로 이동:", currentLocation);
+
+      // 강제로 새로운 객체 생성해서 React가 변경을 감지하도록 함
+      setMapCenter({
+        lat: currentLocation.lat,
+        lng: currentLocation.lng,
+      });
+
+      // 지도 컴포넌트 강제 리렌더링
+      setMapKey((prev) => prev + 1);
     } else {
       // 현재 위치가 없다면 다시 가져오기 시도
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const newLocation = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-            setCurrentLocation(newLocation);
-            console.log("새로운 현재 위치:", newLocation);
-          },
-          (error) => {
-            console.error("위치 정보를 가져올 수 없습니다:", error);
-            alert("위치 정보를 가져올 수 없습니다. 설정을 확인해주세요.");
-          }
-        );
-      }
+      getCurrentLocation();
     }
-  };
+  }, [currentLocation, getCurrentLocation]);
+
+  const handleListViewStoreClick = useCallback(
+    (storeId: string) => {
+      setShowListView(false);
+      handleStoreClick(storeId);
+    },
+    [handleStoreClick]
+  );
+
+  // 현재 위치가 변경되면 지도 중심을 업데이트
+  useEffect(() => {
+    if (currentLocation) {
+      setMapCenter(currentLocation);
+    } else if (filteredStores.length > 0) {
+      setMapCenter({ lat: filteredStores[0].lat, lng: filteredStores[0].lng });
+    }
+  }, [currentLocation, filteredStores]);
+
+  // Components
+  const SearchBar = () => (
+    <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
+      <div className="relative">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="쿠폰/가게 검색"
+          className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
+        />
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
+          <i className="ri-search-line text-text-secondary" />
+        </div>
+      </div>
+    </div>
+  );
+
+  const CategoryChips = () => (
+    <div className="fixed top-28 left-0 right-0 z-40 bg-white px-4 py-3">
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+        {CATEGORIES.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => handleCategoryToggle(category.id)}
+            className={`px-4 py-2 rounded-20 text-sm font-sf font-medium whitespace-nowrap transition-all duration-200 ${
+              selectedCategories.includes(category.id)
+                ? "bg-primary text-white"
+                : "bg-gray-200 text-text hover:bg-gray-300"
+            }`}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const MapButtons = () => (
+    <div className="absolute bottom-24 right-4 flex flex-col gap-3 z-20">
+      <button
+        onClick={() => setShowListView(true)}
+        className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
+      >
+        <i className="ri-list-unordered text-primary text-xl" />
+      </button>
+      <button
+        onClick={handleMyLocation}
+        className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
+        title="내 위치로 이동"
+      >
+        <i className="ri-navigation-fill text-primary text-xl" />
+      </button>
+    </div>
+  );
+
+  const StoreCard = ({
+    store,
+    showPopularity = false,
+    onClick,
+  }: {
+    store: Store;
+    showPopularity?: boolean;
+    onClick: () => void;
+  }) => (
+    <Card
+      className="cursor-pointer hover:shadow-md transition-shadow"
+      onClick={onClick}
+    >
+      <div className="flex gap-4">
+        <div className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center flex-shrink-0">
+          <i
+            className={`text-text-secondary text-2xl ${getCategoryIcon(
+              store.category
+            )}`}
+          />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between mb-1">
+            <h4 className="font-sf font-semibold text-text text-sm leading-tight truncate">
+              {store.name}
+            </h4>
+            <span className="text-xs text-text-secondary ml-2 flex-shrink-0">
+              {store.distance}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-1">
+              <i className="ri-star-fill text-accent text-sm" />
+              <span className="text-sm font-sf font-medium text-text">
+                {store.rating}
+              </span>
+            </div>
+            <span className="text-xs text-text-secondary">
+              리뷰 {store.reviewCount}개
+            </span>
+            {showPopularity && (
+              <>
+                <span className="text-xs text-text-secondary">•</span>
+                <span className="text-xs text-primary font-sf font-medium">
+                  인기도 {store.popularity}
+                </span>
+              </>
+            )}
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-primary font-sf font-medium truncate">
+                {store.mainCoupon.title}
+              </p>
+            </div>
+            <span className="text-xs text-accent font-sf font-medium ml-2">
+              {store.mainCoupon.remaining}개 남음
+            </span>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+
+  const BottomSheet = () =>
+    showBottomSheet && (
+      <div className="fixed inset-0 z-50 pointer-events-none">
+        <div
+          className="absolute inset-0 bg-black/20"
+          onClick={() => setShowBottomSheet(false)}
+        />
+        <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-20 max-h-96 overflow-hidden pointer-events-auto">
+          <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-4" />
+          <div className="px-4 pb-24 overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-sf font-semibold text-text">
+                주변 매장
+              </h3>
+              <button
+                onClick={() => setShowBottomSheet(false)}
+                className="w-8 h-8 flex items-center justify-center"
+              >
+                <i className="ri-close-line text-text-secondary text-xl" />
+              </button>
+            </div>
+            <div className="space-y-3">
+              {filteredStores.map((store) => (
+                <StoreCard
+                  key={store.id}
+                  store={store}
+                  onClick={() => handleStoreClick(store.id)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+  const ListViewModal = () =>
+    showListView && (
+      <div className="fixed inset-0 z-50 bg-white">
+        {/* Header */}
+        <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setShowListView(false)}
+              className="w-10 h-10 flex items-center justify-center"
+            >
+              <i className="ri-close-line text-text text-xl" />
+            </button>
+            <h2 className="text-lg font-sf font-semibold text-text">
+              주변 매장
+            </h2>
+            <div className="w-10 h-10" />
+          </div>
+        </div>
+
+        {/* Sort Options */}
+        <div className="fixed top-16 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
+          <div className="flex gap-2">
+            {[
+              { key: "distance", label: "가까운순" },
+              { key: "popularity", label: "인기순" },
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => setSortType(key as SortType)}
+                className={`px-4 py-2 rounded-20 text-sm font-sf font-medium transition-all duration-200 ${
+                  sortType === key
+                    ? "bg-primary text-white"
+                    : "bg-gray-200 text-text hover:bg-gray-300"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Store List */}
+        <div className="pt-32 pb-20 px-4 overflow-y-auto">
+          <div className="space-y-3">
+            {sortedStores.map((store) => (
+              <StoreCard
+                key={store.id}
+                store={store}
+                showPopularity={sortType === "popularity"}
+                onClick={() => handleListViewStoreClick(store.id)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-background">
-      {/* 상단 네비게이션 */}
       <TopNavigation
         leftAction={
           <button className="w-10 h-10 flex items-center justify-center">
@@ -299,60 +608,14 @@ export default function MapPage() {
         showBorder={false}
       />
 
-      {/* 검색바 */}
-      <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
-        <div className="relative">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="쿠폰/가게 검색"
-            className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
-          />
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
-            <i className="ri-search-line text-text-secondary" />
-          </div>
-        </div>
+      <SearchBar />
+      <CategoryChips />
 
-        {/* 위치 상태 표시 */}
-        {/* {locationError && (
-          <div className="mt-2 px-2 py-1 bg-yellow-100 border border-yellow-300 rounded text-xs text-yellow-700">
-            <i className="ri-error-warning-line mr-1" />
-            {locationError} (기본 위치로 표시됨)
-          </div>
-        )}
-        {currentLocation && !locationError && (
-          <div className="mt-2 px-2 py-1 bg-green-100 border border-green-300 rounded text-xs text-green-700">
-            <i className="ri-map-pin-line mr-1" />
-            현재 위치를 기준으로 표시됩니다
-          </div>
-        )} */}
-      </div>
-
-      {/* 카테고리 칩 */}
-      <div className={`fixed top-28 left-0 right-0 z-40 bg-white px-4 py-3`}>
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => toggleCategory(category.id)}
-              className={`px-4 py-2 rounded-20 text-sm font-sf font-medium whitespace-nowrap transition-all duration-200 ${
-                selectedCategories.includes(category.id)
-                  ? "bg-primary text-white"
-                  : "bg-gray-200 text-text hover:bg-gray-300"
-              }`}
-            >
-              {category.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* 지도 영역 */}
-      <div className={`pt-40 h-screen relative`}>
+      {/* Map Area */}
+      <div className="pt-40 h-screen relative">
         <div className="w-full h-full relative overflow-hidden">
-          {/* 네이버 지도 */}
           <NaverMapComponent
+            key={`map-${mapKey}-${mapCenter.lat}-${mapCenter.lng}`}
             width="100%"
             height="100%"
             center={mapCenter}
@@ -360,234 +623,12 @@ export default function MapPage() {
             markers={mapMarkers}
             className="absolute inset-0"
           />
-
-          {/* 우측 하단 버튼들 */}
-          <div className="absolute bottom-24 right-4 flex flex-col gap-3 z-20">
-            {/* 목록 보기 버튼 */}
-            <button
-              onClick={() => setShowListView(true)}
-              className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
-            >
-              <i className="ri-list-unordered text-primary text-xl" />
-            </button>
-
-            {/* 내 위치 버튼 */}
-            <button
-              onClick={handleMyLocation}
-              className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
-              title="내 위치로 이동"
-            >
-              <i className="ri-navigation-fill text-primary text-xl" />
-            </button>
-          </div>
+          <MapButtons />
         </div>
       </div>
 
-      {/* 바텀 시트 */}
-      {showBottomSheet && (
-        <div className="fixed inset-0 z-50 pointer-events-none">
-          <div
-            className="absolute inset-0 bg-black/20"
-            onClick={() => setShowBottomSheet(false)}
-          />
-          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-20 max-h-96 overflow-hidden pointer-events-auto">
-            <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-4" />
-
-            <div className="px-4 pb-24 overflow-y-auto">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-sf font-semibold text-text">
-                  주변 매장
-                </h3>
-                <button
-                  onClick={() => setShowBottomSheet(false)}
-                  className="w-8 h-8 flex items-center justify-center"
-                >
-                  <i className="ri-close-line text-text-secondary text-xl" />
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                {filteredStores.map((store) => (
-                  <Card
-                    key={store.id}
-                    className="cursor-pointer hover:shadow-md transition-shadow"
-                    onClick={() => handleStoreClick(store.id)}
-                  >
-                    <div className="flex gap-4">
-                      <div className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center flex-shrink-0">
-                        <i
-                          className={`text-text-secondary text-2xl ${
-                            store.category === "cafe"
-                              ? "ri-cup-fill"
-                              : store.category === "super"
-                              ? "ri-shopping-cart-fill"
-                              : store.category === "restaurant"
-                              ? "ri-restaurant-fill"
-                              : "ri-store-fill"
-                          }`}
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between mb-1">
-                          <h4 className="font-sf font-semibold text-text text-sm leading-tight truncate">
-                            {store.name}
-                          </h4>
-                          <span className="text-xs text-text-secondary ml-2 flex-shrink-0">
-                            {store.distance}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="flex items-center gap-1">
-                            <i className="ri-star-fill text-accent text-sm" />
-                            <span className="text-sm font-sf font-medium text-text">
-                              {store.rating}
-                            </span>
-                          </div>
-                          <span className="text-xs text-text-secondary">
-                            리뷰 {store.reviewCount}개
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs text-primary font-sf font-medium truncate">
-                              {store.mainCoupon.title}
-                            </p>
-                          </div>
-                          <span className="text-xs text-accent font-sf font-medium ml-2">
-                            {store.mainCoupon.remaining}개 남음
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 목록 보기 모달 */}
-      {showListView && (
-        <div className="fixed inset-0 z-50 bg-white">
-          {/* 상단 헤더 */}
-          <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setShowListView(false)}
-                className="w-10 h-10 flex items-center justify-center"
-              >
-                <i className="ri-close-line text-text text-xl" />
-              </button>
-              <h2 className="text-lg font-sf font-semibold text-text">
-                주변 매장
-              </h2>
-              <div className="w-10 h-10" />
-            </div>
-          </div>
-
-          {/* 정렬 옵션 */}
-          <div className="fixed top-16 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
-            <div className="flex gap-2">
-              <button
-                onClick={() => setSortType("distance")}
-                className={`px-4 py-2 rounded-20 text-sm font-sf font-medium transition-all duration-200 ${
-                  sortType === "distance"
-                    ? "bg-primary text-white"
-                    : "bg-gray-200 text-text hover:bg-gray-300"
-                }`}
-              >
-                가까운순
-              </button>
-              <button
-                onClick={() => setSortType("popularity")}
-                className={`px-4 py-2 rounded-20 text-sm font-sf font-medium transition-all duration-200 ${
-                  sortType === "popularity"
-                    ? "bg-primary text-white"
-                    : "bg-gray-200 text-text hover:bg-gray-300"
-                }`}
-              >
-                인기순
-              </button>
-            </div>
-          </div>
-
-          {/* 매장 목록 */}
-          <div className="pt-32 pb-20 px-4 overflow-y-auto">
-            <div className="space-y-3">
-              {sortedStores.map((store) => (
-                <Card
-                  key={store.id}
-                  className="cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => {
-                    setShowListView(false);
-                    handleStoreClick(store.id);
-                  }}
-                >
-                  <div className="flex gap-4">
-                    <div className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center flex-shrink-0">
-                      <i
-                        className={`text-text-secondary text-2xl ${
-                          store.category === "cafe"
-                            ? "ri-cup-fill"
-                            : store.category === "super"
-                            ? "ri-shopping-cart-fill"
-                            : store.category === "restaurant"
-                            ? "ri-restaurant-fill"
-                            : "ri-store-fill"
-                        }`}
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between mb-1">
-                        <h4 className="font-sf font-semibold text-text text-sm leading-tight truncate">
-                          {store.name}
-                        </h4>
-                        <span className="text-xs text-text-secondary ml-2 flex-shrink-0">
-                          {store.distance}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="flex items-center gap-1">
-                          <i className="ri-star-fill text-accent text-sm" />
-                          <span className="text-sm font-sf font-medium text-text">
-                            {store.rating}
-                          </span>
-                        </div>
-                        <span className="text-xs text-text-secondary">
-                          리뷰 {store.reviewCount}개
-                        </span>
-                        {sortType === "popularity" && (
-                          <>
-                            <span className="text-xs text-text-secondary">
-                              •
-                            </span>
-                            <span className="text-xs text-primary font-sf font-medium">
-                              인기도 {store.popularity}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs text-primary font-sf font-medium truncate">
-                            {store.mainCoupon.title}
-                          </p>
-                        </div>
-                        <span className="text-xs text-accent font-sf font-medium ml-2">
-                          {store.mainCoupon.remaining}개 남음
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 하단 네비게이션 */}
+      <BottomSheet />
+      <ListViewModal />
       <BottomNavigation />
     </div>
   );
