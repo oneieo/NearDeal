@@ -46,7 +46,6 @@ function MapContent({
           key={index}
           defaultPosition={new navermaps.LatLng(marker.lat, marker.lng)}
           title={marker.title}
-          // onClick 이벤트로 정보창 구현 가능
         />
       ))}
     </NaverMap>
