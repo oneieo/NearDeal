@@ -26,7 +26,7 @@ interface NaverMapComponentProps {
   markers?: MarkerData[];
   className?: string;
   onMapReady?: () => void;
-  onMarkerClick?: (markerId: string) => void; // 추가된 prop
+  onMarkerClick?: (markerId: string) => void;
 }
 
 // 실제 지도 컴포넌트 (Suspense 내부)
@@ -35,7 +35,7 @@ function MapContent({
   zoom = 16,
   markers = [],
   onMapReady,
-  onMarkerClick, // 추가된 prop
+  onMarkerClick,
 }: NaverMapComponentProps) {
   const navermaps = useNavermaps();
   const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
@@ -65,6 +65,11 @@ function MapContent({
       {markers.map((marker) => (
         <div key={marker.id}>
           <Marker
+            icon={
+              marker.id.includes("current-location")
+                ? "public/location (1).png"
+                : "public/icon-clover-32px.png"
+            }
             position={new navermaps.LatLng(marker.lat, marker.lng)}
             title={marker.title}
             onClick={() => handleMarkerClick(marker.id)}
@@ -84,7 +89,7 @@ export default function NaverMapComponent({
   markers = [],
   className = "",
   onMapReady,
-  onMarkerClick, // 추가된 prop
+  onMarkerClick,
 }: NaverMapComponentProps) {
   return (
     <div className={`relative ${className}`} style={{ width, height }}>
@@ -104,7 +109,7 @@ export default function NaverMapComponent({
             zoom={zoom}
             markers={markers}
             onMapReady={onMapReady}
-            onMarkerClick={onMarkerClick} // prop 전달
+            onMarkerClick={onMarkerClick}
           />
         </Suspense>
       </Container>
