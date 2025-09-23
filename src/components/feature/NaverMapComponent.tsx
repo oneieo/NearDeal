@@ -3,7 +3,7 @@ import {
   NaverMap,
   Container,
   Marker,
-  InfoWindow,
+  //InfoWindow,
   useNavermaps,
 } from "react-naver-maps";
 

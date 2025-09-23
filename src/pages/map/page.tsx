@@ -267,8 +267,7 @@ export default function MapPage() {
   const [mapCenter, setMapCenter] = useState<Location>(DEFAULT_LOCATION);
 
   // Custom hooks
-  const { currentLocation, locationError, getCurrentLocation } =
-    useCurrentLocation();
+  const { currentLocation, getCurrentLocation } = useCurrentLocation();
 
   // Computed values
   const filteredStores = useMemo(() => {
@@ -325,11 +324,11 @@ export default function MapPage() {
     }));
 
     markers.push(...storeMarkers);
-    console.log(
-      "Final markers:",
-      markers.length,
-      markers.map((m) => ({ id: m.id, category: m.category }))
-    );
+    // console.log(
+    //   "Final markers:",
+    //   markers.length,
+    //   markers.map((m) => ({ id: m.id, category: m.category }))
+    // );
 
     return markers;
   }, [currentLocation, filteredStores]);
@@ -613,7 +612,7 @@ export default function MapPage() {
         }
         rightAction={
           <button className="w-10 h-10 flex items-center justify-center">
-            <i className="ri-notification-line text-text text-xl" />
+            <i className="ri-settings-line text-text text-xl" />
           </button>
         }
         showBorder={false}
