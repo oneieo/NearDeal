@@ -1,7 +1,14 @@
-import { useEffect, Suspense } from "react";
-import { NaverMap, Container, Marker, useNavermaps } from "react-naver-maps";
+import { useEffect, Suspense, useState } from "react";
+import {
+  NaverMap,
+  Container,
+  Marker,
+  //InfoWindow,
+  useNavermaps,
+} from "react-naver-maps";
 
 interface MarkerData {
+  id: string;
   lat: number;
   lng: number;
   title?: string;
@@ -19,6 +26,7 @@ interface NaverMapComponentProps {
   markers?: MarkerData[];
   className?: string;
   onMapReady?: () => void;
+  onMarkerClick?: (markerId: string) => void;
 }
 
 // 실제 지도 컴포넌트 (Suspense 내부)
@@ -27,8 +35,10 @@ function MapContent({
   zoom = 16,
   markers = [],
   onMapReady,
+  onMarkerClick,
 }: NaverMapComponentProps) {
   const navermaps = useNavermaps();
+  const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
 
   useEffect(() => {
     if (onMapReady) {
@@ -36,17 +46,35 @@ function MapContent({
     }
   }, [onMapReady]);
 
+  const handleMarkerClick = (markerId: string) => {
+    console.log("Marker clicked in NaverMapComponent:", markerId);
+    setSelectedMarker(selectedMarker === markerId ? null : markerId);
+
+    // 상위 컴포넌트로 마커 클릭 이벤트 전달
+    if (onMarkerClick) {
+      onMarkerClick(markerId);
+    }
+  };
+
   return (
     <NaverMap
       defaultCenter={new navermaps.LatLng(center.lat, center.lng)}
       defaultZoom={zoom}
+      center={new navermaps.LatLng(center.lat, center.lng)}
     >
-      {markers.map((marker, index) => (
-        <Marker
-          key={index}
-          defaultPosition={new navermaps.LatLng(marker.lat, marker.lng)}
-          title={marker.title}
-        />
+      {markers.map((marker) => (
+        <div key={marker.id}>
+          <Marker
+            icon={
+              marker.id.includes("current-location")
+                ? "public/location (1).png"
+                : "public/icon-clover-32px.png"
+            }
+            position={new navermaps.LatLng(marker.lat, marker.lng)}
+            title={marker.title}
+            onClick={() => handleMarkerClick(marker.id)}
+          />
+        </div>
       ))}
     </NaverMap>
   );
@@ -61,6 +89,7 @@ export default function NaverMapComponent({
   markers = [],
   className = "",
   onMapReady,
+  onMarkerClick,
 }: NaverMapComponentProps) {
   return (
     <div className={`relative ${className}`} style={{ width, height }}>
@@ -80,6 +109,7 @@ export default function NaverMapComponent({
             zoom={zoom}
             markers={markers}
             onMapReady={onMapReady}
+            onMarkerClick={onMarkerClick}
           />
         </Suspense>
       </Container>
