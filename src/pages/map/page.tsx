@@ -897,11 +897,9 @@ const useCurrentLocation = () => {
   return { currentLocation, locationError, getCurrentLocation };
 };
 
-// Main component
 export default function MapPage() {
   const navigate = useNavigate();
 
-  // Zustand 전역 상태
   const {
     categories,
     selectedCategoryName,
@@ -910,14 +908,13 @@ export default function MapPage() {
     getSelectedCategory,
   } = useCategoryStore();
 
-  // Local state
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [showListView, setShowListView] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortType, setSortType] = useState<SortType>("distance");
   const [mapCenter, setMapCenter] = useState<Location>(DEFAULT_LOCATION);
+  const [mapKey, setMapKey] = useState(0);
 
-  // Custom hooks
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
 
   // 홈에서 선택된 카테고리를 기반으로 필터링된 매장들
@@ -1016,12 +1013,15 @@ export default function MapPage() {
 
   const handleMyLocation = useCallback(() => {
     if (currentLocation) {
-      console.log("지도 중심을 현재 위치로 이동:", currentLocation);
+      console.log("Moving map center to current location:", currentLocation);
       setMapCenter({
         lat: currentLocation.lat,
         lng: currentLocation.lng,
       });
+      // key 변경으로 강제 리렌더링
+      setMapKey((prev) => prev + 1);
     } else {
+      console.log("Current location not available, fetching...");
       getCurrentLocation();
     }
   }, [currentLocation, getCurrentLocation]);
@@ -1278,10 +1278,10 @@ export default function MapPage() {
       <SearchBar />
       <CategoryChips />
 
-      {/* Map Area */}
       <div className="pt-40 h-screen relative">
         <div className="w-full h-full relative overflow-hidden">
           <NaverMapComponent
+            key={mapKey}
             width="100%"
             height="100%"
             center={mapCenter}
