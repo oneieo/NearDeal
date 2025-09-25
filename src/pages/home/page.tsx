@@ -1,8 +1,9 @@
-import { useState } from "react";
 import TopNavigation from "../../components/feature/TopNavigation";
 import BottomNavigation from "../../components/feature/BottomNavigation";
 import Card from "../../components/base/Card";
 import Button from "../../components/base/Button";
+import { useCategoryStore } from "../../store/useCategoryStore";
+import { useNavigate } from "react-router-dom";
 
 interface Coupon {
   id: string;
@@ -14,52 +15,6 @@ interface Coupon {
   expiresAt: string;
   image: string;
 }
-
-interface Category {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-}
-
-const categories: Category[] = [
-  {
-    id: "1",
-    name: "음식",
-    icon: "ri-restaurant-fill",
-    color: "bg-red-100 text-red-600",
-  },
-  {
-    id: "2",
-    name: "카페",
-    icon: "ri-cup-fill",
-    color: "bg-amber-100 text-amber-600",
-  },
-  {
-    id: "3",
-    name: "뷰티",
-    icon: "ri-scissors-cut-fill",
-    color: "bg-pink-100 text-pink-600",
-  },
-  {
-    id: "4",
-    name: "쇼핑",
-    icon: "ri-shopping-bag-fill",
-    color: "bg-blue-100 text-blue-600",
-  },
-  {
-    id: "5",
-    name: "헬스",
-    icon: "ri-heart-pulse-fill",
-    color: "bg-green-100 text-green-600",
-  },
-  {
-    id: "6",
-    name: "서비스",
-    icon: "ri-service-fill",
-    color: "bg-purple-100 text-purple-600",
-  },
-];
 
 const featuredCoupons: Coupon[] = [
   {
@@ -123,7 +78,19 @@ const hotDeals: Coupon[] = [
 ];
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const {
+    categories,
+    setSelectedCategory,
+    isCategorySelected,
+    getSelectedCategory,
+  } = useCategoryStore();
+  const navigate = useNavigate();
+
+  const handleClickCategoryBtn = (name: string) => {
+    setSelectedCategory(name);
+    console.log(getSelectedCategory()?.name);
+    navigate("/map");
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -188,35 +155,29 @@ export default function Home() {
             {categories.map((category) => (
               <button
                 key={category.id}
-                onClick={() =>
-                  setSelectedCategory(
-                    category.id === selectedCategory ? "" : category.id
-                  )
-                }
+                onClick={() => handleClickCategoryBtn(category.name)}
                 className={`p-4 rounded-16 transition-all duration-200 ${
-                  selectedCategory === category.id
+                  isCategorySelected(category.name)
                     ? "bg-primary text-white shadow-md"
                     : "bg-white shadow-sm hover:shadow-md"
                 }`}
               >
                 <div
                   className={`w-8 h-8 mx-auto mb-2 flex items-center justify-center rounded-8 ${
-                    selectedCategory === category.id
+                    isCategorySelected(category.id)
                       ? "bg-white/20"
                       : category.color
                   }`}
                 >
                   <i
                     className={`${category.icon} text-lg ${
-                      selectedCategory === category.id ? "text-white" : ""
+                      isCategorySelected(category.id) ? "text-white" : ""
                     }`}
                   />
                 </div>
                 <p
                   className={`text-sm font-sf font-medium ${
-                    selectedCategory === category.id
-                      ? "text-white"
-                      : "text-text"
+                    isCategorySelected(category.id) ? "text-white" : "text-text"
                   }`}
                 >
                   {category.name}

@@ -68,7 +68,7 @@ function MapContent({
             icon={
               marker.id.includes("current-location")
                 ? "public/location (1).png"
-                : "public/icon-clover-32px.png"
+                : "public/icon-clover2.png"
             }
             position={new navermaps.LatLng(marker.lat, marker.lng)}
             title={marker.title}
