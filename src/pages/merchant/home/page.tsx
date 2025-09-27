@@ -397,11 +397,21 @@ export default function MerchantHomePage() {
                   >
                     금액(원)
                   </button>
+                  <button
+                    onClick={() => setCouponForm({...couponForm, discountType: 'service'})}
+                    className={`flex-1 py-2 px-4 rounded-xl text-sm font-sf font-medium transition-all ${
+                      couponForm.discountType === 'service'
+                        ? 'bg-primary text-white'
+                        : 'bg-gray-100 text-text-secondary'
+                    }`}
+                  >
+                    서비스
+                  </button>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-sf font-medium text-text mb-2">할인값 *</label>
+              {/* <div>
+                <label className="block text-sm font-sf font-medium text-text mb-2">할인 *</label>
                 <div className="relative">
                   <input
                     type="number"
@@ -414,7 +424,46 @@ export default function MerchantHomePage() {
                     {couponForm.discountType === 'percentage' ? '%' : '원'}
                   </span>
                 </div>
+              </div> */}
+
+              <div>
+              <label className="block text-sm font-sf font-medium text-text mb-2">할인 *</label>
+              <div className="relative">
+                <input
+                  // 서비스면 텍스트, 나머지는 숫자
+                  type={couponForm.discountType === 'service' ? 'text' : 'number'}
+                  inputMode={couponForm.discountType === 'service' ? 'text' : 'numeric'}
+                  // 숫자일 때만 제약 주기
+                  min={couponForm.discountType !== 'service' ? 0 : undefined}
+                  step={
+                    couponForm.discountType === 'percentage'
+                      ? 1
+                      : couponForm.discountType === 'amount'
+                      ? 100
+                      : undefined
+                  }
+                  value={couponForm.discountValue}
+                  onChange={(e) =>
+                    setCouponForm({ ...couponForm, discountValue: e.target.value })
+                  }
+                  placeholder={
+                    couponForm.discountType === 'percentage'
+                      ? '20'            // 예: 20%
+                      : couponForm.discountType === 'amount'
+                      ? '5000'          // 예: 5000원
+                      : '제공할 서비스 내용 (예: 아메리카노 1잔)'
+                  }
+                  className="w-full p-3 pr-12 border border-gray-200 rounded-xl focus:border-primary focus:outline-none text-sm font-sf"
+                />
+
+                {/* 서비스가 아닐 때만 단위 표시 */}
+                {couponForm.discountType !== 'service' && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm font-sf">
+                    {couponForm.discountType === 'percentage' ? '%' : '원'}
+                  </span>
+                )}
               </div>
+            </div>
 
               <div>
                 <label className="block text-sm font-sf font-medium text-text mb-2">만료일</label>
@@ -436,7 +485,7 @@ export default function MerchantHomePage() {
                   className="w-full p-3 border border-gray-200 rounded-xl focus:border-primary focus:outline-none text-sm font-sf"
                 />
               </div>
-
+                  
               <div>
                 <label className="block text-sm font-sf font-medium text-text mb-2">적용 메뉴 *</label>
                 <div className="space-y-3">
@@ -501,7 +550,7 @@ export default function MerchantHomePage() {
                   fullWidth
                   onClick={() => setShowCouponModal(false)}
                 >
-                  취소
+                  임시 저장
                 </Button>
                 <Button
                   fullWidth
