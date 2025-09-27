@@ -1,5 +1,5 @@
-
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
+import { useCategoryStore } from "../../store/useCategoryStore";
 
 interface NavItem {
   path: string;
@@ -8,15 +8,24 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { path: '/', icon: 'ri-home-fill', label: '홈' },
-  { path: '/map', icon: 'ri-map-pin-fill', label: '지도' },
-  { path: '/coupons', icon: 'ri-coupon-fill', label: '쿠폰' },
-  { path: '/profile', icon: 'ri-user-fill', label: '마이' }
+  { path: "/", icon: "ri-home-fill", label: "홈" },
+  { path: "/map", icon: "ri-map-pin-fill", label: "지도" },
+  { path: "/coupons", icon: "ri-coupon-fill", label: "쿠폰" },
+  { path: "/profile", icon: "ri-user-fill", label: "마이" },
 ];
 
 export default function BottomNavigation() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { setSelectedCategory } = useCategoryStore();
+
+  const handleNavigation = (path: string) => {
+    // 지도 버튼 클릭 시 '제휴' 카테고리 선택
+    if (path === "/map") {
+      setSelectedCategory("제휴");
+    }
+    navigate(path);
+  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-area-pb">
@@ -26,9 +35,9 @@ export default function BottomNavigation() {
           return (
             <button
               key={item.path}
-              onClick={() => navigate(item.path)}
+              onClick={() => handleNavigation(item.path)}
               className={`flex flex-col items-center justify-center space-y-1 transition-colors duration-200 ${
-                isActive ? 'text-primary' : 'text-text-secondary'
+                isActive ? "text-primary" : "text-text-secondary"
               }`}
             >
               <div className="w-6 h-6 flex items-center justify-center">
