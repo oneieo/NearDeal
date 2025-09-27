@@ -21,6 +21,17 @@ interface StoredCoupon {
 const coupons: StoredCoupon[] = [
   {
     id: "1",
+    storeId: "Dpym-1",
+    storeName: "디핌",
+    storeLogo: "ri-cup-fill",
+    title: "아메리카노 1+1",
+    benefit: "아메리카노 주문 시 1잔 무료 증정",
+    conditions: "1인 1매 한정, 다른 할인과 중복 불가",
+    expiresAt: "2024-12-25T18:00:00",
+    status: "available",
+  },
+  {
+    id: "2",
     storeId: "starbucks-1",
     storeName: "스타벅스 역삼점",
     storeLogo: "ri-cup-fill",
@@ -31,7 +42,7 @@ const coupons: StoredCoupon[] = [
     status: "available",
   },
   {
-    id: "2",
+    id: "3",
     storeId: "ediya-1",
     storeName: "이디야커피 강남역점",
     storeLogo: "ri-cup-line",
@@ -42,7 +53,7 @@ const coupons: StoredCoupon[] = [
     status: "available",
   },
   {
-    id: "3",
+    id: "4",
     storeId: "twosomeplace-1",
     storeName: "투썸플레이스 테헤란점",
     storeLogo: "ri-cake-fill",
@@ -53,7 +64,7 @@ const coupons: StoredCoupon[] = [
     status: "available",
   },
   {
-    id: "4",
+    id: "5",
     storeId: "starbucks-2",
     storeName: "스타벅스 선릉점",
     storeLogo: "ri-cup-fill",
@@ -66,7 +77,7 @@ const coupons: StoredCoupon[] = [
     couponNumber: "SC240001",
   },
   {
-    id: "5",
+    id: "6",
     storeId: "hollys-1",
     storeName: "할리스커피 역삼역점",
     storeLogo: "ri-cup-line",
