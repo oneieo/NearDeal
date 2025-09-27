@@ -1,10 +1,9 @@
-
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import TopNavigation from '../../../components/feature/TopNavigation';
-import MerchantBottomNavigation from '../../../components/feature/MerchantBottomNavigation';
-import Card from '../../../components/base/Card';
-import Button from '../../../components/base/Button';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import TopNavigation from "../../../components/feature/TopNavigation";
+import MerchantBottomNavigation from "../../../components/feature/MerchantBottomNavigation";
+import Card from "../../../components/base/Card";
+import Button from "../../../components/base/Button";
 
 interface StoreInfo {
   name: string;
@@ -21,20 +20,18 @@ interface StoreInfo {
 }
 
 const storeInfo: StoreInfo = {
-  name: '커피디딤',
-  category: '카페',
-  description: '신선한 원두로 내린 정통 커피와 다양한 디저트를 제공하는 아늑한 카페입니다.',
-  phone: '02-1234-5678',
-  address: '서울시 강남구 테헤란로 123',
+  name: "디핌",
+  category: "카페",
+  description:
+    "신선한 원두로 내린 정통 커피와 다양한 디저트를 제공하는 아늑한 카페입니다.",
+  phone: "0507-1358-2622",
+  address: "전북 전주시 덕진구 명륜3길 9-1 1층",
   businessHours: {
-    open: '08:00',
-    close: '22:00',
-    isOpen: true
+    open: "11:00",
+    close: "22:00",
+    isOpen: true,
   },
-  images: [
-    'https://readdy.ai/api/search-image?query=Modern%20coffee%20shop%20interior%20design%2C%20cozy%20cafe%20atmosphere%2C%20warm%20lighting%2C%20comfortable%20seating%2C%20minimalist%20decor%2C%20professional%20photography&width=400&height=300&seq=store-interior1&orientation=landscape',
-    'https://readdy.ai/api/search-image?query=Coffee%20shop%20counter%20and%20barista%20workspace%2C%20espresso%20machine%2C%20professional%20coffee%20equipment%2C%20clean%20modern%20design&width=400&height=300&seq=store-counter1&orientation=landscape'
-  ]
+  images: ["/디핌/내부/디핌내부2.jpg", "/디핌/내부/디핌내부1.jpg"],
 };
 
 export default function MerchantSettingsPage() {
@@ -44,7 +41,7 @@ export default function MerchantSettingsPage() {
 
   const handleSaveStore = () => {
     // 실제로는 서버에 저장하는 로직 필요
-    console.log('Saving store info:', editedStore);
+    console.log("Saving store info:", editedStore);
     setIsEditing(false);
   };
 
@@ -53,19 +50,23 @@ export default function MerchantSettingsPage() {
       <TopNavigation
         title="가게 관리"
         leftAction={
-          <button 
-            onClick={() => navigate('/merchant')}
+          <button
+            onClick={() => navigate("/merchant")}
             className="w-10 h-10 flex items-center justify-center"
           >
             <i className="ri-arrow-left-line text-text text-xl" />
           </button>
         }
         rightAction={
-          <button 
-            onClick={() => isEditing ? handleSaveStore() : setIsEditing(true)}
+          <button
+            onClick={() => (isEditing ? handleSaveStore() : setIsEditing(true))}
             className="w-10 h-10 flex items-center justify-center"
           >
-            <i className={`${isEditing ? 'ri-check-line' : 'ri-edit-line'} text-text text-xl`} />
+            <i
+              className={`${
+                isEditing ? "ri-check-line" : "ri-edit-line"
+              } text-text text-xl`}
+            />
           </button>
         }
       />
@@ -76,11 +77,16 @@ export default function MerchantSettingsPage() {
           {/* 가게 이미지 */}
           <Card>
             <div className="space-y-4">
-              <h3 className="text-lg font-sf font-semibold text-text">가게 사진</h3>
+              <h3 className="text-lg font-sf font-semibold text-text">
+                가게 사진
+              </h3>
               <div className="grid grid-cols-2 gap-3">
                 {editedStore.images.map((image, index) => (
-                  <div key={index} className="aspect-video rounded-12 overflow-hidden relative">
-                    <img 
+                  <div
+                    key={index}
+                    className="aspect-video rounded-12 overflow-hidden relative"
+                  >
+                    <img
                       src={image}
                       alt={`가게 이미지 ${index + 1}`}
                       className="w-full h-full object-cover object-top"
@@ -107,15 +113,21 @@ export default function MerchantSettingsPage() {
           {/* 기본 정보 */}
           <Card>
             <div className="space-y-4">
-              <h3 className="text-lg font-sf font-semibold text-text">기본 정보</h3>
+              <h3 className="text-lg font-sf font-semibold text-text">
+                기본 정보
+              </h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-sf font-medium text-text mb-2">가게명</label>
+                  <label className="block text-sm font-sf font-medium text-text mb-2">
+                    가게명
+                  </label>
                   {isEditing ? (
                     <input
                       type="text"
                       value={editedStore.name}
-                      onChange={(e) => setEditedStore({...editedStore, name: e.target.value})}
+                      onChange={(e) =>
+                        setEditedStore({ ...editedStore, name: e.target.value })
+                      }
                       className="w-full p-3 border border-gray-200 rounded-12 text-sm font-sf focus:outline-none focus:border-primary"
                     />
                   ) : (
@@ -124,11 +136,18 @@ export default function MerchantSettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-sf font-medium text-text mb-2">카테고리</label>
+                  <label className="block text-sm font-sf font-medium text-text mb-2">
+                    카테고리
+                  </label>
                   {isEditing ? (
                     <select
                       value={editedStore.category}
-                      onChange={(e) => setEditedStore({...editedStore, category: e.target.value})}
+                      onChange={(e) =>
+                        setEditedStore({
+                          ...editedStore,
+                          category: e.target.value,
+                        })
+                      }
                       className="w-full p-3 border border-gray-200 rounded-12 text-sm font-sf focus:outline-none focus:border-primary"
                     >
                       <option value="카페">카페</option>
@@ -142,26 +161,42 @@ export default function MerchantSettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-sf font-medium text-text mb-2">소개</label>
+                  <label className="block text-sm font-sf font-medium text-text mb-2">
+                    소개
+                  </label>
                   {isEditing ? (
                     <textarea
                       value={editedStore.description}
-                      onChange={(e) => setEditedStore({...editedStore, description: e.target.value})}
+                      onChange={(e) =>
+                        setEditedStore({
+                          ...editedStore,
+                          description: e.target.value,
+                        })
+                      }
                       className="w-full p-3 border border-gray-200 rounded-12 text-sm font-sf resize-none focus:outline-none focus:border-primary"
                       rows={3}
                     />
                   ) : (
-                    <p className="text-text font-sf">{editedStore.description}</p>
+                    <p className="text-text font-sf">
+                      {editedStore.description}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-sf font-medium text-text mb-2">전화번호</label>
+                  <label className="block text-sm font-sf font-medium text-text mb-2">
+                    전화번호
+                  </label>
                   {isEditing ? (
                     <input
                       type="tel"
                       value={editedStore.phone}
-                      onChange={(e) => setEditedStore({...editedStore, phone: e.target.value})}
+                      onChange={(e) =>
+                        setEditedStore({
+                          ...editedStore,
+                          phone: e.target.value,
+                        })
+                      }
                       className="w-full p-3 border border-gray-200 rounded-12 text-sm font-sf focus:outline-none focus:border-primary"
                     />
                   ) : (
@@ -170,12 +205,19 @@ export default function MerchantSettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-sf font-medium text-text mb-2">주소</label>
+                  <label className="block text-sm font-sf font-medium text-text mb-2">
+                    주소
+                  </label>
                   {isEditing ? (
                     <input
                       type="text"
                       value={editedStore.address}
-                      onChange={(e) => setEditedStore({...editedStore, address: e.target.value})}
+                      onChange={(e) =>
+                        setEditedStore({
+                          ...editedStore,
+                          address: e.target.value,
+                        })
+                      }
                       className="w-full p-3 border border-gray-200 rounded-12 text-sm font-sf focus:outline-none focus:border-primary"
                     />
                   ) : (
@@ -189,7 +231,9 @@ export default function MerchantSettingsPage() {
           {/* 영업시간 */}
           <Card>
             <div className="space-y-4">
-              <h3 className="text-lg font-sf font-semibold text-text">영업시간</h3>
+              <h3 className="text-lg font-sf font-semibold text-text">
+                영업시간
+              </h3>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   {isEditing ? (
@@ -197,35 +241,48 @@ export default function MerchantSettingsPage() {
                       <input
                         type="time"
                         value={editedStore.businessHours.open}
-                        onChange={(e) => setEditedStore({
-                          ...editedStore,
-                          businessHours: {...editedStore.businessHours, open: e.target.value}
-                        })}
+                        onChange={(e) =>
+                          setEditedStore({
+                            ...editedStore,
+                            businessHours: {
+                              ...editedStore.businessHours,
+                              open: e.target.value,
+                            },
+                          })
+                        }
                         className="p-2 border border-gray-200 rounded-8 text-sm font-sf focus:outline-none focus:border-primary"
                       />
                       <span className="text-text-secondary">~</span>
                       <input
                         type="time"
                         value={editedStore.businessHours.close}
-                        onChange={(e) => setEditedStore({
-                          ...editedStore,
-                          businessHours: {...editedStore.businessHours, close: e.target.value}
-                        })}
+                        onChange={(e) =>
+                          setEditedStore({
+                            ...editedStore,
+                            businessHours: {
+                              ...editedStore.businessHours,
+                              close: e.target.value,
+                            },
+                          })
+                        }
                         className="p-2 border border-gray-200 rounded-8 text-sm font-sf focus:outline-none focus:border-primary"
                       />
                     </>
                   ) : (
                     <p className="text-text font-sf">
-                      {editedStore.businessHours.open} ~ {editedStore.businessHours.close}
+                      {editedStore.businessHours.open} ~{" "}
+                      {editedStore.businessHours.close}
                     </p>
                   )}
                 </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-sf font-medium ${
-                  editedStore.businessHours.isOpen 
-                    ? 'bg-green-100 text-green-600' 
-                    : 'bg-red-100 text-red-600'
-                }`}>
-                  {editedStore.businessHours.isOpen ? '영업중' : '휴업중'}
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-sf font-medium ${
+                    editedStore.businessHours.isOpen
+                      ? "bg-green-100 text-green-600"
+                      : "bg-red-100 text-red-600"
+                  }`}
+                >
+                  {editedStore.businessHours.isOpen ? "영업중" : "휴업중"}
                 </span>
               </div>
             </div>
@@ -233,11 +290,11 @@ export default function MerchantSettingsPage() {
         </div>
 
         {/* 메뉴 관리 버튼 */}
-        <Button 
-          fullWidth 
-          size="lg" 
+        <Button
+          fullWidth
+          size="lg"
           className="bg-gradient-to-r from-accent to-orange-500"
-          onClick={() => navigate('/merchant/menu')}
+          onClick={() => navigate("/merchant/menu")}
         >
           <i className="ri-restaurant-fill" />
           메뉴 관리
@@ -246,24 +303,31 @@ export default function MerchantSettingsPage() {
         {/* 알림 설정 */}
         <Card>
           <div className="space-y-4">
-            <h3 className="text-lg font-sf font-semibold text-text">알림 설정</h3>
+            <h3 className="text-lg font-sf font-semibold text-text">
+              알림 설정
+            </h3>
             <div className="space-y-4">
               {[
-                { key: 'newOrder', label: '새 주문 알림', enabled: true },
-                { key: 'newReview', label: '새 리뷰 알림', enabled: true },
-                { key: 'couponUsed', label: '쿠폰 사용 알림', enabled: false },
-                { key: 'dailyReport', label: '일일 리포트', enabled: true }
+                { key: "newOrder", label: "새 주문 알림", enabled: true },
+                { key: "newReview", label: "새 리뷰 알림", enabled: true },
+                { key: "couponUsed", label: "쿠폰 사용 알림", enabled: false },
+                { key: "dailyReport", label: "일일 리포트", enabled: true },
               ].map((setting) => (
-                <div key={setting.key} className="flex items-center justify-between">
+                <div
+                  key={setting.key}
+                  className="flex items-center justify-between"
+                >
                   <span className="text-text font-sf">{setting.label}</span>
                   <button
                     className={`w-12 h-6 rounded-full relative transition-colors ${
-                      setting.enabled ? 'bg-primary' : 'bg-gray-300'
+                      setting.enabled ? "bg-primary" : "bg-gray-300"
                     }`}
                   >
-                    <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 transition-transform ${
-                      setting.enabled ? 'translate-x-6' : 'translate-x-0.5'
-                    }`} />
+                    <div
+                      className={`w-5 h-5 bg-white rounded-full absolute top-0.5 transition-transform ${
+                        setting.enabled ? "translate-x-6" : "translate-x-0.5"
+                      }`}
+                    />
                   </button>
                 </div>
               ))}
@@ -274,7 +338,9 @@ export default function MerchantSettingsPage() {
         {/* 계정 관리 */}
         <Card>
           <div className="space-y-4">
-            <h3 className="text-lg font-sf font-semibold text-text">계정 관리</h3>
+            <h3 className="text-lg font-sf font-semibold text-text">
+              계정 관리
+            </h3>
             <div className="space-y-3">
               <button className="w-full p-4 text-left border border-gray-200 rounded-12 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between">
@@ -295,7 +361,9 @@ export default function MerchantSettingsPage() {
         {/* 고객 지원 */}
         <Card>
           <div className="space-y-4">
-            <h3 className="text-lg font-sf font-semibold text-text">고객 지원</h3>
+            <h3 className="text-lg font-sf font-semibold text-text">
+              고객 지원
+            </h3>
             <div className="space-y-3">
               <button className="w-full p-4 text-left border border-gray-200 rounded-12 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between">
@@ -320,11 +388,11 @@ export default function MerchantSettingsPage() {
         </Card>
 
         {/* 로그아웃 */}
-        <Button 
-          fullWidth 
-          variant="outline" 
+        <Button
+          fullWidth
+          variant="outline"
           className="border-red-200 text-red-600 hover:bg-red-50"
-          onClick={() => console.log('Logout')}
+          onClick={() => console.log("Logout")}
         >
           <i className="ri-logout-box-line" />
           로그아웃

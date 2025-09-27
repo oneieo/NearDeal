@@ -148,7 +148,6 @@ export default function CouponsPage() {
       />
 
       <div className="pt-20 px-4 space-y-6">
-        {/* 탭 메뉴 */}
         <div className="flex bg-gray-100 rounded-16 p-1">
           {[
             {
