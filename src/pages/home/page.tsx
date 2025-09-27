@@ -4,6 +4,7 @@ import Card from "../../components/base/Card";
 import Button from "../../components/base/Button";
 import { useCategoryStore } from "../../store/useCategoryStore";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 interface Coupon {
   id: string;
@@ -80,6 +81,7 @@ const hotDeals: Coupon[] = [
 export default function Home() {
   const {
     categories,
+    selectedCategoryName,
     setSelectedCategory,
     isCategorySelected,
     getSelectedCategory,
@@ -91,6 +93,12 @@ export default function Home() {
     console.log(getSelectedCategory()?.name);
     navigate("/map");
   };
+
+  useEffect(() => {
+    if (selectedCategoryName !== "") {
+      setSelectedCategory("");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-background pb-20">
