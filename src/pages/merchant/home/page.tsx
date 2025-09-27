@@ -206,9 +206,7 @@ export default function MerchantHomePage() {
             />
           </div>
           <div>
-            <h1 className="text-2xl font-sf font-bold text-text mb-1">
-              커피디딤
-            </h1>
+            <h1 className="text-2xl font-sf font-bold text-text mb-1">디핌</h1>
             <p className="text-text-secondary font-sf">카페 • 영업중</p>
           </div>
         </div>
@@ -460,7 +458,7 @@ export default function MerchantHomePage() {
                 <h3 className="text-lg font-sf font-semibold text-text">
                   스탬프 적립 PIN
                 </h3>
-                <p className="text-sm font-sf text-text-secondary">커피디딤</p>
+                <p className="text-sm font-sf text-text-secondary">디핌</p>
                 <p className="text-xs font-sf text-text-secondary">
                   고객에게 아래 PIN 번호를 알려주세요
                 </p>
