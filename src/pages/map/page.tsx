@@ -5,6 +5,7 @@ import BottomNavigation from "../../components/feature/BottomNavigation";
 import Card from "../../components/base/Card";
 import NaverMapComponent from "../../components/feature/NaverMapComponent";
 import { useCategoryStore } from "../../store/useCategoryStore";
+import { calculateDistance, formatDistance } from "../../utils/distance";
 
 // Types
 interface Store {
@@ -35,10 +36,9 @@ type SortType = "popularity" | "distance";
 // Constants
 const DEFAULT_LOCATION: Location = {
   lat: 35.8407943328,
-  lng: 127.1320319577, // 전북대 기본 위치
+  lng: 127.1320319577,
 };
 
-// 카테고리 이름과 store category 매핑
 const CATEGORY_MAPPING = {
   음식점: "restaurant",
   카페: "cafe",
@@ -253,7 +253,7 @@ const useCurrentLocation = () => {
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 300000, // 5분간 캐시 사용
+        maximumAge: 300000,
       }
     );
   }, []);
@@ -273,7 +273,6 @@ export default function MapPage() {
     selectedCategoryName,
     toggleCategory,
     isCategorySelected,
-    getSelectedCategory,
   } = useCategoryStore();
 
   const [showBottomSheet, setShowBottomSheet] = useState(false);
@@ -285,15 +284,31 @@ export default function MapPage() {
 
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
 
-  // 홈에서 선택된 카테고리를 기반으로 필터링된 매장들
-  const filteredStores = useMemo(() => {
-    console.log(
-      "Filtering stores with selected category:",
-      selectedCategoryName
-    );
+  // 현재 위치 기반으로 거리 계산
+  const storesWithDistance = useMemo(() => {
+    if (!currentLocation) {
+      return ALL_STORES;
+    }
 
-    return ALL_STORES.filter((store) => {
-      // 카테고리 필터링
+    return ALL_STORES.map((store) => {
+      const distanceInM = calculateDistance(
+        currentLocation.lat,
+        currentLocation.lng,
+        store.lat,
+        store.lng
+      );
+
+      return {
+        ...store,
+        distanceInM,
+        distance: formatDistance(distanceInM),
+      };
+    });
+  }, [currentLocation]);
+
+  // 거리 기반 필터링
+  const filteredStores = useMemo(() => {
+    return storesWithDistance.filter((store) => {
       let matchesCategory = true;
       if (selectedCategoryName) {
         const selectedCategoryMapped =
@@ -303,7 +318,6 @@ export default function MapPage() {
         matchesCategory = store.category === selectedCategoryMapped;
       }
 
-      // 검색어 필터링
       const matchesSearch =
         searchQuery === "" ||
         store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -313,8 +327,9 @@ export default function MapPage() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategoryName, searchQuery]);
+  }, [storesWithDistance, selectedCategoryName, searchQuery]);
 
+  // 정렬
   const sortedStores = useMemo(() => {
     return [...filteredStores].sort((a, b) => {
       return sortType === "distance"
@@ -323,14 +338,10 @@ export default function MapPage() {
     });
   }, [filteredStores, sortType]);
 
+  // 마커
   const mapMarkers = useMemo(() => {
-    console.log(
-      "Computing map markers with filtered stores:",
-      filteredStores.length
-    );
     const markers = [];
 
-    // 현재 위치 마커
     if (currentLocation) {
       markers.push({
         lat: currentLocation.lat,
@@ -341,7 +352,6 @@ export default function MapPage() {
       });
     }
 
-    // 필터링된 매장 마커들
     const storeMarkers = filteredStores.map((store) => ({
       lat: store.lat,
       lng: store.lng,
@@ -352,7 +362,6 @@ export default function MapPage() {
     }));
 
     markers.push(...storeMarkers);
-
     return markers;
   }, [currentLocation, filteredStores]);
 
@@ -372,8 +381,6 @@ export default function MapPage() {
   );
 
   const handleMarkerClick = useCallback((markerId: string) => {
-    console.log("Marker clicked:", markerId);
-
     if (markerId.startsWith("store-")) {
       setShowBottomSheet(true);
     }
@@ -381,15 +388,12 @@ export default function MapPage() {
 
   const handleMyLocation = useCallback(() => {
     if (currentLocation) {
-      console.log("Moving map center to current location:", currentLocation);
       setMapCenter({
         lat: currentLocation.lat,
         lng: currentLocation.lng,
       });
-      // key 변경으로 강제 리렌더링
       setMapKey((prev) => prev + 1);
     } else {
-      console.log("Current location not available, fetching...");
       getCurrentLocation();
     }
   }, [currentLocation, getCurrentLocation]);
@@ -402,7 +406,6 @@ export default function MapPage() {
     [handleStoreClick]
   );
 
-  // 현재 위치가 변경되면 지도 중심을 업데이트
   useEffect(() => {
     if (currentLocation) {
       setMapCenter(currentLocation);
@@ -571,7 +574,6 @@ export default function MapPage() {
   const ListViewModal = () =>
     showListView && (
       <div className="fixed inset-0 z-50 bg-white">
-        {/* Header */}
         <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
           <div className="flex items-center justify-between">
             <button
@@ -589,7 +591,6 @@ export default function MapPage() {
           </div>
         </div>
 
-        {/* Sort Options */}
         <div className="fixed top-16 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
           <div className="flex gap-2">
             {[
@@ -611,7 +612,6 @@ export default function MapPage() {
           </div>
         </div>
 
-        {/* Store List */}
         <div className="pt-32 pb-20 px-4 overflow-y-auto">
           <div className="space-y-3">
             {sortedStores.map((store) => (
