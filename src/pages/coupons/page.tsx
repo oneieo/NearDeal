@@ -18,82 +18,81 @@ interface StoredCoupon {
   couponNumber?: string;
 }
 
-const coupons: StoredCoupon[] = [
-  {
-    id: "1",
-    storeId: "Dpym-1",
-    storeName: "디핌",
-    storeLogo: "ri-cup-fill",
-    title: "아메리카노 1+1",
-    benefit: "아메리카노 주문 시 1잔 무료 증정",
-    conditions: "1인 1매 한정, 다른 할인과 중복 불가",
-    expiresAt: "2024-12-25T18:00:00",
-    status: "available",
-  },
-  {
-    id: "2",
-    storeId: "starbucks-1",
-    storeName: "스타벅스 전북대점",
-    storeLogo: "ri-cup-fill",
-    title: "아메리카노 1+1",
-    benefit: "아메리카노 주문 시 1잔 무료 증정",
-    conditions: "1인 1매 한정, 다른 할인과 중복 불가",
-    expiresAt: "2024-12-25T18:00:00",
-    status: "available",
-  },
-  {
-    id: "3",
-    storeId: "ediya-1",
-    storeName: "이디야커피 전북대구정문점",
-    storeLogo: "ri-cup-line",
-    title: "음료 2000원 할인",
-    benefit: "전 음료 2000원 즉시 할인",
-    conditions: "최소 주문 금액 5000원 이상",
-    expiresAt: "2024-12-30T23:59:59",
-    status: "available",
-  },
-  {
-    id: "4",
-    storeId: "twosomeplace-1",
-    storeName: "투썸플레이스 전북대점",
-    storeLogo: "ri-cake-fill",
-    title: "케이크 30% 할인",
-    benefit: "시그니처 케이크 30% 특가",
-    conditions: "평일 오후 2-5시 한정",
-    expiresAt: "2024-12-28T17:00:00",
-    status: "available",
-  },
-  {
-    id: "5",
-    storeId: "starbucks-2",
-    storeName: "스타벅스 전북대점",
-    storeLogo: "ri-cup-fill",
-    title: "자바칩프라푸치노 할인",
-    benefit: "자바칩프라푸치노 1000원 할인",
-    conditions: "포장 주문 시에만 적용",
-    expiresAt: "2024-12-20T12:00:00",
-    status: "used",
-    usedAt: "2025-09-28T14:30:00",
-    couponNumber: "SC240001",
-  },
-  {
-    id: "6",
-    storeId: "hollys-1",
-    storeName: "할리스 전주백제대로점",
-    storeLogo: "ri-cup-line",
-    title: "아이스크림 무료",
-    benefit: "음료 주문 시 아이스크림 무료",
-    conditions: "여름 시즌 한정",
-    expiresAt: "2025-08-31T23:59:59",
-    status: "expired",
-  },
-];
-
 export default function CouponsPage() {
   const [activeTab, setActiveTab] = useState<"available" | "used" | "expired">(
     "available"
   );
   const [showCouponModal, setShowCouponModal] = useState<string | null>(null);
+  const [coupons, setCoupons] = useState<StoredCoupon[]>([
+    {
+      id: "1",
+      storeId: "Dpym-1",
+      storeName: "디핌",
+      storeLogo: "ri-cup-fill",
+      title: "아메리카노 1+1",
+      benefit: "아메리카노 주문 시 1잔 무료 증정",
+      conditions: "1인 1매 한정, 다른 할인과 중복 불가",
+      expiresAt: "2024-12-25T18:00:00",
+      status: "available",
+    },
+    {
+      id: "2",
+      storeId: "starbucks-1",
+      storeName: "스타벅스 전북대점",
+      storeLogo: "ri-cup-fill",
+      title: "아메리카노 1+1",
+      benefit: "아메리카노 주문 시 1잔 무료 증정",
+      conditions: "1인 1매 한정, 다른 할인과 중복 불가",
+      expiresAt: "2024-12-25T18:00:00",
+      status: "available",
+    },
+    {
+      id: "3",
+      storeId: "ediya-1",
+      storeName: "이디야커피 전북대구정문점",
+      storeLogo: "ri-cup-line",
+      title: "음료 2000원 할인",
+      benefit: "전 음료 2000원 즉시 할인",
+      conditions: "최소 주문 금액 5000원 이상",
+      expiresAt: "2024-12-30T23:59:59",
+      status: "available",
+    },
+    {
+      id: "4",
+      storeId: "twosomeplace-1",
+      storeName: "투썸플레이스 전북대점",
+      storeLogo: "ri-cake-fill",
+      title: "케이크 30% 할인",
+      benefit: "시그니처 케이크 30% 특가",
+      conditions: "평일 오후 2-5시 한정",
+      expiresAt: "2024-12-28T17:00:00",
+      status: "available",
+    },
+    {
+      id: "5",
+      storeId: "starbucks-2",
+      storeName: "스타벅스 전북대점",
+      storeLogo: "ri-cup-fill",
+      title: "자바칩프라푸치노 할인",
+      benefit: "자바칩프라푸치노 1000원 할인",
+      conditions: "포장 주문 시에만 적용",
+      expiresAt: "2024-12-20T12:00:00",
+      status: "used",
+      usedAt: "2025-09-28T14:30:00",
+      couponNumber: "SC240001",
+    },
+    {
+      id: "6",
+      storeId: "hollys-1",
+      storeName: "할리스 전주백제대로점",
+      storeLogo: "ri-cup-line",
+      title: "아이스크림 무료",
+      benefit: "음료 주문 시 아이스크림 무료",
+      conditions: "여름 시즌 한정",
+      expiresAt: "2025-08-31T23:59:59",
+      status: "expired",
+    },
+  ]);
 
   const filteredCoupons = coupons.filter(
     (coupon) => coupon.status === activeTab
@@ -110,6 +109,27 @@ export default function CouponsPage() {
 
   const handleUseCoupon = (couponId: string) => {
     setShowCouponModal(couponId);
+  };
+
+  const handleCompleteCoupon = () => {
+    if (!showCouponModal) return;
+
+    setCoupons((prevCoupons) =>
+      prevCoupons.map((coupon) => {
+        if (coupon.id === showCouponModal) {
+          return {
+            ...coupon,
+            status: "used" as const,
+            usedAt: new Date().toISOString(),
+          };
+        }
+        return coupon;
+      })
+    );
+
+    setShowCouponModal(null);
+    // 사용됨 탭으로 자동 전환
+    //setActiveTab("used");
   };
 
   const selectedCoupon = coupons.find((c) => c.id === showCouponModal);
@@ -334,13 +354,7 @@ export default function CouponsPage() {
                   >
                     닫기
                   </Button>
-                  <Button
-                    className="flex-1"
-                    onClick={() => {
-                      // 쿠폰 사용 처리 로직
-                      setShowCouponModal(null);
-                    }}
-                  >
+                  <Button className="flex-1" onClick={handleCompleteCoupon}>
                     사용 완료
                   </Button>
                 </div>
