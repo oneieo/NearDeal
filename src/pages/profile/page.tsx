@@ -1,10 +1,9 @@
-
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import TopNavigation from '../../components/feature/TopNavigation';
-import BottomNavigation from '../../components/feature/BottomNavigation';
-import Card from '../../components/base/Card';
-import Button from '../../components/base/Button';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import TopNavigation from "../../components/feature/TopNavigation";
+import BottomNavigation from "../../components/feature/BottomNavigation";
+import Card from "../../components/base/Card";
+import Button from "../../components/base/Button";
 
 interface StampCard {
   id: string;
@@ -27,35 +26,35 @@ interface UserProfile {
 
 const stampCards: StampCard[] = [
   {
-    id: '1',
-    storeId: 'starbucks-1',
-    storeName: '스타벅스 역삼점',
-    storeLogo: 'ri-cup-fill',
+    id: "1",
+    storeId: "starbucks-1",
+    storeName: "스타벅스 전북대점",
+    storeLogo: "ri-cup-fill",
     currentStamps: 7,
     requiredStamps: 10,
-    reward: '아메리카노 무료',
-    expiresAt: '2024-12-31'
+    reward: "아메리카노 무료",
+    expiresAt: "2025-12-31",
   },
   {
-    id: '2',
-    storeId: 'ediya-1',
-    storeName: '이디야커피 강남역점',
-    storeLogo: 'ri-cup-line',
+    id: "2",
+    storeId: "ediya-1",
+    storeName: "이디야커피 강남역점",
+    storeLogo: "ri-cup-line",
     currentStamps: 3,
     requiredStamps: 8,
-    reward: '음료 1잔 무료',
-    expiresAt: '2024-12-30'
+    reward: "음료 1잔 무료",
+    expiresAt: "2024-12-30",
   },
   {
-    id: '3',
-    storeId: 'twosomeplace-1',
-    storeName: '투썸플레이스 테헤란점',
-    storeLogo: 'ri-cake-fill',
+    id: "3",
+    storeId: "twosomeplace-1",
+    storeName: "투썸플레이스 테헤란점",
+    storeLogo: "ri-cake-fill",
     currentStamps: 5,
     requiredStamps: 6,
-    reward: '케이크 1개 무료',
-    expiresAt: '2024-12-28'
-  }
+    reward: "케이크 1개 무료",
+    expiresAt: "2024-12-28",
+  },
 ];
 
 export default function ProfilePage() {
@@ -63,52 +62,52 @@ export default function ProfilePage() {
   const [showPinModal, setShowPinModal] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [selectedCard, setSelectedCard] = useState<StampCard | null>(null);
-  const [pinCode, setPinCode] = useState('');
+  const [pinCode, setPinCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notifications, setNotifications] = useState([
     {
-      id: '1',
-      type: 'coupon_used',
-      title: '쿠폰이 사용되었습니다',
-      message: '스타벅스 역삼점에서 아메리카노 1+1 쿠폰을 사용했습니다.',
-      time: '5분 전',
-      icon: 'ri-coupon-fill',
-      color: 'text-primary'
+      id: "1",
+      type: "coupon_used",
+      title: "쿠폰이 사용되었습니다",
+      message: "스타벅스 전북대점에서 아메리카노 1+1 쿠폰을 사용했습니다.",
+      time: "5분 전",
+      icon: "ri-coupon-fill",
+      color: "text-primary",
     },
     {
-      id: '2',
-      type: 'coupon_expiring',
-      title: '쿠폰 만료 임박',
-      message: '투썸플레이스 케이크 할인 쿠폰이 2시간 후 만료됩니다.',
-      time: '1시간 전',
-      icon: 'ri-time-fill',
-      color: 'text-accent'
+      id: "2",
+      type: "coupon_expiring",
+      title: "쿠폰 만료 임박",
+      message: "투썸플레이스 케이크 할인 쿠폰이 2시간 후 만료됩니다.",
+      time: "1시간 전",
+      icon: "ri-time-fill",
+      color: "text-accent",
     },
     {
-      id: '3',
-      type: 'new_coupon',
-      title: '신규 쿠폰 발급',
-      message: '이디야커피에서 새로운 할인 쿠폰이 등록되었습니다.',
-      time: '3시간 전',
-      icon: 'ri-gift-fill',
-      color: 'text-green-500'
-    }
+      id: "3",
+      type: "new_coupon",
+      title: "신규 쿠폰 발급",
+      message: "이디야커피에서 새로운 할인 쿠폰이 등록되었습니다.",
+      time: "3시간 전",
+      icon: "ri-gift-fill",
+      color: "text-green-500",
+    },
   ]);
 
   const [userProfile, setUserProfile] = useState<UserProfile>({
-    name: '김민수',
-    birthDate: '1995-03-15',
-    phone: '010-1234-5678',
-    affiliation: '컴퓨터공학과'
+    name: "임동찬",
+    birthDate: "2000-03-05",
+    phone: "010-1234-5678",
+    affiliation: "경영학과",
   });
 
-  const [editForm, setEditForm] = useState<UserProfile>({...userProfile});
+  const [editForm, setEditForm] = useState<UserProfile>({ ...userProfile });
 
   const navigate = useNavigate();
 
   const handleStampCardClick = (card: StampCard) => {
     setSelectedCard(card);
-    setPinCode('');
+    setPinCode("");
     setShowPinModal(true);
   };
 
@@ -118,28 +117,30 @@ export default function ProfilePage() {
 
   const handlePinSubmit = async () => {
     if (pinCode.length !== 4) {
-      alert('PIN 번호 4자리를 입력해주세요.');
+      alert("PIN 번호 4자리를 입력해주세요.");
       return;
     }
 
     setIsSubmitting(true);
-    
+
     setTimeout(() => {
-      const isValidPin = pinCode === '1234';
-      
+      const isValidPin = pinCode === "1234";
+
       if (isValidPin) {
         alert(`${selectedCard?.storeName}에서 스탬프가 적립되었습니다! 🎉`);
         setShowPinModal(false);
-        setPinCode('');
+        setPinCode("");
       } else {
-        alert('잘못된 PIN 번호입니다. 다시 확인해주세요.');
+        alert("잘못된 PIN 번호입니다. 다시 확인해주세요.");
       }
       setIsSubmitting(false);
     }, 1000);
   };
 
   const handleDeleteNotification = (notificationId: string) => {
-    setNotifications(prev => prev.filter(notification => notification.id !== notificationId));
+    setNotifications((prev) =>
+      prev.filter((notification) => notification.id !== notificationId)
+    );
   };
 
   const handleClearAllNotifications = () => {
@@ -147,19 +148,32 @@ export default function ProfilePage() {
   };
 
   const handleEditProfile = () => {
-    setEditForm({...userProfile});
+    setEditForm({ ...userProfile });
     setShowEditProfile(true);
   };
 
   const handleSaveProfile = () => {
-    setUserProfile({...editForm});
+    setUserProfile({ ...editForm });
     setShowEditProfile(false);
   };
 
   const affiliationOptions = [
-    '컴퓨터공학과', '경영학과', '의학과', '간호학과', '건축학과', 
-    '전자공학과', '기계공학과', '화학공학과', '생명공학과', '물리학과',
-    '수학과', '영어영문학과', '경제학과', '법학과', '심리학과', '기타'
+    "컴퓨터공학과",
+    "경영학과",
+    "의학과",
+    "간호학과",
+    "건축학과",
+    "전자공학과",
+    "기계공학과",
+    "화학공학과",
+    "생명공학과",
+    "물리학과",
+    "수학과",
+    "영어영문학과",
+    "경제학과",
+    "법학과",
+    "심리학과",
+    "기타",
   ];
 
   return (
@@ -167,7 +181,7 @@ export default function ProfilePage() {
       <TopNavigation
         title="마이페이지"
         rightAction={
-          <button 
+          <button
             onClick={() => setShowNotifications(true)}
             className="w-10 h-10 flex items-center justify-center relative"
           >
@@ -189,10 +203,14 @@ export default function ProfilePage() {
               <i className="ri-user-fill text-primary text-2xl" />
             </div>
             <div className="flex-1">
-              <h2 className="text-xl font-bold text-text mb-1">{userProfile.name}님</h2>
-              <p className="text-text-secondary text-sm">즐거운 쿠폰 라이프! 🎉</p>
+              <h2 className="text-xl font-bold text-text mb-1">
+                {userProfile.name}님
+              </h2>
+              <p className="text-text-secondary text-sm">
+                즐거운 쿠폰 라이프! 🎉
+              </p>
             </div>
-            <button 
+            <button
               onClick={handleEditProfile}
               className="w-10 h-10 flex items-center justify-center"
             >
@@ -227,14 +245,14 @@ export default function ProfilePage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-text">🏷️ 스탬프 카드</h3>
-            <button 
-              onClick={() => navigate('/stamps')}
+            <button
+              onClick={() => navigate("/stamps")}
               className="text-sm text-primary"
             >
               전체보기
             </button>
           </div>
-          
+
           <div className="space-y-3">
             {stampCards.map((card) => (
               <Card key={card.id} className="space-y-4">
@@ -243,39 +261,48 @@ export default function ProfilePage() {
                     <i className={`${card.storeLogo} text-primary text-xl`} />
                   </div>
                   <div className="flex-1">
-                    <h4 
+                    <h4
                       className="font-semibold text-text text-sm cursor-pointer hover:text-primary transition-colors"
                       onClick={() => handleStoreClick(card.storeId)}
                     >
                       {card.storeName}
                     </h4>
-                    <p className="text-xs text-accent font-medium">{card.reward}</p>
+                    <p className="text-xs text-accent font-medium">
+                      {card.reward}
+                    </p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-bold text-text">
                       {card.currentStamps}/{card.requiredStamps}
                     </p>
                     <p className="text-xs text-text-secondary">
-                      {new Date(card.expiresAt).toLocaleDateString('ko-KR')}까지
+                      {new Date(card.expiresAt).toLocaleDateString("ko-KR")}까지
                     </p>
                   </div>
                 </div>
-                
+
                 {/* 스탬프 진행률 */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-text-secondary">진행률</span>
                     <span className="text-xs text-primary font-medium">
-                      {Math.round((card.currentStamps / card.requiredStamps) * 100)}%
+                      {Math.round(
+                        (card.currentStamps / card.requiredStamps) * 100
+                      )}
+                      %
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(card.currentStamps / card.requiredStamps) * 100}%` }}
+                      style={{
+                        width: `${
+                          (card.currentStamps / card.requiredStamps) * 100
+                        }%`,
+                      }}
                     />
                   </div>
-                  
+
                   {/* 스탬프 아이콘들 */}
                   <div className="flex justify-between mt-3">
                     {[...Array(card.requiredStamps)].map((_, index) => (
@@ -283,8 +310,8 @@ export default function ProfilePage() {
                         key={index}
                         className={`w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer ${
                           index < card.currentStamps
-                            ? 'bg-primary text-white'
-                            : 'bg-gray-200 text-gray-400'
+                            ? "bg-primary text-white"
+                            : "bg-gray-200 text-gray-400"
                         }`}
                         onClick={() => handleStampCardClick(card)}
                       >
@@ -292,7 +319,7 @@ export default function ProfilePage() {
                       </div>
                     ))}
                   </div>
-                  
+
                   {card.currentStamps === card.requiredStamps && (
                     <Button size="sm" fullWidth className="mt-3">
                       리워드 받기
@@ -307,13 +334,33 @@ export default function ProfilePage() {
         {/* 메뉴 섹션 */}
         <div className="space-y-3">
           {[
-            { icon: 'ri-heart-line', label: '즐겨찾기 매장', count: 8, path: '/favorites' },
-            { icon: 'ri-history-line', label: '이용 내역', count: null, path: '/history' },
-            { icon: 'ri-settings-line', label: '설정', count: null, path: null },
-            { icon: 'ri-customer-service-line', label: '고객센터', count: null, path: null }
+            {
+              icon: "ri-heart-line",
+              label: "즐겨찾기 매장",
+              count: 8,
+              path: "/favorites",
+            },
+            {
+              icon: "ri-history-line",
+              label: "이용 내역",
+              count: null,
+              path: "/history",
+            },
+            {
+              icon: "ri-settings-line",
+              label: "설정",
+              count: null,
+              path: null,
+            },
+            {
+              icon: "ri-customer-service-line",
+              label: "고객센터",
+              count: null,
+              path: null,
+            },
           ].map((menu, index) => (
-            <Card 
-              key={index} 
+            <Card
+              key={index}
               className="cursor-pointer hover:shadow-md transition-shadow"
               onClick={() => menu.path && navigate(menu.path)}
             >
@@ -326,7 +373,9 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex items-center gap-2">
                   {menu.count && (
-                    <span className="text-sm text-text-secondary">{menu.count}</span>
+                    <span className="text-sm text-text-secondary">
+                      {menu.count}
+                    </span>
                   )}
                   <i className="ri-arrow-right-s-line text-text-secondary text-xl" />
                 </div>
@@ -339,7 +388,7 @@ export default function ProfilePage() {
       {/* 프로필 편집 모달 */}
       {showEditProfile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div 
+          <div
             className="absolute inset-0 bg-black/50"
             onClick={() => setShowEditProfile(false)}
           />
@@ -347,62 +396,89 @@ export default function ProfilePage() {
             <div className="space-y-4">
               <div className="text-center space-y-2">
                 <h3 className="text-lg font-bold text-text">프로필 편집</h3>
-                <p className="text-sm text-text-secondary">개인정보를 수정할 수 있습니다</p>
+                <p className="text-sm text-text-secondary">
+                  개인정보를 수정할 수 있습니다
+                </p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-text mb-2">이름</label>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    이름
+                  </label>
                   <input
                     type="text"
                     value={editForm.name}
-                    onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, name: e.target.value })
+                    }
                     className="w-full p-3 border border-gray-200 rounded-xl focus:border-primary focus:outline-none"
                     placeholder="이름을 입력하세요"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-text mb-2">생년월일</label>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    생년월일
+                  </label>
                   <input
                     type="date"
                     value={editForm.birthDate}
-                    onChange={(e) => setEditForm({...editForm, birthDate: e.target.value})}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, birthDate: e.target.value })
+                    }
                     className="w-full p-3 border border-gray-200 rounded-xl focus:border-primary focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-text mb-2">전화번호</label>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    전화번호
+                  </label>
                   <input
                     type="tel"
                     value={editForm.phone}
-                    onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, phone: e.target.value })
+                    }
                     className="w-full p-3 border border-gray-200 rounded-xl focus:border-primary focus:outline-none"
                     placeholder="010-0000-0000"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-text mb-2">소속</label>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    소속
+                  </label>
                   <select
                     value={editForm.affiliation}
-                    onChange={(e) => setEditForm({...editForm, affiliation: e.target.value})}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, affiliation: e.target.value })
+                    }
                     className="w-full p-3 border border-gray-200 rounded-xl focus:border-primary focus:outline-none appearance-none bg-white"
                   >
                     {affiliationOptions.map((option) => (
-                      <option key={option} value={option}>{option}</option>
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
                     ))}
                   </select>
                 </div>
 
-                {editForm.affiliation === '기타' && (
+                {editForm.affiliation === "기타" && (
                   <div>
-                    <label className="block text-sm font-medium text-text mb-2">기타 소속</label>
+                    <label className="block text-sm font-medium text-text mb-2">
+                      기타 소속
+                    </label>
                     <input
                       type="text"
-                      value={editForm.customAffiliation || ''}
-                      onChange={(e) => setEditForm({...editForm, customAffiliation: e.target.value})}
+                      value={editForm.customAffiliation || ""}
+                      onChange={(e) =>
+                        setEditForm({
+                          ...editForm,
+                          customAffiliation: e.target.value,
+                        })
+                      }
                       className="w-full p-3 border border-gray-200 rounded-xl focus:border-primary focus:outline-none"
                       placeholder="소속을 직접 입력하세요"
                     />
@@ -418,10 +494,7 @@ export default function ProfilePage() {
                 >
                   취소
                 </Button>
-                <Button
-                  fullWidth
-                  onClick={handleSaveProfile}
-                >
+                <Button fullWidth onClick={handleSaveProfile}>
                   저장
                 </Button>
               </div>
@@ -433,40 +506,50 @@ export default function ProfilePage() {
       {/* PIN 번호 입력 모달 */}
       {showPinModal && selectedCard && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div 
+          <div
             className="absolute inset-0 bg-black/50"
             onClick={() => setShowPinModal(false)}
           />
           <div className="relative bg-white rounded-2xl mx-4 p-6 w-full max-w-sm">
             <div className="text-center space-y-4">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                <i className={`${selectedCard.storeLogo} text-primary text-2xl`} />
+                <i
+                  className={`${selectedCard.storeLogo} text-primary text-2xl`}
+                />
               </div>
-              
+
               <div className="space-y-2">
                 <h3 className="text-lg font-bold text-text">스탬프 적립</h3>
-                <p className="text-sm text-text-secondary">{selectedCard.storeName}</p>
-                <p className="text-xs text-text-secondary">점주가 알려준 PIN 번호 4자리를 입력하세요</p>
+                <p className="text-sm text-text-secondary">
+                  {selectedCard.storeName}
+                </p>
+                <p className="text-xs text-text-secondary">
+                  점주가 알려준 PIN 번호 4자리를 입력하세요
+                </p>
               </div>
 
               <div className="space-y-4">
                 <input
                   type="tel"
                   value={pinCode}
-                  onChange={(e) => setPinCode(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
+                  onChange={(e) =>
+                    setPinCode(
+                      e.target.value.replace(/[^0-9]/g, "").slice(0, 4)
+                    )
+                  }
                   placeholder="PIN 번호 4자리"
                   className="w-full p-4 text-center text-2xl font-bold border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none"
                   maxLength={4}
                   disabled={isSubmitting}
                 />
-                
+
                 {/* PIN 번호 입력 표시 */}
                 <div className="flex justify-center gap-2">
                   {[0, 1, 2, 3].map((index) => (
                     <div
                       key={index}
                       className={`w-4 h-4 rounded-full ${
-                        pinCode.length > index ? 'bg-primary' : 'bg-gray-200'
+                        pinCode.length > index ? "bg-primary" : "bg-gray-200"
                       }`}
                     />
                   ))}
@@ -493,7 +576,7 @@ export default function ProfilePage() {
                       확인중...
                     </div>
                   ) : (
-                    '스탬프 적립'
+                    "스탬프 적립"
                   )}
                 </Button>
               </div>
@@ -505,7 +588,7 @@ export default function ProfilePage() {
       {/* 알림 모달 */}
       {showNotifications && (
         <div className="fixed inset-0 z-50">
-          <div 
+          <div
             className="absolute inset-0 bg-black/20"
             onClick={() => setShowNotifications(false)}
           />
@@ -515,14 +598,14 @@ export default function ProfilePage() {
                 <h3 className="text-lg font-semibold text-text">알림</h3>
                 <div className="flex items-center gap-2">
                   {notifications.length > 0 && (
-                    <button 
+                    <button
                       onClick={handleClearAllNotifications}
                       className="text-sm text-red-500 hover:text-red-600 font-medium"
                     >
                       모두 지우기
                     </button>
                   )}
-                  <button 
+                  <button
                     onClick={() => setShowNotifications(false)}
                     className="w-8 h-8 flex items-center justify-center"
                   >
@@ -531,7 +614,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="px-4 pb-4 overflow-y-auto max-h-80">
               {notifications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -543,13 +626,22 @@ export default function ProfilePage() {
               ) : (
                 <div className="space-y-3 pt-4">
                   {notifications.map((notification) => (
-                    <div key={notification.id} className="flex gap-3 p-3 bg-gray-50 rounded-xl relative group">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        notification.color === 'text-primary' ? 'bg-primary/10' :
-                        notification.color === 'text-accent' ? 'bg-accent/10' :
-                        'bg-green-100'
-                      }`}>
-                        <i className={`${notification.icon} ${notification.color} text-lg`} />
+                    <div
+                      key={notification.id}
+                      className="flex gap-3 p-3 bg-gray-50 rounded-xl relative group"
+                    >
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          notification.color === "text-primary"
+                            ? "bg-primary/10"
+                            : notification.color === "text-accent"
+                            ? "bg-accent/10"
+                            : "bg-green-100"
+                        }`}
+                      >
+                        <i
+                          className={`${notification.icon} ${notification.color} text-lg`}
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-text text-sm mb-1">
@@ -563,7 +655,9 @@ export default function ProfilePage() {
                         </p>
                       </div>
                       <button
-                        onClick={() => handleDeleteNotification(notification.id)}
+                        onClick={() =>
+                          handleDeleteNotification(notification.id)
+                        }
                         className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-white rounded-full shadow-sm hover:bg-red-50"
                       >
                         <i className="ri-close-line text-red-500 text-sm" />
