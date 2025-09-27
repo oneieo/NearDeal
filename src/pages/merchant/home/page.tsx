@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import TopNavigation from '../../../components/feature/TopNavigation';
-import MerchantBottomNavigation from '../../../components/feature/MerchantBottomNavigation';
-import Card from '../../../components/base/Card';
-import Button from '../../../components/base/Button';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import TopNavigation from "../../../components/feature/TopNavigation";
+import MerchantBottomNavigation from "../../../components/feature/MerchantBottomNavigation";
+import Card from "../../../components/base/Card";
+import Button from "../../../components/base/Button";
+import CouponRegisterModal from "../../../components/feature/CouponRegisterModal";
 
 interface KPIData {
   couponsIssued: number;
@@ -16,7 +17,7 @@ const kpiData: KPIData = {
   couponsIssued: 45,
   couponsUsed: 28,
   reviewCount: 716,
-  averageRating: 4.8
+  averageRating: 4.8,
 };
 
 export default function MerchantHomePage() {
@@ -24,79 +25,83 @@ export default function MerchantHomePage() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showCouponModal, setShowCouponModal] = useState(false);
   const [couponForm, setCouponForm] = useState({
-    title: '',
-    description: '',
-    discountType: 'percentage',
-    discountValue: '',
-    validUntil: '',
-    totalCount: '50',
+    title: "",
+    description: "",
+    discountType: "percentage",
+    discountValue: "",
+    validUntil: "",
+    totalCount: "50",
     selectedMenus: [] as string[],
-    applyToAllMenus: false
+    applyToAllMenus: false,
   });
   const [showMenuSelector, setShowMenuSelector] = useState(false);
   const [showStampModal, setShowStampModal] = useState(false);
-  const [randomPinCode, setRandomPinCode] = useState('');
+  const [randomPinCode, setRandomPinCode] = useState("");
 
   const handleKPIClick = (type: string) => {
     switch (type) {
-      case 'issued':
-        navigate('/merchant/coupons');
+      case "issued":
+        navigate("/merchant/coupons");
         break;
-      case 'used':
-        navigate('/merchant/dashboard');
+      case "used":
+        navigate("/merchant/dashboard");
         break;
-      case 'reviews':
-        navigate('/merchant/reviews');
+      case "reviews":
+        navigate("/merchant/reviews");
         break;
-      case 'rating':
-        navigate('/merchant/reviews');
+      case "rating":
+        navigate("/merchant/reviews");
         break;
     }
   };
 
   const handleCouponCreate = () => {
-    if (!couponForm.title || !couponForm.description || !couponForm.discountValue) {
-      alert('모든 필수 항목을 입력해주세요.');
+    if (
+      !couponForm.title ||
+      !couponForm.description ||
+      !couponForm.discountValue
+    ) {
+      alert("모든 필수 항목을 입력해주세요.");
       return;
     }
-    
+
     if (!couponForm.applyToAllMenus && couponForm.selectedMenus.length === 0) {
-      alert('적용할 메뉴를 선택해주세요.');
+      alert("적용할 메뉴를 선택해주세요.");
       return;
     }
-    
+
     // 쿠폰 생성 로직
-    alert('쿠폰이 성공적으로 생성되었습니다! 🎉');
+    alert("쿠폰이 성공적으로 생성되었습니다! 🎉");
     setShowCouponModal(false);
     setCouponForm({
-      title: '',
-      description: '',
-      discountType: 'percentage',
-      discountValue: '',
-      validUntil: '',
-      totalCount: '50',
+      title: "",
+      description: "",
+      discountType: "percentage",
+      discountValue: "",
+      validUntil: "",
+      totalCount: "50",
       selectedMenus: [],
-      applyToAllMenus: false
+      applyToAllMenus: false,
     });
     setShowMenuSelector(false);
   };
 
   const handleMenuToggle = (menuId: string) => {
     if (couponForm.applyToAllMenus) return;
-    
-    setCouponForm(prev => ({
+
+    setCouponForm((prev) => ({
       ...prev,
       selectedMenus: prev.selectedMenus.includes(menuId)
-        ? prev.selectedMenus.filter(id => id !== menuId)
-        : [...prev.selectedMenus, menuId]
+        ? prev.selectedMenus.filter((id) => id !== menuId)
+        : [...prev.selectedMenus, menuId],
     }));
   };
 
   const handleAllMenusToggle = () => {
-    setCouponForm(prev => ({
+    setCouponForm((prev) => ({
       ...prev,
       applyToAllMenus: !prev.applyToAllMenus,
-      selectedMenus: !prev.applyToAllMenus ? [] : prev.selectedMenus
+      selectedMenus: !prev.applyToAllMenus ? [] : prev.selectedMenus,
     }));
   };
 
@@ -107,11 +112,14 @@ export default function MerchantHomePage() {
   };
 
   const copyPinToClipboard = () => {
-    navigator.clipboard.writeText(randomPinCode).then(() => {
-      alert('PIN 번호가 복사되었습니다!');
-    }).catch(() => {
-      alert('복사에 실패했습니다. 다시 시도해주세요.');
-    });
+    navigator.clipboard
+      .writeText(randomPinCode)
+      .then(() => {
+        alert("PIN 번호가 복사되었습니다!");
+      })
+      .catch(() => {
+        alert("복사에 실패했습니다. 다시 시도해주세요.");
+      });
   };
 
   const handleStampClick = () => {
@@ -120,44 +128,44 @@ export default function MerchantHomePage() {
 
   const notifications = [
     {
-      id: '1',
-      type: 'coupon_used',
-      title: '쿠폰이 사용되었습니다',
-      message: '김민수님이 신규고객 할인 쿠폰을 사용했습니다.',
-      time: '5분 전',
-      icon: 'ri-coupon-fill',
-      color: 'text-primary'
+      id: "1",
+      type: "coupon_used",
+      title: "쿠폰이 사용되었습니다",
+      message: "김민수님이 신규고객 할인 쿠폰을 사용했습니다.",
+      time: "5분 전",
+      icon: "ri-coupon-fill",
+      color: "text-primary",
     },
     {
-      id: '2',
-      type: 'new_review',
-      title: '새로운 리뷰가 등록되었습니다',
+      id: "2",
+      type: "new_review",
+      title: "새로운 리뷰가 등록되었습니다",
       message: '이지은님이 5점 리뷰를 남겼습니다. "커피 맛이 정말 좋아요!"',
-      time: '10분 전',
-      icon: 'ri-star-fill',
-      color: 'text-yellow-500'
+      time: "10분 전",
+      icon: "ri-star-fill",
+      color: "text-yellow-500",
     },
     {
-      id: '3',
-      type: 'sales_milestone',
-      title: '일일 매출 목표 달성',
-      message: '오늘 매출이 목표 금액을 달성했습니다!',
-      time: '1시간 전',
-      icon: 'ri-trophy-fill',
-      color: 'text-accent'
-    }
+      id: "3",
+      type: "sales_milestone",
+      title: "일일 매출 목표 달성",
+      message: "오늘 매출이 목표 금액을 달성했습니다!",
+      time: "1시간 전",
+      icon: "ri-trophy-fill",
+      color: "text-accent",
+    },
   ];
 
   const menuItems = [
-    { id: '1', name: '아메리카노', category: '음료' },
-    { id: '2', name: '카페라떼', category: '음료' },
-    { id: '3', name: '카푸치노', category: '음료' },
-    { id: '4', name: '에스프레소', category: '음료' },
-    { id: '5', name: '초콜릿 머핀', category: '디저트' },
-    { id: '6', name: '크로와상', category: '디저트' },
-    { id: '7', name: '치즈케이크', category: '디저트' },
-    { id: '8', name: '아보카도 토스트', category: '브런치' },
-    { id: '9', name: '그릭 샐러드', category: '샐러드' }
+    { id: "1", name: "아메리카노", category: "음료" },
+    { id: "2", name: "카페라떼", category: "음료" },
+    { id: "3", name: "카푸치노", category: "음료" },
+    { id: "4", name: "에스프레소", category: "음료" },
+    { id: "5", name: "초콜릿 머핀", category: "디저트" },
+    { id: "6", name: "크로와상", category: "디저트" },
+    { id: "7", name: "치즈케이크", category: "디저트" },
+    { id: "8", name: "아보카도 토스트", category: "브런치" },
+    { id: "9", name: "그릭 샐러드", category: "샐러드" },
   ];
 
   return (
@@ -167,7 +175,7 @@ export default function MerchantHomePage() {
         title=""
         rightAction={
           <div className="flex gap-2">
-            <button 
+            <button
               onClick={() => setShowNotifications(true)}
               className="w-10 h-10 flex items-center justify-center relative"
             >
@@ -176,8 +184,8 @@ export default function MerchantHomePage() {
                 3
               </span>
             </button>
-            <button 
-              onClick={() => navigate('/merchant/settings')}
+            <button
+              onClick={() => navigate("/merchant/settings")}
               className="w-10 h-10 flex items-center justify-center"
             >
               <i className="ri-settings-line text-text text-xl" />
@@ -191,75 +199,89 @@ export default function MerchantHomePage() {
         {/* 매장 정보 헤더 */}
         <div className="text-center space-y-4">
           <div className="w-24 h-24 mx-auto rounded-20 overflow-hidden">
-            <img 
+            <img
               src="https://readdy.ai/api/search-image?query=Modern%20coffee%20shop%20storefront%20illustration%2C%20cozy%20cafe%20exterior%20design%2C%20warm%20lighting%2C%20welcoming%20atmosphere%2C%20minimalist%20style%2C%20professional%20business%20illustration&width=200&height=200&seq=store-hero1&orientation=squarish"
               alt="매장 이미지"
               className="w-full h-full object-cover object-top"
             />
           </div>
           <div>
-            <h1 className="text-2xl font-sf font-bold text-text mb-1">커피디딤</h1>
+            <h1 className="text-2xl font-sf font-bold text-text mb-1">
+              커피디딤
+            </h1>
             <p className="text-text-secondary font-sf">카페 • 영업중</p>
           </div>
         </div>
 
         {/* KPI 그리드 */}
         <div className="grid grid-cols-2 gap-4">
-          <Card 
+          <Card
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => handleKPIClick('issued')}
+            onClick={() => handleKPIClick("issued")}
           >
             <div className="text-center space-y-2">
               <div className="w-12 h-12 bg-primary/10 rounded-12 mx-auto flex items-center justify-center">
                 <i className="ri-coupon-fill text-primary text-xl" />
               </div>
               <div>
-                <p className="text-2xl font-sf font-bold text-text">{kpiData.couponsIssued}</p>
-                <p className="text-sm text-text-secondary font-sf">오늘 발급된 쿠폰</p>
+                <p className="text-2xl font-sf font-bold text-text">
+                  {kpiData.couponsIssued}
+                </p>
+                <p className="text-sm text-text-secondary font-sf">
+                  오늘 발급된 쿠폰
+                </p>
               </div>
             </div>
           </Card>
 
-          <Card 
+          <Card
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => handleKPIClick('used')}
+            onClick={() => handleKPIClick("used")}
           >
             <div className="text-center space-y-2">
               <div className="w-12 h-12 bg-accent/10 rounded-12 mx-auto flex items-center justify-center">
                 <i className="ri-ticket-fill text-accent text-xl" />
               </div>
               <div>
-                <p className="text-2xl font-sf font-bold text-text">{kpiData.couponsUsed}</p>
-                <p className="text-sm text-text-secondary font-sf">오늘 사용된 쿠폰</p>
+                <p className="text-2xl font-sf font-bold text-text">
+                  {kpiData.couponsUsed}
+                </p>
+                <p className="text-sm text-text-secondary font-sf">
+                  오늘 사용된 쿠폰
+                </p>
               </div>
             </div>
           </Card>
 
-          <Card 
+          <Card
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => handleKPIClick('reviews')}
+            onClick={() => handleKPIClick("reviews")}
           >
             <div className="text-center space-y-2">
               <div className="w-12 h-12 bg-blue-100 rounded-12 mx-auto flex items-center justify-center">
                 <i className="ri-chat-3-fill text-blue-600 text-xl" />
               </div>
               <div>
-                <p className="text-2xl font-sf font-bold text-text">{kpiData.reviewCount}</p>
+                <p className="text-2xl font-sf font-bold text-text">
+                  {kpiData.reviewCount}
+                </p>
                 <p className="text-sm text-text-secondary font-sf">리뷰 수</p>
               </div>
             </div>
           </Card>
 
-          <Card 
+          <Card
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => handleKPIClick('rating')}
+            onClick={() => handleKPIClick("rating")}
           >
             <div className="text-center space-y-2">
               <div className="w-12 h-12 bg-yellow-100 rounded-12 mx-auto flex items-center justify-center">
                 <i className="ri-star-fill text-yellow-500 text-xl" />
               </div>
               <div>
-                <p className="text-2xl font-sf font-bold text-text">★{kpiData.averageRating}</p>
+                <p className="text-2xl font-sf font-bold text-text">
+                  ★{kpiData.averageRating}
+                </p>
                 <p className="text-sm text-text-secondary font-sf">평균 평점</p>
               </div>
             </div>
@@ -268,9 +290,9 @@ export default function MerchantHomePage() {
 
         {/* 주요 액션 */}
         <div className="space-y-4">
-          <Button 
-            fullWidth 
-            size="lg" 
+          <Button
+            fullWidth
+            size="lg"
             className="bg-gradient-to-r from-primary to-primary-dark"
             onClick={() => setShowCouponModal(true)}
           >
@@ -283,19 +305,21 @@ export default function MerchantHomePage() {
         <div className="space-y-4">
           <h3 className="text-lg font-sf font-semibold text-text">빠른 메뉴</h3>
           <div className="grid grid-cols-2 gap-3">
-            <Card 
+            <Card
               className="cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => navigate('/merchant/reviews')}
+              onClick={() => navigate("/merchant/reviews")}
             >
               <div className="text-center space-y-3">
                 <div className="w-12 h-12 rounded-12 mx-auto flex items-center justify-center bg-orange-100 text-orange-600">
                   <i className="ri-message-3-fill text-xl" />
                 </div>
-                <p className="font-sf font-medium text-text text-sm">리뷰 관리</p>
+                <p className="font-sf font-medium text-text text-sm">
+                  리뷰 관리
+                </p>
               </div>
             </Card>
 
-            <Card 
+            <Card
               className="cursor-pointer hover:shadow-md transition-shadow"
               onClick={handleStampClick}
             >
@@ -312,19 +336,33 @@ export default function MerchantHomePage() {
         {/* 오늘의 요약 */}
         <Card>
           <div className="space-y-4">
-            <h3 className="text-lg font-sf font-semibold text-text">오늘의 요약</h3>
+            <h3 className="text-lg font-sf font-semibold text-text">
+              오늘의 요약
+            </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-sf text-text-secondary">매출 추정치</span>
-                <span className="text-lg font-sf font-bold text-primary">₩126,000</span>
+                <span className="text-sm font-sf text-text-secondary">
+                  매출 추정치
+                </span>
+                <span className="text-lg font-sf font-bold text-primary">
+                  ₩126,000
+                </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-sf text-text-secondary">신규 고객</span>
-                <span className="text-lg font-sf font-bold text-text">12명</span>
+                <span className="text-sm font-sf text-text-secondary">
+                  신규 고객
+                </span>
+                <span className="text-lg font-sf font-bold text-text">
+                  12명
+                </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-sf text-text-secondary">재방문 고객</span>
-                <span className="text-lg font-sf font-bold text-text">16명</span>
+                <span className="text-sm font-sf text-text-secondary">
+                  재방문 고객
+                </span>
+                <span className="text-lg font-sf font-bold text-text">
+                  16명
+                </span>
               </div>
             </div>
           </div>
@@ -333,200 +371,29 @@ export default function MerchantHomePage() {
 
       {/* 쿠폰 생성 모달 */}
       {showCouponModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div 
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setShowCouponModal(false)}
-          />
-          <div className="relative bg-white rounded-2xl w-full max-w-md max-h-[80vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 rounded-t-2xl">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-sf font-semibold text-text">쿠폰 발행</h3>
-                <button 
-                  onClick={() => setShowCouponModal(false)}
-                  className="w-8 h-8 flex items-center justify-center"
-                >
-                  <i className="ri-close-line text-text-secondary text-xl" />
-                </button>
-              </div>
-            </div>
-            
-            <div className="p-4 space-y-4">
-              <div>
-                <label className="block text-sm font-sf font-medium text-text mb-2">쿠폰 제목 *</label>
-                <input
-                  type="text"
-                  value={couponForm.title}
-                  onChange={(e) => setCouponForm({...couponForm, title: e.target.value})}
-                  placeholder="예: 신규고객 할인"
-                  className="w-full p-3 border border-gray-200 rounded-xl focus:border-primary focus:outline-none text-sm font-sf"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-sf font-medium text-text mb-2">쿠폰 설명 *</label>
-                <textarea
-                  value={couponForm.description}
-                  onChange={(e) => setCouponForm({...couponForm, description: e.target.value})}
-                  placeholder="예: 첫 방문 고객 대상 특별 할인"
-                  rows={3}
-                  className="w-full p-3 border border-gray-200 rounded-xl focus:border-primary focus:outline-none text-sm font-sf resize-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-sf font-medium text-text mb-2">할인 유형</label>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setCouponForm({...couponForm, discountType: 'percentage'})}
-                    className={`flex-1 py-2 px-4 rounded-xl text-sm font-sf font-medium transition-all ${
-                      couponForm.discountType === 'percentage'
-                        ? 'bg-primary text-white'
-                        : 'bg-gray-100 text-text-secondary'
-                    }`}
-                  >
-                    퍼센트(%)
-                  </button>
-                  <button
-                    onClick={() => setCouponForm({...couponForm, discountType: 'amount'})}
-                    className={`flex-1 py-2 px-4 rounded-xl text-sm font-sf font-medium transition-all ${
-                      couponForm.discountType === 'amount'
-                        ? 'bg-primary text-white'
-                        : 'bg-gray-100 text-text-secondary'
-                    }`}
-                  >
-                    금액(원)
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-sf font-medium text-text mb-2">할인값 *</label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={couponForm.discountValue}
-                    onChange={(e) => setCouponForm({...couponForm, discountValue: e.target.value})}
-                    placeholder={couponForm.discountType === 'percentage' ? '20' : '5000'}
-                    className="w-full p-3 pr-12 border border-gray-200 rounded-xl focus:border-primary focus:outline-none text-sm font-sf"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm font-sf">
-                    {couponForm.discountType === 'percentage' ? '%' : '원'}
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-sf font-medium text-text mb-2">만료일</label>
-                <input
-                  type="date"
-                  value={couponForm.validUntil}
-                  onChange={(e) => setCouponForm({...couponForm, validUntil: e.target.value})}
-                  className="w-full p-3 border border-gray-200 rounded-xl focus:border-primary focus:outline-none text-sm font-sf"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-sf font-medium text-text mb-2">발행 수량</label>
-                <input
-                  type="number"
-                  value={couponForm.totalCount}
-                  onChange={(e) => setCouponForm({...couponForm, totalCount: e.target.value})}
-                  placeholder="50"
-                  className="w-full p-3 border border-gray-200 rounded-xl focus:border-primary focus:outline-none text-sm font-sf"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-sf font-medium text-text mb-2">적용 메뉴 *</label>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl">
-                    <input
-                      type="checkbox"
-                      id="allMenus"
-                      checked={couponForm.applyToAllMenus}
-                      onChange={handleAllMenusToggle}
-                      className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                    />
-                    <label htmlFor="allMenus" className="text-sm font-sf text-text">
-                      전체 메뉴에 적용
-                    </label>
-                  </div>
-                  
-                  {!couponForm.applyToAllMenus && (
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => setShowMenuSelector(!showMenuSelector)}
-                        className="w-full p-3 border border-gray-200 rounded-xl text-left text-sm font-sf text-text-secondary flex items-center justify-between"
-                      >
-                        <span>
-                          {couponForm.selectedMenus.length > 0 
-                            ? `${couponForm.selectedMenus.length}개 메뉴 선택됨`
-                            : '메뉴를 선택하세요'
-                          }
-                        </span>
-                        <i className={`ri-arrow-${showMenuSelector ? 'up' : 'down'}-s-line text-xl`} />
-                      </button>
-                      
-                      {showMenuSelector && (
-                        <div className="mt-2 border border-gray-200 rounded-xl max-h-40 overflow-y-auto">
-                          {menuItems.map((menu) => (
-                            <div key={menu.id} className="flex items-center gap-3 p-3 border-b border-gray-100 last:border-b-0">
-                              <input
-                                type="checkbox"
-                                id={`menu-${menu.id}`}
-                                checked={couponForm.selectedMenus.includes(menu.id)}
-                                onChange={() => handleMenuToggle(menu.id)}
-                                className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                              />
-                              <label htmlFor={`menu-${menu.id}`} className="flex-1 text-sm font-sf text-text">
-                                {menu.name}
-                              </label>
-                              <span className="text-xs text-text-secondary bg-gray-100 px-2 py-1 rounded-full">
-                                {menu.category}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <Button
-                  variant="outline"
-                  fullWidth
-                  onClick={() => setShowCouponModal(false)}
-                >
-                  취소
-                </Button>
-                <Button
-                  fullWidth
-                  onClick={handleCouponCreate}
-                >
-                  쿠폰 발행
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CouponRegisterModal
+          isOpen={showCouponModal}
+          onClose={() => setShowCouponModal(false)}
+          //onSubmit={handleCouponSubmit}
+          //onTempSave={handleTempSave}
+          menuItems={menuItems}
+        />
       )}
 
       {/* 알림 모달 */}
       {showNotifications && (
         <div className="fixed inset-0 z-50">
-          <div 
+          <div
             className="absolute inset-0 bg-black/20"
             onClick={() => setShowNotifications(false)}
           />
           <div className="absolute inset-x-0 top-0 bg-white rounded-b-2xl max-h-96 overflow-hidden">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-sf font-semibold text-text">알림</h3>
-                <button 
+                <h3 className="text-lg font-sf font-semibold text-text">
+                  알림
+                </h3>
+                <button
                   onClick={() => setShowNotifications(false)}
                   className="w-8 h-8 flex items-center justify-center"
                 >
@@ -534,18 +401,28 @@ export default function MerchantHomePage() {
                 </button>
               </div>
             </div>
-            
+
             <div className="px-4 pb-4 overflow-y-auto max-h-80">
               <div className="space-y-3 pt-4">
                 {notifications.map((notification) => (
-                  <div key={notification.id} className="flex gap-3 p-3 bg-gray-50 rounded-xl">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      notification.color === 'text-primary' ? 'bg-primary/10' :
-                      notification.color === 'text-accent' ? 'bg-accent/10' :
-                      notification.color === 'text-yellow-500' ? 'bg-yellow-100' :
-                      'bg-green-100'
-                    }`}>
-                      <i className={`${notification.icon} ${notification.color} text-lg`} />
+                  <div
+                    key={notification.id}
+                    className="flex gap-3 p-3 bg-gray-50 rounded-xl"
+                  >
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        notification.color === "text-primary"
+                          ? "bg-primary/10"
+                          : notification.color === "text-accent"
+                          ? "bg-accent/10"
+                          : notification.color === "text-yellow-500"
+                          ? "bg-yellow-100"
+                          : "bg-green-100"
+                      }`}
+                    >
+                      <i
+                        className={`${notification.icon} ${notification.color} text-lg`}
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-sf font-semibold text-text text-sm mb-1">
@@ -569,7 +446,7 @@ export default function MerchantHomePage() {
       {/* 스탬프 PIN 번호 모달 */}
       {showStampModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div 
+          <div
             className="absolute inset-0 bg-black/50"
             onClick={() => setShowStampModal(false)}
           />
@@ -578,11 +455,15 @@ export default function MerchantHomePage() {
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
                 <i className="ri-award-fill text-primary text-2xl" />
               </div>
-              
+
               <div className="space-y-2">
-                <h3 className="text-lg font-sf font-semibold text-text">스탬프 적립 PIN</h3>
+                <h3 className="text-lg font-sf font-semibold text-text">
+                  스탬프 적립 PIN
+                </h3>
                 <p className="text-sm font-sf text-text-secondary">커피디딤</p>
-                <p className="text-xs font-sf text-text-secondary">고객에게 아래 PIN 번호를 알려주세요</p>
+                <p className="text-xs font-sf text-text-secondary">
+                  고객에게 아래 PIN 번호를 알려주세요
+                </p>
               </div>
 
               <div className="space-y-4">
@@ -590,17 +471,21 @@ export default function MerchantHomePage() {
                   <p className="text-4xl font-sf font-bold text-primary text-center tracking-[0.5em] mb-2">
                     {randomPinCode}
                   </p>
-                  <p className="text-xs text-center text-text-secondary">PIN 번호</p>
+                  <p className="text-xs text-center text-text-secondary">
+                    PIN 번호
+                  </p>
                 </div>
-                
+
                 {/* PIN 번호 표시 점들 */}
                 <div className="flex justify-center gap-3">
-                  {randomPinCode.split('').map((digit, index) => (
+                  {randomPinCode.split("").map((digit, index) => (
                     <div
                       key={index}
                       className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"
                     >
-                      <span className="text-lg font-bold text-primary">{digit}</span>
+                      <span className="text-lg font-bold text-primary">
+                        {digit}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -609,7 +494,8 @@ export default function MerchantHomePage() {
                   <div className="flex items-start gap-2">
                     <i className="ri-information-line text-yellow-600 text-sm mt-0.5" />
                     <p className="text-xs text-yellow-700">
-                      고객이 스마트폰에서 이 PIN 번호를 입력하면 스탬프가 자동으로 적립됩니다.
+                      고객이 스마트폰에서 이 PIN 번호를 입력하면 스탬프가
+                      자동으로 적립됩니다.
                     </p>
                   </div>
                 </div>
@@ -624,10 +510,7 @@ export default function MerchantHomePage() {
                   <i className="ri-close-line" />
                   닫기
                 </Button>
-                <Button
-                  fullWidth
-                  onClick={copyPinToClipboard}
-                >
+                <Button fullWidth onClick={copyPinToClipboard}>
                   <i className="ri-file-copy-line" />
                   복사하기
                 </Button>
@@ -639,8 +522,7 @@ export default function MerchantHomePage() {
                 size="sm"
                 onClick={generateRandomPin}
               >
-                <i className="ri-refresh-line" />
-                새 PIN 발행
+                <i className="ri-refresh-line" />새 PIN 발행
               </Button>
             </div>
           </div>
