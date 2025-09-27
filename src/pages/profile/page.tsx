@@ -24,49 +24,58 @@ interface UserProfile {
   customAffiliation?: string;
 }
 
-const stampCards: StampCard[] = [
-  {
-    id: "1",
-    storeId: "starbucks-1",
-    storeName: "스타벅스 전북대점",
-    storeLogo: "ri-cup-fill",
-    currentStamps: 7,
-    requiredStamps: 10,
-    reward: "아메리카노 무료",
-    expiresAt: "2025-12-31",
-  },
-  {
-    id: "2",
-    storeId: "ediya-1",
-    storeName: "이디야커피 강남역점",
-    storeLogo: "ri-cup-line",
-    currentStamps: 3,
-    requiredStamps: 8,
-    reward: "음료 1잔 무료",
-    expiresAt: "2024-12-30",
-  },
-  {
-    id: "3",
-    storeId: "twosomeplace-1",
-    storeName: "투썸플레이스 테헤란점",
-    storeLogo: "ri-cake-fill",
-    currentStamps: 5,
-    requiredStamps: 6,
-    reward: "케이크 1개 무료",
-    expiresAt: "2024-12-28",
-  },
-];
-
 export default function ProfilePage() {
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showPinModal, setShowPinModal] = useState(false);
-  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [showNotifications, setShowNotifications] = useState<boolean>(false);
+  const [showPinModal, setShowPinModal] = useState<boolean>(false);
+  const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
   const [selectedCard, setSelectedCard] = useState<StampCard | null>(null);
   const [pinCode, setPinCode] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [stampCards, setStampCards] = useState<StampCard[]>([
+    {
+      id: "1",
+      storeId: "Dpym-1",
+      storeName: "디핌",
+      storeLogo: "ri-cup-fill",
+      currentStamps: 7,
+      requiredStamps: 10,
+      reward: "아메리카노 무료",
+      expiresAt: "2025-12-31",
+    },
+    {
+      id: "2",
+      storeId: "NeCoffee-1",
+      storeName: "네커피",
+      storeLogo: "ri-cup-line",
+      currentStamps: 3,
+      requiredStamps: 8,
+      reward: "음료 1잔 무료",
+      expiresAt: "2025-12-30",
+    },
+    {
+      id: "3",
+      storeId: "insole-1",
+      storeName: "인솔커피",
+      storeLogo: "ri-cake-fill",
+      currentStamps: 5,
+      requiredStamps: 6,
+      reward: "디저트 1개 무료",
+      expiresAt: "2025-12-28",
+    },
+  ]);
   const [notifications, setNotifications] = useState([
     {
       id: "1",
+      type: "coupon_used",
+      title: "신규 쿠폰 추천",
+      message:
+        "자주 방문한 '디핌' 카페에서 [오늘의 커피 1+1 쿠폰]이 새로 발행됐습니다. 놓치지 말고 지금 바로 사용해보세요!",
+      time: "3분 전",
+      icon: "ri-gift-fill",
+      color: "text-green-500",
+    },
+    {
+      id: "2",
       type: "coupon_used",
       title: "쿠폰이 사용되었습니다",
       message: "스타벅스 전북대점에서 아메리카노 1+1 쿠폰을 사용했습니다.",
@@ -75,7 +84,7 @@ export default function ProfilePage() {
       color: "text-primary",
     },
     {
-      id: "2",
+      id: "3",
       type: "coupon_expiring",
       title: "쿠폰 만료 임박",
       message: "투썸플레이스 케이크 할인 쿠폰이 2시간 후 만료됩니다.",
@@ -84,7 +93,7 @@ export default function ProfilePage() {
       color: "text-accent",
     },
     {
-      id: "3",
+      id: "4",
       type: "new_coupon",
       title: "신규 쿠폰 발급",
       message: "이디야커피에서 새로운 할인 쿠폰이 등록되었습니다.",
@@ -126,8 +135,23 @@ export default function ProfilePage() {
     setTimeout(() => {
       const isValidPin = pinCode === "1234";
 
-      if (isValidPin) {
-        alert(`${selectedCard?.storeName}에서 스탬프가 적립되었습니다! 🎉`);
+      if (isValidPin && selectedCard) {
+        // 🔥 setStampCards로 상태 업데이트해야 화면에 반영됨
+        setStampCards((prevCards) =>
+          prevCards.map((card) => {
+            if (card.id === selectedCard.id) {
+              if (card.currentStamps < card.requiredStamps) {
+                return {
+                  ...card,
+                  currentStamps: card.currentStamps + 1,
+                };
+              }
+            }
+            return card;
+          })
+        );
+
+        alert(`${selectedCard.storeName}에서 스탬프가 적립되었습니다! 🎉`);
         setShowPinModal(false);
         setPinCode("");
       } else {
@@ -235,7 +259,7 @@ export default function ProfilePage() {
           </Card>
           <Card className="text-center" padding="sm">
             <div className="space-y-2">
-              <p className="text-2xl font-bold text-green-500">₩126,000</p>
+              <p className="text-2xl font-bold text-green-500">₩86,000</p>
               <p className="text-xs text-text-secondary">절약한 금액</p>
             </div>
           </Card>
