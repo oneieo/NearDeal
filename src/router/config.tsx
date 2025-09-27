@@ -19,6 +19,7 @@ import Onboarding from '../pages/onboarding/page';
 import Login from '../pages/auth/login/page';
 import Signup from '../pages/auth/signup/page';
 import NotFound from '../pages/NotFound';
+import MerchantCouponCreate from '../pages/merchant/coupons/create/page';
 
 const routes: RouteObject[] = [
   {
@@ -96,6 +97,10 @@ const routes: RouteObject[] = [
   {
     path: '/merchant/orders',
     element: <MerchantOrders />
+  },
+  {
+  path: '/merchant/coupons/create',
+  element: <MerchantCouponCreate />
   },
   {
     path: '*',

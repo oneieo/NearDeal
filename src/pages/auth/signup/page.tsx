@@ -88,7 +88,10 @@ export default function SignupPage() {
       setStep(4);
     } else if (step === 4 && userType === 'merchant' && isValidStep4()) {
       setStep(5);
-    } else if (step === 5 && userType === 'merchant' && isValidStep5()) {
+    // } else if (step === 5 && userType === 'merchant' && isValidStep5()) {
+    //   setStep(6);
+    // }
+    } else if (step === 5 && userType === 'merchant') {
       setStep(6);
     }
   };
@@ -114,9 +117,14 @@ export default function SignupPage() {
     return formData.storeName && formData.branch && (formData.branch !== '기타' || formData.customBranch);
   };
 
-  const isValidStep5 = () => {
-    return formData.mainMenu && formData.additionalMenus.filter(menu => menu.trim()).length >= 0;
-  };
+  // 필수
+  // const isValidStep5 = () => {
+  //   return formData.mainMenu && formData.additionalMenus.filter(menu => menu.trim()).length >= 0;
+  // };
+
+
+  // 선택
+  const isValidStep5 = () => true;
 
   const isValidStep6 = () => {
     return formData.openTime && formData.closeTime;
@@ -671,14 +679,15 @@ export default function SignupPage() {
                 주요 메뉴를 입력해주세요
               </h1>
               <p className="text-text-secondary font-sf">
-                최소 1개 이상의 메뉴를 입력해주세요
+                {/* 최소 1개 이상의 메뉴를 입력해주세요 */}
+                메뉴를 입력해주세요 (선택)
               </p>
             </div>
 
             <Card>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-sf font-medium text-text">대표 메뉴 *</label>
+                  <label className="text-sm font-sf font-medium text-text">대표 메뉴</label>
                   <div className="relative">
                     <input
                       type="text"
@@ -730,11 +739,17 @@ export default function SignupPage() {
               </div>
             </Card>
 
-            <Button 
+            {/* <Button 
               fullWidth 
               onClick={handleNext}
               disabled={!isValidStep5()}
             >
+              다음
+            </Button> */}
+            <Button 
+              fullWidth onClick={handleNext}
+            >
+
               다음
             </Button>
           </div>

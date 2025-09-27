@@ -20,7 +20,7 @@ const onboardingData = [
   },
   {
     id: 3,
-    title: '내 주변 시간\n신기간 할인!',
+    title: '내 주변 시간\n실시간 할인!',
     description: '시간대별 특별 할인과\n한정된 쿠폰을 놓치지 마세요',
     image: 'https://readdy.ai/api/search-image?query=smartphone%20displaying%20coupon%20app%20interface%20with%20discount%20offers%2C%20mobile%20mockup%2C%20clean%20modern%20design%2C%20vibrant%20colors%2C%20professional%20app%20screenshot%20style&width=300&height=300&seq=onboard3&orientation=squarish',
     buttonText: '시작하기'
