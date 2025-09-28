@@ -14,9 +14,9 @@ interface KPIData {
 }
 
 const kpiData: KPIData = {
-  couponsIssued: 45,
-  couponsUsed: 28,
-  reviewCount: 716,
+  couponsIssued: 0,
+  couponsUsed: 0,
+  reviewCount: 105,
   averageRating: 4.8,
 };
 
