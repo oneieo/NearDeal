@@ -32,7 +32,7 @@ export default function CouponsPage() {
       title: "아메리카노 1+1",
       benefit: "아메리카노 주문 시 1잔 무료 증정",
       conditions: "1인 1매 한정, 다른 할인과 중복 불가",
-      expiresAt: "2024-12-25T18:00:00",
+      expiresAt: "2024-09-28T18:00:00",
       status: "available",
     },
     {

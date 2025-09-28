@@ -23,9 +23,9 @@ const coupons: Coupon[] = [
     title: "아메리카노 1+1",
     description: "아메리카노 주문 시 1잔 무료 증정",
     discount: "1+1",
-    validUntil: "2025-12-25",
+    validUntil: "2025-09-28",
     usedCount: 0,
-    totalCount: 100,
+    totalCount: 15,
     status: "active",
   },
   {
