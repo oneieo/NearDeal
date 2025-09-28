@@ -19,12 +19,22 @@ interface Coupon {
 
 const coupons: Coupon[] = [
   {
+    id: "CPN000",
+    title: "아메리카노 1+1",
+    description: "아메리카노 주문 시 1잔 무료 증정",
+    discount: "1+1",
+    validUntil: "2025-12-25",
+    usedCount: 0,
+    totalCount: 100,
+    status: "active",
+  },
+  {
     id: "CPN001",
     title: "신규고객 할인",
     description: "첫 방문 고객 대상 특별 할인",
     discount: "20%",
-    validUntil: "2024-12-31",
-    usedCount: 45,
+    validUntil: "2025-09-28",
+    usedCount: 0,
     totalCount: 100,
     status: "active",
   },
