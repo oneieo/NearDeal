@@ -28,46 +28,46 @@ const coupons: Coupon[] = [
     totalCount: 15,
     status: "active",
   },
-  {
-    id: "CPN001",
-    title: "신규고객 할인",
-    description: "첫 방문 고객 대상 특별 할인",
-    discount: "20%",
-    validUntil: "2025-09-28",
-    usedCount: 0,
-    totalCount: 100,
-    status: "active",
-  },
-  {
-    id: "CPN002",
-    title: "주말 특가",
-    description: "주말 한정 할인 혜택",
-    discount: "₩2000",
-    validUntil: "2024-11-30",
-    usedCount: 28,
-    totalCount: 50,
-    status: "active",
-  },
-  {
-    id: "CPN003",
-    title: "생일축하 쿠폰",
-    description: "생일월 고객 전용 쿠폰",
-    discount: "30%",
-    validUntil: "2024-10-15",
-    usedCount: 12,
-    totalCount: 25,
-    status: "expired",
-  },
-  {
-    id: "CPN004",
-    title: "단골고객 혜택",
-    description: "5회 이상 방문 고객 대상",
-    discount: "₩3000",
-    validUntil: "2024-12-25",
-    usedCount: 0,
-    totalCount: 30,
-    status: "draft",
-  },
+  // {
+  //   id: "CPN001",
+  //   title: "신규고객 할인",
+  //   description: "첫 방문 고객 대상 특별 할인",
+  //   discount: "20%",
+  //   validUntil: "2025-09-28",
+  //   usedCount: 0
+  //   totalCount: 100,
+  //   status: "active",
+  // },
+  // {
+  //   id: "CPN002",
+  //   title: "주말 특가",
+  //   description: "주말 한정 할인 혜택",
+  //   discount: "₩2000",
+  //   validUntil: "2024-11-30",
+  //   usedCount: 28,
+  //   totalCount: 50,
+  //   status: "active",
+  // },
+  // {
+  //   id: "CPN003",
+  //   title: "생일축하 쿠폰",
+  //   description: "생일월 고객 전용 쿠폰",
+  //   discount: "30%",
+  //   validUntil: "2024-10-15",
+  //   usedCount: 12,
+  //   totalCount: 25,
+  //   status: "expired",
+  // },
+  // {
+  //   id: "CPN004",
+  //   title: "단골고객 혜택",
+  //   description: "5회 이상 방문 고객 대상",
+  //   discount: "₩3000",
+  //   validUntil: "2024-12-25",
+  //   usedCount: 0,
+  //   totalCount: 30,
+  //   status: "draft",
+  // },
 ];
 
 export default function MerchantCouponsPage() {
@@ -167,7 +167,7 @@ export default function MerchantCouponsPage() {
                 <i className="ri-pie-chart-fill text-blue-600 text-lg" />
               </div>
               <div>
-                <p className="text-xl font-sf font-bold text-text">68%</p>
+                <p className="text-xl font-sf font-bold text-text">0%</p>
                 <p className="text-xs text-text-secondary font-sf">사용률</p>
               </div>
             </div>
