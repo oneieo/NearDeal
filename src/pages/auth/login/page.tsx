@@ -37,11 +37,37 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
 
-    // 로그인 로직 시뮬레이션
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const response = await fetch(
+        `http://210.117.181.91:12321/api/member/pre-signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json; charset=UTF-8",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            affiliation,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("로그인 실패");
+      }
+
+      const data = await response.json();
+      console.log("로그인 성공:", data);
+
+      // 성공 시 메인 페이지로 이동
       navigate("/");
-    }, 1500);
+    } catch (error) {
+      console.error("로그인 오류:", error);
+      alert("로그인에 실패했습니다.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleKakaoLogin = () => {
