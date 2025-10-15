@@ -36,6 +36,7 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    console.log(affiliation);
 
     try {
       const response = await fetch(
