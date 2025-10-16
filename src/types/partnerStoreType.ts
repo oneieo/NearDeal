@@ -39,3 +39,11 @@ export interface PartnerStore {
   etc: string;
   sns: string;
 }
+
+export interface PartnerStoreResponse {
+  content: PartnerStore[];
+  totalPages?: number;
+  totalElements?: number;
+  size?: number;
+  number?: number;
+}

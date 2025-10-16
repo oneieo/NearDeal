@@ -21,6 +21,7 @@ interface CategoryState {
   isCategorySelected: (categoryName: string) => boolean;
 }
 
+// 총학생회 제휴는 소속으로 선택 못하니까 카테고리로 추가?
 const defaultCategories: Category[] = [
   {
     id: "1",

@@ -5,6 +5,9 @@ import Button from "../../components/base/Button";
 import { useCategoryStore } from "../../store/useCategoryStore";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useAuthStore } from "../../store/useAuthStore";
+import { usePartnerStore } from "../../store/usePartnerStore";
+import type { PartnerStoreResponse } from "../../types/partnerStoreType";
 
 interface Coupon {
   id: string;
@@ -86,6 +89,8 @@ export default function Home() {
     isCategorySelected,
     getSelectedCategory,
   } = useCategoryStore();
+  const { affiliation } = useAuthStore();
+  const { stores, setStores, setLoading, setError } = usePartnerStore();
   const navigate = useNavigate();
 
   const handleClickCategoryBtn = (name: string) => {
@@ -99,6 +104,52 @@ export default function Home() {
       setSelectedCategory("");
     }
   }, []);
+
+  useEffect(() => {
+    // 제휴상점 데이터 패치
+    const fetchPartnerStores = async () => {
+      if (!affiliation) {
+        console.log("소속 단과대학의 제휴 정보가 없습니다.");
+        // 로그인 후 이용해주세요 컨펌창?
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/partner-store?page=0&size=100&partnerCategory=${affiliation}`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json; charset=UTF-8",
+            },
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("제휴상점 정보를 가져오는데 실패했습니다.");
+        }
+
+        const data: PartnerStoreResponse = await response.json();
+        console.log("제휴상점 데이터:", data);
+
+        // Partner Store 상태 업데이트
+        setStores(data.content);
+      } catch (err) {
+        console.error("제휴상점 데이터 로드 오류:", err);
+        setError(err instanceof Error ? err.message : "알 수 없는 오류");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPartnerStores();
+  }, [affiliation, setStores, setLoading, setError]);
 
   return (
     <div className="min-h-screen bg-background pb-20">
