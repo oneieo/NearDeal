@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/base/Button";
 import Card from "../../../components/base/Card";
+import { useAuthStore } from "../../../store/useAuthStore";
 
 const affiliationOptions = [
   //"간호대학",
@@ -36,11 +37,11 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log(affiliation);
+    const { setIsLoggedIn } = useAuthStore.getState();
 
     try {
       const response = await fetch(
-        `http://210.117.181.91:12321/api/member/pre-signup`,
+        `${import.meta.env.VITE_API_BASE_URL}/member/pre-signup`,
         {
           method: "POST",
           headers: {
@@ -60,8 +61,7 @@ export default function LoginPage() {
 
       const data = await response.json();
       console.log("로그인 성공:", data);
-
-      // 성공 시 메인 페이지로 이동
+      setIsLoggedIn(true);
       navigate("/");
     } catch (error) {
       console.error("로그인 오류:", error);
