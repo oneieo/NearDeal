@@ -147,8 +147,12 @@ export default function CouponsPage() {
         }
       />
 
-      <div className="pt-20 px-4 space-y-6">
-        <div className="flex bg-gray-100 rounded-16 p-1">
+      {/* 기존 스타일(삭제 ㄴ) <div className="pt-20 px-4 space-y-6"> */}
+      <div className="flex justify-center items-center pt-20 px-4 space-y-6">
+        <p className="text-text-secondary font-sf text-sm px-4">
+          추후 업데이트 예정입니다.
+        </p>
+        {/* <div className="flex bg-gray-100 rounded-16 p-1">
           {[
             {
               key: "available",
@@ -183,7 +187,7 @@ export default function CouponsPage() {
         </div>
 
         {/* 쿠폰 목록 */}
-        <div className="space-y-4">
+        {/* <div className="space-y-4">
           {filteredCoupons.length === 0 ? (
             <div className="text-center py-20">
               <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
@@ -287,7 +291,7 @@ export default function CouponsPage() {
               </Card>
             ))
           )}
-        </div>
+        </div>*/}
       </div>
 
       {/* 쿠폰 사용 모달 */}

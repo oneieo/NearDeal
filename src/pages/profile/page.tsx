@@ -210,18 +210,22 @@ export default function ProfilePage() {
             className="w-10 h-10 flex items-center justify-center relative"
           >
             <i className="ri-notification-line text-text text-xl" />
-            {notifications.length > 0 && (
+            {/* {notifications.length > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-white text-xs font-bold rounded-full flex items-center justify-center">
                 {notifications.length}
               </span>
-            )}
+            )} */}
           </button>
         }
       />
 
-      <div className="pt-20 px-4 space-y-6">
-        {/* 프로필 섹션 */}
-        <Card>
+      {/* 기존 스타일(삭제 X) <div className="pt-20 px-4 space-y-6"> */}
+      <div className="flex justify-center items-centerpt-20 px-4 space-y-6">
+        <p className="text-text-secondary font-sf pt-20 text-sm px-4">
+          추후 업데이트 예정입니다.
+        </p>
+
+        {/* <Card>
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
               <i className="ri-user-fill text-primary text-2xl" />
@@ -243,7 +247,6 @@ export default function ProfilePage() {
           </div>
         </Card>
 
-        {/* 통계 섹션 */}
         <div className="grid grid-cols-3 gap-3">
           <Card className="text-center" padding="sm">
             <div className="space-y-2">
@@ -265,7 +268,6 @@ export default function ProfilePage() {
           </Card>
         </div>
 
-        {/* 스탬프 카드 섹션 */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-text">🏷️ 스탬프 카드</h3>
@@ -305,7 +307,6 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                {/* 스탬프 진행률 */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-text-secondary">진행률</span>
@@ -327,7 +328,6 @@ export default function ProfilePage() {
                     />
                   </div>
 
-                  {/* 스탬프 아이콘들 */}
                   <div className="flex justify-between mt-3">
                     {[...Array(card.requiredStamps)].map((_, index) => (
                       <div
@@ -355,7 +355,6 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* 메뉴 섹션 */}
         <div className="space-y-3">
           {[
             {
@@ -406,7 +405,7 @@ export default function ProfilePage() {
               </div>
             </Card>
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* 프로필 편집 모달 */}
