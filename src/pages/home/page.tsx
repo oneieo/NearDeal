@@ -95,11 +95,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // 세션 스토리지에서 로그인 여부 확인하고
-    // 로그인 했으면 홈(/) 리다이렉트
-  }, []);
-
-  useEffect(() => {
     if (selectedCategoryName !== "") {
       setSelectedCategory("");
     }

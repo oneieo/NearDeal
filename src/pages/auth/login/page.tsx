@@ -31,13 +31,14 @@ export default function LoginPage() {
   // const [email, setEmail] = useState("");
   // const [password, setPassword] = useState("");
   // const [showPassword, setShowPassword] = useState(false);
-  const [affiliation, setAffiliation] = useState<string>("");
+  // const [affiliation, setAffiliation] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const { affiliation, setAffiliation, setIsLoggedIn } =
+    useAuthStore.getState();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    const { setIsLoggedIn } = useAuthStore.getState();
 
     try {
       const response = await fetch(
