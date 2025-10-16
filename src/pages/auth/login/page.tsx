@@ -2,27 +2,28 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/base/Button";
 import Card from "../../../components/base/Card";
+import { useAuthStore } from "../../../store/useAuthStore";
 
 const affiliationOptions = [
-  "간호대학",
+  //"간호대학",
   "경상대학",
-  "공과대학",
-  "국제이공학부",
-  "농업생명과학대학",
-  "사범대학",
-  "사회과학대학",
-  "생활과학대학",
-  "수의과대학",
-  "약학대학",
-  "예술대학",
-  "융합자율전공학부",
-  "융합학부",
-  "의과대학",
-  "인문대학",
-  "자연과학대학",
-  "치과대학",
-  "한옥학과",
-  "환경생명자원대학",
+  // "공과대학",
+  // "국제이공학부",
+  // "농업생명과학대학",
+  // "사범대학",
+  // "사회과학대학",
+  // "생활과학대학",
+  // "수의과대학",
+  // "약학대학",
+  // "예술대학",
+  // "융합자율전공학부",
+  // "융합학부",
+  // "의과대학",
+  // "인문대학",
+  // "자연과학대학",
+  // "치과대학",
+  // "한옥학과",
+  // "환경생명자원대학",
 ];
 
 export default function LoginPage() {
@@ -30,8 +31,10 @@ export default function LoginPage() {
   // const [email, setEmail] = useState("");
   // const [password, setPassword] = useState("");
   // const [showPassword, setShowPassword] = useState(false);
-  const [affiliation, setAffiliation] = useState<string>("");
+  // const [affiliation, setAffiliation] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const { affiliation, setAffiliation, setIsLoggedIn } =
+    useAuthStore.getState();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +42,7 @@ export default function LoginPage() {
 
     try {
       const response = await fetch(
-        `http://210.117.181.91:12321/api/member/pre-signup`,
+        `${import.meta.env.VITE_API_BASE_URL}/member/pre-signup`,
         {
           method: "POST",
           headers: {
@@ -59,8 +62,7 @@ export default function LoginPage() {
 
       const data = await response.json();
       console.log("로그인 성공:", data);
-
-      // 성공 시 메인 페이지로 이동
+      setIsLoggedIn(true);
       navigate("/");
     } catch (error) {
       console.error("로그인 오류:", error);
