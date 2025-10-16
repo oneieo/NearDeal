@@ -95,14 +95,14 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (selectedCategoryName !== "") {
-      setSelectedCategory("");
-    }
+    // 세션 스토리지에서 로그인 여부 확인하고
+    // 로그인 했으면 홈(/) 리다이렉트
   }, []);
 
   useEffect(() => {
-    // 세션 스토리지에서 로그인 여부 확인하고
-    // 로그인 했으면 홈(/) 리다이렉트
+    if (selectedCategoryName !== "") {
+      setSelectedCategory("");
+    }
   }, []);
 
   return (
