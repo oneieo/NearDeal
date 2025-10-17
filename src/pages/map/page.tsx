@@ -389,6 +389,16 @@ export default function MapPage() {
 
   const handleStoreClick = useCallback(
     (storeId: string) => {
+      console.log("=== handleStoreClick 호출 ===");
+      console.log("storeId:", storeId);
+      console.log("타입:", typeof storeId);
+      console.log("경로:", `/store/${storeId}`);
+
+      if (!storeId) {
+        console.error("storeId가 없습니다!");
+        return;
+      }
+
       navigate(`/store/${storeId}`);
     },
     [navigate]
@@ -415,6 +425,7 @@ export default function MapPage() {
   const handleListViewStoreClick = useCallback(
     (storeId: string) => {
       setShowListView(false);
+      console.log(storeId);
       handleStoreClick(storeId);
     },
     [handleStoreClick]

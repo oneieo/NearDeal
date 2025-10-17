@@ -1,7 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 import Home from "../pages/home/page";
 import Map from "../pages/map/page";
-import Store from "../pages/store/page";
+import StoreDetail from "../pages/store/[id]/page"; // ← 여기 수정!
 import Coupons from "../pages/coupons/page";
 import Profile from "../pages/profile/page";
 import Stamps from "../pages/stamps/page";
@@ -81,7 +81,7 @@ const routes: RouteObject[] = [
     path: "/store/:id",
     element: (
       <ProtectedRoute>
-        <Store />
+        <StoreDetail />
       </ProtectedRoute>
     ),
   },

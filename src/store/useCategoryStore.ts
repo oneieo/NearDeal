@@ -25,14 +25,14 @@ interface CategoryState {
 const defaultCategories: Category[] = [
   {
     id: "1",
-    name: "즐겨찾기",
-    icon: "ri-star-fill",
+    name: "단과대학",
+    icon: "ri-service-fill",
     color: "bg-red-100 text-red-600",
   },
   {
     id: "2",
-    name: "제휴",
-    icon: "ri-service-fill",
+    name: "총학생회",
+    icon: "ri-star-fill",
     color: "bg-amber-100 text-amber-600",
   },
   {
@@ -49,23 +49,62 @@ const defaultCategories: Category[] = [
   },
   {
     id: "5",
-    name: "헤어샵",
-    icon: "ri-scissors-cut-fill",
+    name: "주점",
+    icon: "ri-beer-fill",
     color: "bg-green-100 text-green-600",
   },
   {
     id: "6",
-    name: "마트",
+    name: "기타",
     icon: "ri-shopping-bag-fill",
     color: "bg-purple-100 text-purple-600",
   },
-  //   {
-  //     id: "5",
-  //     name: "편의점",
-  //     icon: "ri-light-fill",
-  //     color: "bg-green-100 text-green-600",
-  //   },
 ];
+
+// const defaultCategories: Category[] = [
+//   {
+//     id: "1",
+//     name: "즐겨찾기",
+//     icon: "ri-star-fill",
+//     color: "bg-red-100 text-red-600",
+//   },
+//   {
+//     id: "2",
+//     name: "제휴",
+//     icon: "ri-service-fill",
+//     color: "bg-amber-100 text-amber-600",
+//   },
+//   {
+//     id: "3",
+//     name: "음식점",
+//     icon: "ri-restaurant-fill",
+//     color: "bg-pink-100 text-pink-600",
+//   },
+//   {
+//     id: "4",
+//     name: "카페",
+//     icon: "ri-cup-fill",
+//     color: "bg-blue-100 text-blue-600",
+//   },
+//   {
+//     id: "5",
+//     name: "헤어샵",
+//     icon: "ri-scissors-cut-fill",
+//     color: "bg-green-100 text-green-600",
+//   },
+//   {
+//     id: "6",
+//     name: "마트",
+//     icon: "ri-shopping-bag-fill",
+//     color: "bg-purple-100 text-purple-600",
+//   },
+//   //   {
+//   //     id: "5",
+//   //     name: "편의점",
+//   //     icon: "ri-light-fill",
+//   //     color: "bg-green-100 text-green-600",
+//   //   },
+// ];
 
 export const useCategoryStore = create<CategoryState>()(
   devtools(

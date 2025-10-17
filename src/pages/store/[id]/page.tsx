@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import TopNavigation from "../../components/feature/TopNavigation";
-import Card from "../../components/base/Card";
-import Button from "../../components/base/Button";
+import TopNavigation from "../../../components/feature/TopNavigation";
+import Card from "../../../components/base/Card";
+import Button from "../../../components/base/Button";
 
 interface Coupon {
   id: string;
@@ -358,7 +358,7 @@ export default function StorePage() {
         </Card>
 
         {/* 탭 메뉴 */}
-        <div className="flex border-b border-gray-200">
+        {/* <div className="flex border-b border-gray-200">
           {[
             { key: "coupons", label: "쿠폰", count: coupons.length },
             { key: "menu", label: "메뉴", count: menuItems.length },
@@ -373,13 +373,10 @@ export default function StorePage() {
                   : "text-text-secondary"
               }`}
             >
-              <span className="font-sf font-medium">
-                {tab.label}
-                {/* {tab.count} */}
-              </span>
+              <span className="font-sf font-medium">{tab.label}</span>
             </button>
           ))}
-        </div>
+        </div> */}
 
         {/* 탭 콘텐츠 */}
         {/* 탭 콘텐츠 */}
