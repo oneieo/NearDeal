@@ -21,7 +21,7 @@ interface CategoryState {
   isCategorySelected: (categoryName: string) => boolean;
 }
 
-// 총학생회 제휴는 소속으로 선택 못하니까 카테고리로 추가?
+// 총학생회, 단과대학, 음식점, 카페, 술집, 기타 변경
 const defaultCategories: Category[] = [
   {
     id: "1",

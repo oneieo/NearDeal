@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/base/Button";
 import Card from "../../../components/base/Card";
@@ -31,8 +31,9 @@ export default function LoginPage() {
   // const [email, setEmail] = useState("");
   // const [password, setPassword] = useState("");
   // const [showPassword, setShowPassword] = useState(false);
-  // const [affiliation, setAffiliation] = useState<string>("");
+  const [clickedOption, setClickedOption] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const { affiliation, setAffiliation, setIsLoggedIn } =
     useAuthStore.getState();
 
@@ -51,7 +52,7 @@ export default function LoginPage() {
           },
           credentials: "include",
           body: JSON.stringify({
-            affiliation,
+            affiliation: clickedOption,
           }),
         }
       );
@@ -63,6 +64,7 @@ export default function LoginPage() {
       const data = await response.json();
       console.log("로그인 성공:", data);
       setIsLoggedIn(true);
+      setAffiliation(clickedOption);
       navigate("/");
     } catch (error) {
       console.error("로그인 오류:", error);
@@ -77,6 +79,10 @@ export default function LoginPage() {
     console.log("카카오 로그인");
     navigate("/");
   };
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -124,27 +130,24 @@ export default function LoginPage() {
         {/* 로그인 폼 */}
         <Card>
           <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-sf font-medium text-text">
-                소속
-              </label>
-              <div className="relative">
-                <select
-                  value={affiliation}
-                  onChange={(e) => setAffiliation(e.target.value)}
-                  className="w-full p-4 pl-12 pr-12 border border-gray-200 rounded-12 focus:border-primary focus:outline-none font-sf text-sm appearance-none"
-                  required
-                >
-                  <option value="">단과대학을 선택하세요</option>
-                  {affiliationOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-                <i className="ri-building-line absolute left-4 top-1/2 transform -translate-y-1/2 text-text-secondary" />
-                <i className="ri-arrow-down-s-line absolute right-4 top-1/2 transform -translate-y-1/2 text-text-secondary" />
-              </div>
+            <div className="relative">
+              <select
+                value={clickedOption}
+                onChange={(e) => {
+                  setClickedOption(e.target.value);
+                }}
+                className="w-full p-4 pl-12 pr-12 border border-gray-200 rounded-12 focus:border-primary focus:outline-none font-sf text-sm appearance-none"
+                required
+              >
+                <option value="">단과대학을 선택하세요</option>
+                {affiliationOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              <i className="ri-building-line absolute left-4 top-1/2 transform -translate-y-1/2 text-text-secondary" />
+              <i className="ri-arrow-down-s-line absolute right-4 top-1/2 transform -translate-y-1/2 text-text-secondary" />
             </div>
             {/* <div className="space-y-3">
               <div className="space-y-2">

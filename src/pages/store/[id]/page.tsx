@@ -20,6 +20,7 @@ interface MenuItem {
   price: number;
   description: string;
   couponApplicable: boolean;
+  imageSrc: string;
 }
 
 interface Review {
@@ -32,9 +33,13 @@ interface Review {
 }
 
 const storeImages = [
-  "https://readdy.ai/api/search-image?query=Modern%20coffee%20shop%20interior%20with%20warm%20lighting%2C%20cozy%20atmosphere%2C%20wooden%20furniture%2C%20minimalist%20design%2C%20professional%20photography%2C%20welcoming%20cafe%20space&width=375&height=200&seq=store1&orientation=landscape",
-  "https://readdy.ai/api/search-image?query=Coffee%20shop%20counter%20with%20espresso%20machine%2C%20baristas%20working%2C%20clean%20modern%20design%2C%20professional%20cafe%20equipment%2C%20warm%20ambient%20lighting&width=375&height=200&seq=store2&orientation=landscape",
-  "https://readdy.ai/api/search-image?query=Coffee%20shop%20seating%20area%20with%20comfortable%20chairs%2C%20natural%20light%2C%20plants%2C%20books%2C%20cozy%20cafe%20atmosphere%2C%20minimalist%20interior%20design&width=375&height=200&seq=store3&orientation=landscape",
+  "/디핌/내부/디핌내부2.jpg",
+  "/디핌/내부/디핌내부1.jpg",
+  // "/디핌/내부/디핌카페내부.png",
+  // "/디핌/내부/디핌카페내부2.png",
+  // "https://readdy.ai/api/search-image?query=Modern%20coffee%20shop%20interior%20with%20warm%20lighting%2C%20cozy%20atmosphere%2C%20wooden%20furniture%2C%20minimalist%20design%2C%20professional%20photography%2C%20welcoming%20cafe%20space&width=375&height=200&seq=store1&orientation=landscape",
+  // "https://readdy.ai/api/search-image?query=Coffee%20shop%20counter%20with%20espresso%20machine%2C%20baristas%20working%2C%20clean%20modern%20design%2C%20professional%20cafe%20equipment%2C%20warm%20ambient%20lighting&width=375&height=200&seq=store2&orientation=landscape",
+  // "https://readdy.ai/api/search-image?query=Coffee%20shop%20seating%20area%20with%20comfortable%20chairs%2C%20natural%20light%2C%20plants%2C%20books%2C%20cozy%20cafe%20atmosphere%2C%20minimalist%20interior%20design&width=375&height=200&seq=store3&orientation=landscape",
 ];
 
 const coupons: Coupon[] = [
@@ -70,31 +75,99 @@ const coupons: Coupon[] = [
 const menuItems: MenuItem[] = [
   {
     id: "1",
-    name: "아메리카노",
-    price: 4500,
-    description: "깊고 진한 에스프레소의 풍미",
+    name: "흑임자 크림라떼",
+    price: 6500,
+    description: "진한 흑임자 풍미와 부드러운 수제 크림의 조화",
     couponApplicable: true,
+    imageSrc: "/디핌/디핌메뉴/흑임자크림라떼.jpg",
   },
   {
     id: "2",
-    name: "카페라떼",
-    price: 5000,
-    description: "부드러운 우유와 에스프레소의 조화",
+    name: "바닐라 크림라떼",
+    price: 6500,
+    description: "부드러운 크림과 바닐라빈 콕콕 라떼",
     couponApplicable: true,
+    imageSrc: "/디핌/디핌메뉴/바닐라크림라떼.jpg",
   },
   {
     id: "3",
-    name: "바닐라라떼",
-    price: 5500,
-    description: "달콤한 바닐라 시럽이 들어간 라떼",
-    couponApplicable: false,
+    name: "크로플",
+    price: 5000,
+    description: "크루아상 생지를 와플처럼 구워낸 겉바속촉 디저트",
+    couponApplicable: true,
+    imageSrc: "/디핌/디핌메뉴/크로플.jpg",
   },
   {
     id: "4",
-    name: "티라미수",
-    price: 6500,
-    description: "이탈리아 정통 티라미수",
+    name: "밀크티",
+    price: 5500,
+    description: "진하게 우려낸 홍차에 우유를 더해 향긋한 맛",
     couponApplicable: true,
+    imageSrc: "/디핌/디핌메뉴/밀크티.jpg",
+  },
+  {
+    id: "5",
+    name: "크루키",
+    price: 5800,
+    description: "크루아상과 쿠키의 만남",
+    couponApplicable: true,
+    imageSrc: "/디핌/디핌메뉴/크루키.jpg",
+  },
+  {
+    id: "6",
+    name: "수제 고구마빵",
+    price: 3000,
+    description: "쫄깃한 찹쌀반죽 속 달콤한 고구마 앙금이 가득",
+    couponApplicable: true,
+    imageSrc: "/디핌/디핌메뉴/고구마빵.jpg",
+  },
+  {
+    id: "7",
+    name: "딸기 크림라떼",
+    price: 5500,
+    description: "상큼한 딸기과육 베이스와 달콤한 수제크림이 어우러진 라떼",
+    couponApplicable: true,
+    imageSrc: "/디핌/디핌메뉴/딸기크림라떼.jpg",
+  },
+  {
+    id: "8",
+    name: "마롱(밤)라떼",
+    price: 5800,
+    description: "고소하고 부드러운 밤 풍미가 가득한 라떼",
+    couponApplicable: true,
+    imageSrc: "/디핌/디핌메뉴/마롱(밤)라떼.jpeg",
+  },
+  {
+    id: "9",
+    name: "아메리카노",
+    price: 4300,
+    description: "깊고 진한 에스프레소의 풍미",
+    couponApplicable: true,
+    imageSrc: "/디핌/디핌메뉴/아메리카노.jpg",
+  },
+  {
+    id: "10",
+    name: "바닐라라떼",
+    price: 5500,
+    description: "달콤한 바닐라 시럽이 들어간 라떼",
+    couponApplicable: true,
+    imageSrc: "/디핌/디핌메뉴/바닐라라떼.jpg",
+  },
+  {
+    id: "11",
+    name: "브라운치즈 크로플",
+    price: 6800,
+    description: "바삭한 크로플 위에 눈꽃처럼 갈아 올린 짭짤 달콤 브라운 치즈",
+    couponApplicable: false,
+    imageSrc: "/디핌/디핌메뉴/크로플.jpg",
+  },
+  {
+    id: "12",
+    name: "매실에이드",
+    price: 5500,
+    description: "톡쏘는 탄산수에 건강한 매실청",
+    couponApplicable: true,
+    imageSrc: "/디핌/디핌메뉴/매실에이드.jpg",
   },
 ];
 
@@ -210,9 +283,7 @@ export default function StorePage() {
       <div className="px-4 pt-6 space-y-6">
         <div className="space-y-3">
           <div className="flex items-start justify-between">
-            <h1 className="text-2xl font-sf font-bold text-text">
-              스타벅스 역삼점
-            </h1>
+            <h1 className="text-2xl font-sf font-bold text-text">디핌</h1>
             <div className="flex items-center gap-1">
               <i className="ri-star-fill text-accent text-lg" />
               <span className="text-lg font-sf font-semibold text-text">
@@ -222,7 +293,7 @@ export default function StorePage() {
           </div>
 
           <div className="flex items-center gap-4 text-sm text-text-secondary font-sf">
-            <span>리뷰 321개</span>
+            <span>리뷰 106개</span>
             <span>•</span>
             <span>카페</span>
           </div>
@@ -231,15 +302,13 @@ export default function StorePage() {
             <div className="flex items-center gap-3">
               <i className="ri-map-pin-line text-text-secondary" />
               <span className="text-sm font-sf text-text">
-                서울 강남구 역삼동 123-45
+                전북 전주시 덕진구 명륜3길 9-1 1층
               </span>
               <button className="text-sm font-sf text-primary">길찾기</button>
             </div>
             <div className="flex items-center gap-3">
               <i className="ri-time-line text-text-secondary" />
-              <span className="text-sm font-sf text-text">
-                오전 7:00 - 오후 10:00
-              </span>
+              <span className="text-sm font-sf text-text">11:00 - 22:00</span>
               <span className="text-sm font-sf text-primary">영업중</span>
             </div>
           </div>
@@ -249,7 +318,7 @@ export default function StorePage() {
         <Card className="border-2 border-primary/20">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-sf font-semibold text-text">
-              🎯 대표 쿠폰
+              대표 쿠폰
             </h3>
             <span className="bg-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
               {coupons[0].discount}
@@ -275,7 +344,14 @@ export default function StorePage() {
                 {coupons[0].timeLeft} 남음
               </span>
             </div>
-            <Button size="sm" className="px-6">
+            <Button
+              size="sm"
+              className="px-6"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleIssueCoupon(coupons[0]);
+              }}
+            >
               발급받기
             </Button>
           </div>
@@ -298,26 +374,19 @@ export default function StorePage() {
               }`}
             >
               <span className="font-sf font-medium">
-                {tab.label} {tab.count}
+                {tab.label}
+                {/* {tab.count} */}
               </span>
             </button>
           ))}
         </div>
 
         {/* 탭 콘텐츠 */}
+        {/* 탭 콘텐츠 */}
         <div className="space-y-4">
           {activeTab === "coupons" && (
             <div className="space-y-4">
-              {!showAllCoupons && (
-                <button
-                  onClick={() => setShowAllCoupons(true)}
-                  className="w-full p-4 bg-gray-100 rounded-16 text-center text-primary font-sf font-medium"
-                >
-                  모든 쿠폰 보기 ({coupons.length}개)
-                </button>
-              )}
-
-              {(showAllCoupons ? coupons : []).map((coupon) => (
+              {coupons.map((coupon) => (
                 <Card
                   key={coupon.id}
                   className={`cursor-pointer transition-all ${
@@ -375,9 +444,13 @@ export default function StorePage() {
               {menuItems.map((item) => (
                 <Card key={item.id}>
                   <div className="flex items-center">
-                    <div className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center mr-4">
+                    <img
+                      src={item.imageSrc}
+                      className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center mr-4"
+                    />
+                    {/* <div className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center mr-4">
                       <i className="ri-cup-fill text-text-secondary text-2xl" />
-                    </div>
+                    </div> */}
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className="font-sf font-semibold text-text">
@@ -406,7 +479,7 @@ export default function StorePage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-sf text-text">정렬:</span>
+                  {/* <span className="text-sm font-sf text-text">정렬:</span> */}
                   <select
                     value={reviewSort}
                     onChange={(e) => setReviewSort(e.target.value as any)}
@@ -461,7 +534,7 @@ export default function StorePage() {
       </div>
 
       {/* 고정 CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+      {/* <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
         <Button
           fullWidth
           size="lg"
@@ -471,7 +544,7 @@ export default function StorePage() {
           <i className="ri-coupon-fill mr-2" />
           쿠폰 발급받기
         </Button>
-      </div>
+      </div> */}
 
       {/* 쿠폰 발급 완료 모달 */}
       {showCouponComplete && issuedCoupon && (
@@ -494,7 +567,7 @@ export default function StorePage() {
                   쿠폰 발급 완료!
                 </h3>
                 <p className="text-text-secondary font-sf">
-                  스타벅스 역삼점 쿠폰이 발급되었습니다
+                  디핌 쿠폰이 발급되었습니다
                 </p>
               </div>
 
