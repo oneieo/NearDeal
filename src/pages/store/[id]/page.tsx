@@ -232,7 +232,6 @@ export default function StorePage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* 상단 네비게이션 */}
       <TopNavigation
         leftAction={
           <button
@@ -255,7 +254,6 @@ export default function StorePage() {
         showBorder={false}
       />
 
-      {/* 이미지 캐러셀 */}
       <div className="relative pt-14">
         <div className="w-full h-48 overflow-hidden">
           <img
@@ -265,7 +263,6 @@ export default function StorePage() {
           />
         </div>
 
-        {/* 캐러셀 인디케이터 */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
           {storeImages.map((_, index) => (
             <button
@@ -279,7 +276,6 @@ export default function StorePage() {
         </div>
       </div>
 
-      {/* 매장 정보 */}
       <div className="px-4 pt-6 space-y-6">
         <div className="space-y-3">
           <div className="flex items-start justify-between">
@@ -314,7 +310,6 @@ export default function StorePage() {
           </div>
         </div>
 
-        {/* 대표 쿠폰 */}
         <Card className="border-2 border-primary/20">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-sf font-semibold text-text">
@@ -357,7 +352,6 @@ export default function StorePage() {
           </div>
         </Card>
 
-        {/* 탭 메뉴 */}
         {/* <div className="flex border-b border-gray-200">
           {[
             { key: "coupons", label: "쿠폰", count: coupons.length },
@@ -377,9 +371,7 @@ export default function StorePage() {
             </button>
           ))}
         </div> */}
-
-        {/* 탭 콘텐츠 */}
-        {/* 탭 콘텐츠 */}
+        {/* 
         <div className="space-y-4">
           {activeTab === "coupons" && (
             <div className="space-y-4">
@@ -445,9 +437,6 @@ export default function StorePage() {
                       src={item.imageSrc}
                       className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center mr-4"
                     />
-                    {/* <div className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center mr-4">
-                      <i className="ri-cup-fill text-text-secondary text-2xl" />
-                    </div> */}
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className="font-sf font-semibold text-text">
@@ -476,7 +465,6 @@ export default function StorePage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  {/* <span className="text-sm font-sf text-text">정렬:</span> */}
                   <select
                     value={reviewSort}
                     onChange={(e) => setReviewSort(e.target.value as any)}
@@ -527,7 +515,7 @@ export default function StorePage() {
               ))}
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       {/* 고정 CTA */}
