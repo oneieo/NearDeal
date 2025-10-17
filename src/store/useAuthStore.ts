@@ -3,10 +3,10 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 interface AuthState {
   isLoggedIn: boolean;
-  affiliation: string;
   setIsLoggedIn: (value: boolean) => void;
-  setAffiliation: (value: string) => void;
   logout: () => void;
+  affiliation: string;
+  setAffiliation: (value: string) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -16,7 +16,7 @@ export const useAuthStore = create<AuthState>()(
       affiliation: "",
       setIsLoggedIn: (value) => set({ isLoggedIn: value }),
       setAffiliation: (value) => set({ affiliation: value }),
-      logout: () => set({ isLoggedIn: false, affiliation: "" }),
+      logout: () => set({ isLoggedIn: false }),
     }),
     {
       name: "auth-storage",
