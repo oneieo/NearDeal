@@ -230,394 +230,396 @@ export default function StorePage() {
     setShowCouponComplete(true);
   };
 
-  return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* 상단 네비게이션 */}
-      <TopNavigation
-        leftAction={
-          <button
-            onClick={() => navigate(-1)}
-            className="w-10 h-10 flex items-center justify-center"
-          >
-            <i className="ri-arrow-left-line text-text text-xl" />
-          </button>
-        }
-        rightAction={
-          <div className="flex items-center gap-2">
-            <button className="w-10 h-10 flex items-center justify-center">
-              <i className="ri-heart-line text-text text-xl" />
-            </button>
-            <button className="w-10 h-10 flex items-center justify-center">
-              <i className="ri-share-line text-text text-xl" />
-            </button>
-          </div>
-        }
-        showBorder={false}
-      />
+  return <div>주석처리</div>;
 
-      {/* 이미지 캐러셀 */}
-      <div className="relative pt-14">
-        <div className="w-full h-48 overflow-hidden">
-          <img
-            src={storeImages[currentImageIndex]}
-            alt="매장 이미지"
-            className="w-full h-full object-cover object-top"
-          />
-        </div>
+  // return (
+  //   <div className="min-h-screen bg-background pb-20">
+  //     {/* 상단 네비게이션 */}
+  //     <TopNavigation
+  //       leftAction={
+  //         <button
+  //           onClick={() => navigate(-1)}
+  //           className="w-10 h-10 flex items-center justify-center"
+  //         >
+  //           <i className="ri-arrow-left-line text-text text-xl" />
+  //         </button>
+  //       }
+  //       rightAction={
+  //         <div className="flex items-center gap-2">
+  //           <button className="w-10 h-10 flex items-center justify-center">
+  //             <i className="ri-heart-line text-text text-xl" />
+  //           </button>
+  //           <button className="w-10 h-10 flex items-center justify-center">
+  //             <i className="ri-share-line text-text text-xl" />
+  //           </button>
+  //         </div>
+  //       }
+  //       showBorder={false}
+  //     />
 
-        {/* 캐러셀 인디케이터 */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-          {storeImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentImageIndex(index)}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentImageIndex ? "bg-white" : "bg-white/50"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
+  //     {/* 이미지 캐러셀 */}
+  //     <div className="relative pt-14">
+  //       <div className="w-full h-48 overflow-hidden">
+  //         <img
+  //           src={storeImages[currentImageIndex]}
+  //           alt="매장 이미지"
+  //           className="w-full h-full object-cover object-top"
+  //         />
+  //       </div>
 
-      {/* 매장 정보 */}
-      <div className="px-4 pt-6 space-y-6">
-        <div className="space-y-3">
-          <div className="flex items-start justify-between">
-            <h1 className="text-2xl font-sf font-bold text-text">디핌</h1>
-            <div className="flex items-center gap-1">
-              <i className="ri-star-fill text-accent text-lg" />
-              <span className="text-lg font-sf font-semibold text-text">
-                4.8
-              </span>
-            </div>
-          </div>
+  //       {/* 캐러셀 인디케이터 */}
+  //       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+  //         {storeImages.map((_, index) => (
+  //           <button
+  //             key={index}
+  //             onClick={() => setCurrentImageIndex(index)}
+  //             className={`w-2 h-2 rounded-full transition-colors ${
+  //               index === currentImageIndex ? "bg-white" : "bg-white/50"
+  //             }`}
+  //           />
+  //         ))}
+  //       </div>
+  //     </div>
 
-          <div className="flex items-center gap-4 text-sm text-text-secondary font-sf">
-            <span>리뷰 106개</span>
-            <span>•</span>
-            <span>카페</span>
-          </div>
+  //     {/* 매장 정보 */}
+  //     <div className="px-4 pt-6 space-y-6">
+  //       <div className="space-y-3">
+  //         <div className="flex items-start justify-between">
+  //           <h1 className="text-2xl font-sf font-bold text-text">디핌</h1>
+  //           <div className="flex items-center gap-1">
+  //             <i className="ri-star-fill text-accent text-lg" />
+  //             <span className="text-lg font-sf font-semibold text-text">
+  //               4.8
+  //             </span>
+  //           </div>
+  //         </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <i className="ri-map-pin-line text-text-secondary" />
-              <span className="text-sm font-sf text-text">
-                전북 전주시 덕진구 명륜3길 9-1 1층
-              </span>
-              <button className="text-sm font-sf text-primary">길찾기</button>
-            </div>
-            <div className="flex items-center gap-3">
-              <i className="ri-time-line text-text-secondary" />
-              <span className="text-sm font-sf text-text">11:00 - 22:00</span>
-              <span className="text-sm font-sf text-primary">영업중</span>
-            </div>
-          </div>
-        </div>
+  //         <div className="flex items-center gap-4 text-sm text-text-secondary font-sf">
+  //           <span>리뷰 106개</span>
+  //           <span>•</span>
+  //           <span>카페</span>
+  //         </div>
 
-        {/* 대표 쿠폰 */}
-        <Card className="border-2 border-primary/20">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-sf font-semibold text-text">
-              대표 쿠폰
-            </h3>
-            <span className="bg-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
-              {coupons[0].discount}
-            </span>
-          </div>
-          <div className="space-y-2 mb-4">
-            <h4 className="font-sf font-semibold text-text">
-              {coupons[0].title}
-            </h4>
-            <p className="text-sm text-text-secondary font-sf">
-              {coupons[0].description}
-            </p>
-            <p className="text-xs text-text-secondary font-sf">
-              {coupons[0].conditions}
-            </p>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 text-sm font-sf">
-              <span className="text-accent font-medium">
-                {coupons[0].remaining}개 남음
-              </span>
-              <span className="text-text-secondary">
-                {coupons[0].timeLeft} 남음
-              </span>
-            </div>
-            <Button
-              size="sm"
-              className="px-6"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleIssueCoupon(coupons[0]);
-              }}
-            >
-              발급받기
-            </Button>
-          </div>
-        </Card>
+  //         <div className="space-y-2">
+  //           <div className="flex items-center gap-3">
+  //             <i className="ri-map-pin-line text-text-secondary" />
+  //             <span className="text-sm font-sf text-text">
+  //               전북 전주시 덕진구 명륜3길 9-1 1층
+  //             </span>
+  //             <button className="text-sm font-sf text-primary">길찾기</button>
+  //           </div>
+  //           <div className="flex items-center gap-3">
+  //             <i className="ri-time-line text-text-secondary" />
+  //             <span className="text-sm font-sf text-text">11:00 - 22:00</span>
+  //             <span className="text-sm font-sf text-primary">영업중</span>
+  //           </div>
+  //         </div>
+  //       </div>
 
-        {/* 탭 메뉴 */}
-        <div className="flex border-b border-gray-200">
-          {[
-            { key: "coupons", label: "쿠폰", count: coupons.length },
-            { key: "menu", label: "메뉴", count: menuItems.length },
-            { key: "reviews", label: "리뷰", count: publicReviews.length },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key as any)}
-              className={`flex-1 py-3 text-center transition-colors ${
-                activeTab === tab.key
-                  ? "text-primary border-b-2 border-primary"
-                  : "text-text-secondary"
-              }`}
-            >
-              <span className="font-sf font-medium">
-                {tab.label}
-                {/* {tab.count} */}
-              </span>
-            </button>
-          ))}
-        </div>
+  //       {/* 대표 쿠폰 */}
+  //       <Card className="border-2 border-primary/20">
+  //         <div className="flex items-center justify-between mb-3">
+  //           <h3 className="text-lg font-sf font-semibold text-text">
+  //             대표 쿠폰
+  //           </h3>
+  //           <span className="bg-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
+  //             {coupons[0].discount}
+  //           </span>
+  //         </div>
+  //         <div className="space-y-2 mb-4">
+  //           <h4 className="font-sf font-semibold text-text">
+  //             {coupons[0].title}
+  //           </h4>
+  //           <p className="text-sm text-text-secondary font-sf">
+  //             {coupons[0].description}
+  //           </p>
+  //           <p className="text-xs text-text-secondary font-sf">
+  //             {coupons[0].conditions}
+  //           </p>
+  //         </div>
+  //         <div className="flex items-center justify-between">
+  //           <div className="flex items-center gap-4 text-sm font-sf">
+  //             <span className="text-accent font-medium">
+  //               {coupons[0].remaining}개 남음
+  //             </span>
+  //             <span className="text-text-secondary">
+  //               {coupons[0].timeLeft} 남음
+  //             </span>
+  //           </div>
+  //           <Button
+  //             size="sm"
+  //             className="px-6"
+  //             onClick={(e) => {
+  //               e.stopPropagation();
+  //               handleIssueCoupon(coupons[0]);
+  //             }}
+  //           >
+  //             발급받기
+  //           </Button>
+  //         </div>
+  //       </Card>
 
-        {/* 탭 콘텐츠 */}
-        {/* 탭 콘텐츠 */}
-        <div className="space-y-4">
-          {activeTab === "coupons" && (
-            <div className="space-y-4">
-              {coupons.map((coupon) => (
-                <Card
-                  key={coupon.id}
-                  className={`cursor-pointer transition-all ${
-                    selectedCoupon === coupon.id
-                      ? "border-2 border-primary"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    setSelectedCoupon(
-                      selectedCoupon === coupon.id ? null : coupon.id
-                    )
-                  }
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-sf font-semibold text-text">
-                      {coupon.title}
-                    </h4>
-                    <span className="bg-accent text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
-                      {coupon.discount}
-                    </span>
-                  </div>
-                  <p className="text-sm text-text-secondary font-sf mb-2">
-                    {coupon.description}
-                  </p>
-                  <p className="text-xs text-text-secondary font-sf mb-3">
-                    {coupon.conditions}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-sm font-sf">
-                      <span className="text-accent font-medium">
-                        {coupon.remaining}개 남음
-                      </span>
-                      <span className="text-text-secondary">
-                        {coupon.timeLeft} 남음
-                      </span>
-                    </div>
-                    <Button
-                      size="sm"
-                      className="px-6"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleIssueCoupon(coupon);
-                      }}
-                    >
-                      발급받기
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          )}
+  //       {/* 탭 메뉴 */}
+  //       <div className="flex border-b border-gray-200">
+  //         {[
+  //           { key: "coupons", label: "쿠폰", count: coupons.length },
+  //           { key: "menu", label: "메뉴", count: menuItems.length },
+  //           { key: "reviews", label: "리뷰", count: publicReviews.length },
+  //         ].map((tab) => (
+  //           <button
+  //             key={tab.key}
+  //             onClick={() => setActiveTab(tab.key as any)}
+  //             className={`flex-1 py-3 text-center transition-colors ${
+  //               activeTab === tab.key
+  //                 ? "text-primary border-b-2 border-primary"
+  //                 : "text-text-secondary"
+  //             }`}
+  //           >
+  //             <span className="font-sf font-medium">
+  //               {tab.label}
+  //               {/* {tab.count} */}
+  //             </span>
+  //           </button>
+  //         ))}
+  //       </div>
 
-          {activeTab === "menu" && (
-            <div className="space-y-3">
-              {menuItems.map((item) => (
-                <Card key={item.id}>
-                  <div className="flex items-center">
-                    <img
-                      src={item.imageSrc}
-                      className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center mr-4"
-                    />
-                    {/* <div className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center mr-4">
-                      <i className="ri-cup-fill text-text-secondary text-2xl" />
-                    </div> */}
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-sf font-semibold text-text">
-                          {item.name}
-                        </h4>
-                        {item.couponApplicable && selectedCoupon && (
-                          <span className="bg-primary/10 text-primary text-xs font-sf font-medium px-2 py-1 rounded-6">
-                            쿠폰 적용 가능
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-text-secondary font-sf mb-2">
-                        {item.description}
-                      </p>
-                      <p className="text-lg font-sf font-bold text-text">
-                        {item.price.toLocaleString()}원
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          )}
+  //       {/* 탭 콘텐츠 */}
+  //       {/* 탭 콘텐츠 */}
+  //       <div className="space-y-4">
+  //         {activeTab === "coupons" && (
+  //           <div className="space-y-4">
+  //             {coupons.map((coupon) => (
+  //               <Card
+  //                 key={coupon.id}
+  //                 className={`cursor-pointer transition-all ${
+  //                   selectedCoupon === coupon.id
+  //                     ? "border-2 border-primary"
+  //                     : ""
+  //                 }`}
+  //                 onClick={() =>
+  //                   setSelectedCoupon(
+  //                     selectedCoupon === coupon.id ? null : coupon.id
+  //                   )
+  //                 }
+  //               >
+  //                 <div className="flex items-center justify-between mb-3">
+  //                   <h4 className="font-sf font-semibold text-text">
+  //                     {coupon.title}
+  //                   </h4>
+  //                   <span className="bg-accent text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
+  //                     {coupon.discount}
+  //                   </span>
+  //                 </div>
+  //                 <p className="text-sm text-text-secondary font-sf mb-2">
+  //                   {coupon.description}
+  //                 </p>
+  //                 <p className="text-xs text-text-secondary font-sf mb-3">
+  //                   {coupon.conditions}
+  //                 </p>
+  //                 <div className="flex items-center justify-between">
+  //                   <div className="flex items-center gap-4 text-sm font-sf">
+  //                     <span className="text-accent font-medium">
+  //                       {coupon.remaining}개 남음
+  //                     </span>
+  //                     <span className="text-text-secondary">
+  //                       {coupon.timeLeft} 남음
+  //                     </span>
+  //                   </div>
+  //                   <Button
+  //                     size="sm"
+  //                     className="px-6"
+  //                     onClick={(e) => {
+  //                       e.stopPropagation();
+  //                       handleIssueCoupon(coupon);
+  //                     }}
+  //                   >
+  //                     발급받기
+  //                   </Button>
+  //                 </div>
+  //               </Card>
+  //             ))}
+  //           </div>
+  //         )}
 
-          {activeTab === "reviews" && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {/* <span className="text-sm font-sf text-text">정렬:</span> */}
-                  <select
-                    value={reviewSort}
-                    onChange={(e) => setReviewSort(e.target.value as any)}
-                    className="text-sm font-sf text-primary bg-transparent border-none focus:outline-none"
-                  >
-                    <option value="latest">최신순</option>
-                    <option value="highest">높은 평점순</option>
-                    <option value="lowest">낮은 평점순</option>
-                  </select>
-                </div>
-              </div>
+  //         {activeTab === "menu" && (
+  //           <div className="space-y-3">
+  //             {menuItems.map((item) => (
+  //               <Card key={item.id}>
+  //                 <div className="flex items-center">
+  //                   <img
+  //                     src={item.imageSrc}
+  //                     className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center mr-4"
+  //                   />
+  //                   {/* <div className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center mr-4">
+  //                     <i className="ri-cup-fill text-text-secondary text-2xl" />
+  //                   </div> */}
+  //                   <div className="flex-1">
+  //                     <div className="flex items-center gap-2 mb-1">
+  //                       <h4 className="font-sf font-semibold text-text">
+  //                         {item.name}
+  //                       </h4>
+  //                       {item.couponApplicable && selectedCoupon && (
+  //                         <span className="bg-primary/10 text-primary text-xs font-sf font-medium px-2 py-1 rounded-6">
+  //                           쿠폰 적용 가능
+  //                         </span>
+  //                       )}
+  //                     </div>
+  //                     <p className="text-sm text-text-secondary font-sf mb-2">
+  //                       {item.description}
+  //                     </p>
+  //                     <p className="text-lg font-sf font-bold text-text">
+  //                       {item.price.toLocaleString()}원
+  //                     </p>
+  //                   </div>
+  //                 </div>
+  //               </Card>
+  //             ))}
+  //           </div>
+  //         )}
 
-              {publicReviews.map((review) => (
-                <Card key={review.id}>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                          <i className="ri-user-fill text-text-secondary" />
-                        </div>
-                        <div>
-                          <p className="font-sf font-medium text-text">
-                            {review.author}
-                          </p>
-                          <p className="text-xs text-text-secondary font-sf">
-                            {review.date}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <i
-                            key={i}
-                            className={`ri-star-fill text-sm ${
-                              i < review.rating
-                                ? "text-accent"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-sm font-sf text-text leading-relaxed">
-                      {review.content}
-                    </p>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+  //         {activeTab === "reviews" && (
+  //           <div className="space-y-4">
+  //             <div className="flex items-center justify-between">
+  //               <div className="flex items-center gap-2">
+  //                 {/* <span className="text-sm font-sf text-text">정렬:</span> */}
+  //                 <select
+  //                   value={reviewSort}
+  //                   onChange={(e) => setReviewSort(e.target.value as any)}
+  //                   className="text-sm font-sf text-primary bg-transparent border-none focus:outline-none"
+  //                 >
+  //                   <option value="latest">최신순</option>
+  //                   <option value="highest">높은 평점순</option>
+  //                   <option value="lowest">낮은 평점순</option>
+  //                 </select>
+  //               </div>
+  //             </div>
 
-      {/* 고정 CTA */}
-      {/* <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
-        <Button
-          fullWidth
-          size="lg"
-          className="bg-gradient-to-r from-primary to-primary-dark"
-          onClick={() => handleIssueCoupon(coupons[0])}
-        >
-          <i className="ri-coupon-fill mr-2" />
-          쿠폰 발급받기
-        </Button>
-      </div> */}
+  //             {publicReviews.map((review) => (
+  //               <Card key={review.id}>
+  //                 <div className="space-y-3">
+  //                   <div className="flex items-center justify-between">
+  //                     <div className="flex items-center gap-3">
+  //                       <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+  //                         <i className="ri-user-fill text-text-secondary" />
+  //                       </div>
+  //                       <div>
+  //                         <p className="font-sf font-medium text-text">
+  //                           {review.author}
+  //                         </p>
+  //                         <p className="text-xs text-text-secondary font-sf">
+  //                           {review.date}
+  //                         </p>
+  //                       </div>
+  //                     </div>
+  //                     <div className="flex items-center gap-1">
+  //                       {[...Array(5)].map((_, i) => (
+  //                         <i
+  //                           key={i}
+  //                           className={`ri-star-fill text-sm ${
+  //                             i < review.rating
+  //                               ? "text-accent"
+  //                               : "text-gray-300"
+  //                           }`}
+  //                         />
+  //                       ))}
+  //                     </div>
+  //                   </div>
+  //                   <p className="text-sm font-sf text-text leading-relaxed">
+  //                     {review.content}
+  //                   </p>
+  //                 </div>
+  //               </Card>
+  //             ))}
+  //           </div>
+  //         )}
+  //       </div>
+  //     </div>
 
-      {/* 쿠폰 발급 완료 모달 */}
-      {showCouponComplete && issuedCoupon && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setShowCouponComplete(false)}
-          />
-          <div className="relative bg-white rounded-20 p-6 w-full max-w-sm">
-            <div className="text-center space-y-6">
-              {/* 체크 아이콘 애니메이션 */}
-              <div className="w-20 h-20 bg-green-100 rounded-full mx-auto flex items-center justify-center">
-                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center animate-bounce">
-                  <i className="ri-check-line text-white text-3xl" />
-                </div>
-              </div>
+  //     {/* 고정 CTA */}
+  //     {/* <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+  //       <Button
+  //         fullWidth
+  //         size="lg"
+  //         className="bg-gradient-to-r from-primary to-primary-dark"
+  //         onClick={() => handleIssueCoupon(coupons[0])}
+  //       >
+  //         <i className="ri-coupon-fill mr-2" />
+  //         쿠폰 발급받기
+  //       </Button>
+  //     </div> */}
 
-              <div className="space-y-2">
-                <h3 className="text-xl font-sf font-bold text-text">
-                  쿠폰 발급 완료!
-                </h3>
-                <p className="text-text-secondary font-sf">
-                  디핌 쿠폰이 발급되었습니다
-                </p>
-              </div>
+  //     {/* 쿠폰 발급 완료 모달 */}
+  //     {showCouponComplete && issuedCoupon && (
+  //       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  //         <div
+  //           className="absolute inset-0 bg-black/50"
+  //           onClick={() => setShowCouponComplete(false)}
+  //         />
+  //         <div className="relative bg-white rounded-20 p-6 w-full max-w-sm">
+  //           <div className="text-center space-y-6">
+  //             {/* 체크 아이콘 애니메이션 */}
+  //             <div className="w-20 h-20 bg-green-100 rounded-full mx-auto flex items-center justify-center">
+  //               <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center animate-bounce">
+  //                 <i className="ri-check-line text-white text-3xl" />
+  //               </div>
+  //             </div>
 
-              <div className="bg-primary/5 border-2 border-dashed border-primary/20 rounded-16 p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-sf font-semibold text-text">
-                    {issuedCoupon.title}
-                  </h4>
-                  <span className="bg-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
-                    {issuedCoupon.discount}
-                  </span>
-                </div>
-                <p className="text-sm font-sf text-text">
-                  {issuedCoupon.description}
-                </p>
-                <div className="flex items-center justify-between text-sm font-sf">
-                  <span className="text-text-secondary">유효기간</span>
-                  <span className="text-accent font-medium">
-                    {issuedCoupon.timeLeft} 남음
-                  </span>
-                </div>
-              </div>
+  //             <div className="space-y-2">
+  //               <h3 className="text-xl font-sf font-bold text-text">
+  //                 쿠폰 발급 완료!
+  //               </h3>
+  //               <p className="text-text-secondary font-sf">
+  //                 디핌 쿠폰이 발급되었습니다
+  //               </p>
+  //             </div>
 
-              <div className="space-y-3">
-                <p className="text-sm text-text-secondary font-sf">
-                  쿠폰 보관함에서 언제든지 확인할 수 있습니다
-                </p>
-                <div className="flex gap-3">
-                  <Button
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => setShowCouponComplete(false)}
-                  >
-                    닫기
-                  </Button>
-                  <Button
-                    className="flex-1"
-                    onClick={() => {
-                      setShowCouponComplete(false);
-                      navigate("/coupons");
-                    }}
-                  >
-                    쿠폰함 보기
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  //             <div className="bg-primary/5 border-2 border-dashed border-primary/20 rounded-16 p-4 space-y-3">
+  //               <div className="flex items-center justify-between">
+  //                 <h4 className="font-sf font-semibold text-text">
+  //                   {issuedCoupon.title}
+  //                 </h4>
+  //                 <span className="bg-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
+  //                   {issuedCoupon.discount}
+  //                 </span>
+  //               </div>
+  //               <p className="text-sm font-sf text-text">
+  //                 {issuedCoupon.description}
+  //               </p>
+  //               <div className="flex items-center justify-between text-sm font-sf">
+  //                 <span className="text-text-secondary">유효기간</span>
+  //                 <span className="text-accent font-medium">
+  //                   {issuedCoupon.timeLeft} 남음
+  //                 </span>
+  //               </div>
+  //             </div>
+
+  //             <div className="space-y-3">
+  //               <p className="text-sm text-text-secondary font-sf">
+  //                 쿠폰 보관함에서 언제든지 확인할 수 있습니다
+  //               </p>
+  //               <div className="flex gap-3">
+  //                 <Button
+  //                   variant="outline"
+  //                   className="flex-1"
+  //                   onClick={() => setShowCouponComplete(false)}
+  //                 >
+  //                   닫기
+  //                 </Button>
+  //                 <Button
+  //                   className="flex-1"
+  //                   onClick={() => {
+  //                     setShowCouponComplete(false);
+  //                     navigate("/coupons");
+  //                   }}
+  //                 >
+  //                   쿠폰함 보기
+  //                 </Button>
+  //               </div>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
 }

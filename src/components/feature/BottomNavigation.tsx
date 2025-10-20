@@ -20,9 +20,8 @@ export default function BottomNavigation() {
   const { setSelectedCategory } = useCategoryStore();
 
   const handleNavigation = (path: string) => {
-    // 지도 버튼 클릭 시 '제휴' 카테고리 선택
     if (path === "/map") {
-      setSelectedCategory("제휴");
+      setSelectedCategory("");
     }
     navigate(path);
   };

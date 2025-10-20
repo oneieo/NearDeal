@@ -6,8 +6,36 @@ import Card from "../../components/base/Card";
 import NaverMapComponent from "../../components/feature/NaverMapComponent";
 import { useCategoryStore } from "../../store/useCategoryStore";
 import { calculateDistance, formatDistance } from "../../utils/distance";
+import { useAuthStore } from "../../store/useAuthStore";
+import { usePartnerStore } from "../../store/usePartnerStore";
 
 // Types
+interface PartnerStore {
+  partnerStoreId: number;
+  storeName: string;
+  address: string;
+  category: string;
+  partnerCategory: string;
+  lat: number;
+  lng: number;
+  phone: string;
+  openingTime: string;
+  closingTime: string;
+  breakStartTime: string;
+  breakEndTime: string;
+  lastOrder: string;
+  introduce: string;
+  partnerBenefit: string;
+  etc: string;
+  sns: string;
+}
+
+interface PartnerStoreResponse {
+  content: PartnerStore[];
+  totalElements: number;
+  totalPages: number;
+}
+
 interface Store {
   id: string;
   name: string;
@@ -39,184 +67,78 @@ const DEFAULT_LOCATION: Location = {
   lng: 127.1320319577,
 };
 
-const CATEGORY_MAPPING = {
-  음식점: "restaurant",
-  카페: "cafe",
-  헤어샵: "beauty",
-  마트: "shopping",
-  제휴: "partner",
-  즐겨찾기: "favorite",
+const CATEGORY_MAPPING: Record<string, string> = {
+  단과대학: "",
+  총학생회: "STUDENT_COUNCIL",
+  음식점: "RESTAURANT",
+  카페: "CAFE",
+  주점: "BAR",
+  기타: "ETC",
 };
 
-const ALL_STORES: Store[] = [
-  {
-    id: "1",
-    name: "스타벅스 전북대점",
-    rating: 4.8,
-    reviewCount: 321,
-    distance: "120m",
-    category: "cafe",
-    address: "전북 전주시 덕진구 명륜4길 12 (덕진동1가)",
-    mainCoupon: { title: "아메리카노 1+1", remaining: 15 },
-    lat: 35.84297308332185,
-    lng: 127.12677918677498,
-    distanceInM: 120,
-    popularity: 95,
-  },
-  {
-    id: "2",
-    name: "투썸플레이스 전북대점",
-    rating: 4.6,
-    reviewCount: 198,
-    distance: "250m",
-    category: "cafe",
-    address: "전북 전주시 덕진구 권삼득로 307",
-    mainCoupon: { title: "케이크 30% 할인", remaining: 8 },
-    lat: 35.84339974135816,
-    lng: 127.12813582901619,
-    distanceInM: 250,
-    popularity: 87,
-  },
-  {
-    id: "3",
-    name: "이디야커피 전북대구정문점",
-    rating: 4.5,
-    reviewCount: 156,
-    distance: "320m",
-    category: "cafe",
-    address: "전북 전주시 덕진구 권삼득로 313 2,3층",
-    mainCoupon: { title: "음료 2000원 할인", remaining: 23 },
-    lat: 35.84369982407683,
-    lng: 127.12774612485242,
-    distanceInM: 320,
-    popularity: 78,
-  },
-  {
-    id: "4",
-    name: "롯데슈퍼 전북대점",
-    rating: 4.2,
-    reviewCount: 89,
-    distance: "180m",
-    category: "shopping",
-    address: "전북 전주시 덕진구 백제대로 572",
-    mainCoupon: { title: "생필품 10% 할인", remaining: 30 },
-    lat: 35.84033301287097,
-    lng: 127.13247811369264,
-    distanceInM: 180,
-    popularity: 65,
-  },
-  {
-    id: "5",
-    name: "맥도날드 테헤란점",
-    rating: 4.3,
-    reviewCount: 245,
-    distance: "350m",
-    category: "restaurant",
-    address: "서울 강남구 테헤란로 234",
-    mainCoupon: { title: "빅맥세트 20% 할인", remaining: 12 },
-    lat: 37.564,
-    lng: 127.031,
-    distanceInM: 350,
-    popularity: 82,
-  },
-  {
-    id: "10",
-    name: "디핌",
-    rating: 4.3,
-    reviewCount: 245,
-    distance: "200m",
-    category: "partner",
-    address: "전북 전주시 덕진구 명륜3길 9-1 1층",
-    mainCoupon: { title: "만 원 이상 구매 시 쿠키 증정", remaining: 5 },
-    lat: 35.8422969899994,
-    lng: 127.126922007052,
-    distanceInM: 200,
-    popularity: 56,
-  },
-  {
-    id: "6",
-    name: "여유",
-    rating: 4.3,
-    reviewCount: 245,
-    distance: "350m",
-    category: "partner",
-    address: "전북 전주시 덕진구 백제대로 595",
-    mainCoupon: { title: "아메리카노 또는 아이스티 5+1", remaining: 12 },
-    lat: 35.841623778922376,
-    lng: 127.13476044104675,
-    distanceInM: 350,
-    popularity: 82,
-  },
-  {
-    id: "7",
-    name: "네커피",
-    rating: 4.3,
-    reviewCount: 245,
-    distance: "350m",
-    category: "partner",
-    address: "전북 전주시 덕진구 삼송5길 14-18 네커피",
-    mainCoupon: { title: "쿠폰 8개만 채워도 혜택 적용", remaining: 12 },
-    lat: 35.843521847759625,
-    lng: 127.13791834621006,
-    distanceInM: 350,
-    popularity: 82,
-  },
-  {
-    id: "8",
-    name: "인솔커피",
-    rating: 4.3,
-    reviewCount: 245,
-    distance: "350m",
-    category: "partner",
-    address: "전북 전주시 덕진구 권삼득로 315 1층 인솔커피 전북대점",
-    mainCoupon: { title: "만 원 이상 구매 시 쿠키 증정", remaining: 12 },
-    lat: 35.84374510140307,
-    lng: 127.12754418572484,
-    distanceInM: 350,
-    popularity: 82,
-  },
-  {
-    id: "9",
-    name: "온앤오프",
-    rating: 4.3,
-    reviewCount: 245,
-    distance: "350m",
-    category: "partner",
-    address: "전북 전주시 덕진구 명륜3길 14 3층",
-    mainCoupon: { title: "평일 1500원, 주말 1800원", remaining: 12 },
-    lat: 35.842401975476896,
-    lng: 127.12778278511642,
-    distanceInM: 350,
-    popularity: 82,
-  },
-  {
-    id: "11",
-    name: "살롱드빌리지하우스",
-    rating: 4.3,
-    reviewCount: 245,
-    distance: "350m",
-    category: "beauty",
-    address: "전북 전주시 덕진구 권삼득로 313-1 살롱드 빌리지 하우스점",
-    mainCoupon: { title: "헤어컷 20% 할인", remaining: 12 },
-    lat: 35.84358504636788,
-    lng: 127.12762141327572,
-    distanceInM: 350,
-    popularity: 82,
-  },
-];
+export const CATEGORY_API_MAPPING: Record<string, string> = {
+  단과대학: "",
+  총학생회: "STUDENT_COUNCIL",
+  음식점: "RESTAURANT",
+  카페: "CAFE",
+  주점: "BAR",
+  기타: "ETC",
+};
 
-// Utility functions
+// API 카테고리 -> 표시용 카테고리
+const API_CATEGORY_TO_DISPLAY: Record<string, string> = {
+  CAFE: "cafe",
+  RESTAURANT: "restaurant",
+  ETC: "etc",
+  BAR: "bar",
+  BEAUTY: "beauty",
+};
+
 const getCategoryIcon = (category: string): string => {
   const icons = {
-    cafe: "ri-cup-fill",
-    shopping: "ri-shopping-cart-fill",
-    restaurant: "ri-restaurant-fill",
-    beauty: "ri-scissors-cut-fill",
-    health: "ri-heart-pulse-fill",
     partner: "ri-service-fill",
+    cafe: "ri-cup-fill",
+    restaurant: "ri-restaurant-fill",
+    bar: "ri-beer-fill",
+    etc: "ri-shopping-cart-fill",
+    health: "ri-heart-pulse-fill",
+    beauty: "ri-scissors-cut-fill",
     default: "ri-store-fill",
+    // shopping: "ri-shopping-cart-fill",
   };
   return icons[category as keyof typeof icons] || icons.default;
+};
+
+const convertPartnerStoreToStore = (
+  partnerStore: PartnerStore,
+  currentLocation: Location | null
+): Store => {
+  const distanceInM = currentLocation
+    ? calculateDistance(
+        currentLocation.lat,
+        currentLocation.lng,
+        partnerStore.lat,
+        partnerStore.lng
+      )
+    : 0;
+
+  return {
+    id: partnerStore.partnerStoreId.toString(),
+    name: partnerStore.storeName,
+    rating: 4.5,
+    reviewCount: 0,
+    distance: formatDistance(distanceInM),
+    category: partnerStore.category, // API의 category 값 그대로 사용 (CAFE, RESTAURANT 등)
+    address: partnerStore.address,
+    mainCoupon: {
+      title: partnerStore.partnerBenefit || "혜택 정보 없음",
+      remaining: 10,
+    },
+    lat: partnerStore.lat,
+    lng: partnerStore.lng,
+    distanceInM,
+    popularity: 75,
+  };
 };
 
 const createStoreMarkerContent = (store: Store): string => `
@@ -285,6 +207,7 @@ export default function MapPage() {
   const {
     categories,
     selectedCategoryName,
+    setSelectedCategory,
     toggleCategory,
     isCategorySelected,
   } = useCategoryStore();
@@ -295,16 +218,69 @@ export default function MapPage() {
   const [sortType, setSortType] = useState<SortType>("distance");
   const [mapCenter, setMapCenter] = useState<Location>(DEFAULT_LOCATION);
   const [mapKey, setMapKey] = useState(0);
-
+  const { affiliation } = useAuthStore();
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
+  const { stores, setStores } = usePartnerStore();
+  //const [stores, setStores] = useState<Store[]>([]);
 
-  // 현재 위치 기반으로 거리 계산
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPartnerStores = async () => {
+      if (!affiliation) {
+        console.log("소속 단과대학의 제휴 정보가 없습니다.");
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/partner-store?page=0&size=100&partnerCategory=${encodeURIComponent(
+            affiliation
+          )}`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json; charset=UTF-8",
+            },
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("제휴상점 정보를 가져오는데 실패했습니다.");
+        }
+
+        const data: PartnerStoreResponse = await response.json();
+        console.log("제휴상점 데이터:", data);
+
+        const convertedStores = data.content.map((partnerStore) =>
+          convertPartnerStoreToStore(partnerStore, currentLocation)
+        );
+
+        setStores(convertedStores);
+      } catch (err) {
+        console.error("제휴상점 데이터 로드 오류:", err);
+        setError(err instanceof Error ? err.message : "알 수 없는 오류");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPartnerStores();
+  }, [affiliation, currentLocation]);
+
   const storesWithDistance = useMemo(() => {
     if (!currentLocation) {
-      return ALL_STORES;
+      return stores;
     }
 
-    return ALL_STORES.map((store) => {
+    return stores.map((store) => {
       const distanceInM = calculateDistance(
         currentLocation.lat,
         currentLocation.lng,
@@ -318,18 +294,42 @@ export default function MapPage() {
         distance: formatDistance(distanceInM),
       };
     });
-  }, [currentLocation]);
+  }, [currentLocation, stores]);
 
-  // 거리 기반 필터링
+  // const filteredStores = useMemo(() => {
+  //   return storesWithDistance.filter((store) => {
+  //     let matchesCategory = true;
+  //     if (selectedCategoryName) {
+  //       const selectedCategoryMapped =
+  //         CATEGORY_MAPPING[
+  //           selectedCategoryName as keyof typeof CATEGORY_MAPPING
+  //         ];
+  //       matchesCategory = store.category === selectedCategoryMapped;
+  //     }
+
+  //     const matchesSearch =
+  //       searchQuery === "" ||
+  //       store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //       store.mainCoupon.title
+  //         .toLowerCase()
+  //         .includes(searchQuery.toLowerCase());
+
+  //     return matchesCategory && matchesSearch;
+  //   });
+  // }, [storesWithDistance, selectedCategoryName, searchQuery]);
+
   const filteredStores = useMemo(() => {
     return storesWithDistance.filter((store) => {
       let matchesCategory = true;
+
       if (selectedCategoryName) {
-        const selectedCategoryMapped =
-          CATEGORY_MAPPING[
-            selectedCategoryName as keyof typeof CATEGORY_MAPPING
-          ];
-        matchesCategory = store.category === selectedCategoryMapped;
+        const selectedCategoryApiValue = CATEGORY_MAPPING[selectedCategoryName];
+
+        if (selectedCategoryApiValue === "") {
+          matchesCategory = true;
+        } else {
+          matchesCategory = store.category === selectedCategoryApiValue;
+        }
       }
 
       const matchesSearch =
@@ -343,7 +343,6 @@ export default function MapPage() {
     });
   }, [storesWithDistance, selectedCategoryName, searchQuery]);
 
-  // 정렬
   const sortedStores = useMemo(() => {
     return [...filteredStores].sort((a, b) => {
       return sortType === "distance"
@@ -352,7 +351,6 @@ export default function MapPage() {
     });
   }, [filteredStores, sortType]);
 
-  // 마커
   const mapMarkers = useMemo(() => {
     const markers = [];
 
@@ -379,16 +377,26 @@ export default function MapPage() {
     return markers;
   }, [currentLocation, filteredStores]);
 
-  // Event handlers
   const handleCategoryToggle = useCallback(
     (categoryName: string) => {
       toggleCategory(categoryName);
+      console.log(categoryName);
     },
     [toggleCategory]
   );
 
   const handleStoreClick = useCallback(
     (storeId: string) => {
+      console.log("=== handleStoreClick 호출 ===");
+      console.log("storeId:", storeId);
+      console.log("타입:", typeof storeId);
+      console.log("경로:", `/store/${storeId}`);
+
+      if (!storeId) {
+        console.error("storeId가 없습니다!");
+        return;
+      }
+
       navigate(`/store/${storeId}`);
     },
     [navigate]
@@ -415,6 +423,7 @@ export default function MapPage() {
   const handleListViewStoreClick = useCallback(
     (storeId: string) => {
       setShowListView(false);
+      console.log(storeId);
       handleStoreClick(storeId);
     },
     [handleStoreClick]

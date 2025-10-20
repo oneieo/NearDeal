@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import type { PartnerStore } from "../types/partnerStoreType";
-
 interface PartnerStoreState {
   stores: PartnerStore[];
   selectedStore: PartnerStore | null;
