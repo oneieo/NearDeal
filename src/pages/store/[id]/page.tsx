@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import TopNavigation from "../../../components/feature/TopNavigation";
 import Card from "../../../components/base/Card";
 import Button from "../../../components/base/Button";
+import { usePartnerStore } from "../../../store/usePartnerStore";
 
 interface Coupon {
   id: string;
@@ -32,6 +34,24 @@ interface Review {
   isPrivate: boolean;
 }
 
+interface Store {
+  id: string;
+  name: string;
+  address: string;
+  category: string;
+  lat: number;
+  lng: number;
+  distance: string;
+  distanceInM: number;
+  rating: number;
+  reviewCount: number;
+  popularity: number;
+  mainCoupon: {
+    title: string;
+    remaining: number;
+  };
+}
+
 const storeImages = [
   "/디핌/내부/디핌내부2.jpg",
   "/디핌/내부/디핌내부1.jpg",
@@ -42,193 +62,246 @@ const storeImages = [
   // "https://readdy.ai/api/search-image?query=Coffee%20shop%20seating%20area%20with%20comfortable%20chairs%2C%20natural%20light%2C%20plants%2C%20books%2C%20cozy%20cafe%20atmosphere%2C%20minimalist%20interior%20design&width=375&height=200&seq=store3&orientation=landscape",
 ];
 
-const coupons: Coupon[] = [
-  {
-    id: "1",
-    title: "아메리카노 1+1",
-    description: "아메리카노 주문 시 1잔 무료 증정",
-    discount: "1+1",
-    conditions: "1인 1매 한정, 다른 할인과 중복 불가",
-    remaining: 15,
-    timeLeft: "2시간 30분",
-  },
-  {
-    id: "2",
-    title: "전 메뉴 20% 할인",
-    description: "음료, 디저트 전 메뉴 20% 할인",
-    discount: "20%",
-    conditions: "3만원 이상 주문 시, 포장 전용",
-    remaining: 8,
-    timeLeft: "5시간 15분",
-  },
-  {
-    id: "3",
-    title: "케이크 30% 할인",
-    description: "시그니처 케이크 30% 특가",
-    discount: "30%",
-    conditions: "평일 오후 2-5시 한정",
-    remaining: 12,
-    timeLeft: "1시간 45분",
-  },
-];
+// const coupons: Coupon[] = [
+//   {
+//     id: "1",
+//     title: "아메리카노 1+1",
+//     description: "아메리카노 주문 시 1잔 무료 증정",
+//     discount: "1+1",
+//     conditions: "1인 1매 한정, 다른 할인과 중복 불가",
+//     remaining: 15,
+//     timeLeft: "2시간 30분",
+//   },
+//   {
+//     id: "2",
+//     title: "전 메뉴 20% 할인",
+//     description: "음료, 디저트 전 메뉴 20% 할인",
+//     discount: "20%",
+//     conditions: "3만원 이상 주문 시, 포장 전용",
+//     remaining: 8,
+//     timeLeft: "5시간 15분",
+//   },
+//   {
+//     id: "3",
+//     title: "케이크 30% 할인",
+//     description: "시그니처 케이크 30% 특가",
+//     discount: "30%",
+//     conditions: "평일 오후 2-5시 한정",
+//     remaining: 12,
+//     timeLeft: "1시간 45분",
+//   },
+// ];
 
-const menuItems: MenuItem[] = [
-  {
-    id: "1",
-    name: "흑임자 크림라떼",
-    price: 6500,
-    description: "진한 흑임자 풍미와 부드러운 수제 크림의 조화",
-    couponApplicable: true,
-    imageSrc: "/디핌/디핌메뉴/흑임자크림라떼.jpg",
-  },
-  {
-    id: "2",
-    name: "바닐라 크림라떼",
-    price: 6500,
-    description: "부드러운 크림과 바닐라빈 콕콕 라떼",
-    couponApplicable: true,
-    imageSrc: "/디핌/디핌메뉴/바닐라크림라떼.jpg",
-  },
-  {
-    id: "3",
-    name: "크로플",
-    price: 5000,
-    description: "크루아상 생지를 와플처럼 구워낸 겉바속촉 디저트",
-    couponApplicable: true,
-    imageSrc: "/디핌/디핌메뉴/크로플.jpg",
-  },
-  {
-    id: "4",
-    name: "밀크티",
-    price: 5500,
-    description: "진하게 우려낸 홍차에 우유를 더해 향긋한 맛",
-    couponApplicable: true,
-    imageSrc: "/디핌/디핌메뉴/밀크티.jpg",
-  },
-  {
-    id: "5",
-    name: "크루키",
-    price: 5800,
-    description: "크루아상과 쿠키의 만남",
-    couponApplicable: true,
-    imageSrc: "/디핌/디핌메뉴/크루키.jpg",
-  },
-  {
-    id: "6",
-    name: "수제 고구마빵",
-    price: 3000,
-    description: "쫄깃한 찹쌀반죽 속 달콤한 고구마 앙금이 가득",
-    couponApplicable: true,
-    imageSrc: "/디핌/디핌메뉴/고구마빵.jpg",
-  },
-  {
-    id: "7",
-    name: "딸기 크림라떼",
-    price: 5500,
-    description: "상큼한 딸기과육 베이스와 달콤한 수제크림이 어우러진 라떼",
-    couponApplicable: true,
-    imageSrc: "/디핌/디핌메뉴/딸기크림라떼.jpg",
-  },
-  {
-    id: "8",
-    name: "마롱(밤)라떼",
-    price: 5800,
-    description: "고소하고 부드러운 밤 풍미가 가득한 라떼",
-    couponApplicable: true,
-    imageSrc: "/디핌/디핌메뉴/마롱(밤)라떼.jpeg",
-  },
-  {
-    id: "9",
-    name: "아메리카노",
-    price: 4300,
-    description: "깊고 진한 에스프레소의 풍미",
-    couponApplicable: true,
-    imageSrc: "/디핌/디핌메뉴/아메리카노.jpg",
-  },
-  {
-    id: "10",
-    name: "바닐라라떼",
-    price: 5500,
-    description: "달콤한 바닐라 시럽이 들어간 라떼",
-    couponApplicable: true,
-    imageSrc: "/디핌/디핌메뉴/바닐라라떼.jpg",
-  },
-  {
-    id: "11",
-    name: "브라운치즈 크로플",
-    price: 6800,
-    description: "바삭한 크로플 위에 눈꽃처럼 갈아 올린 짭짤 달콤 브라운 치즈",
-    couponApplicable: false,
-    imageSrc: "/디핌/디핌메뉴/크로플.jpg",
-  },
-  {
-    id: "12",
-    name: "매실에이드",
-    price: 5500,
-    description: "톡쏘는 탄산수에 건강한 매실청",
-    couponApplicable: true,
-    imageSrc: "/디핌/디핌메뉴/매실에이드.jpg",
-  },
-];
+// const menuItems: MenuItem[] = [
+//   {
+//     id: "1",
+//     name: "흑임자 크림라떼",
+//     price: 6500,
+//     description: "진한 흑임자 풍미와 부드러운 수제 크림의 조화",
+//     couponApplicable: true,
+//     imageSrc: "/디핌/디핌메뉴/흑임자크림라떼.jpg",
+//   },
+//   {
+//     id: "2",
+//     name: "바닐라 크림라떼",
+//     price: 6500,
+//     description: "부드러운 크림과 바닐라빈 콕콕 라떼",
+//     couponApplicable: true,
+//     imageSrc: "/디핌/디핌메뉴/바닐라크림라떼.jpg",
+//   },
+//   {
+//     id: "3",
+//     name: "크로플",
+//     price: 5000,
+//     description: "크루아상 생지를 와플처럼 구워낸 겉바속촉 디저트",
+//     couponApplicable: true,
+//     imageSrc: "/디핌/디핌메뉴/크로플.jpg",
+//   },
+//   {
+//     id: "4",
+//     name: "밀크티",
+//     price: 5500,
+//     description: "진하게 우려낸 홍차에 우유를 더해 향긋한 맛",
+//     couponApplicable: true,
+//     imageSrc: "/디핌/디핌메뉴/밀크티.jpg",
+//   },
+//   {
+//     id: "5",
+//     name: "크루키",
+//     price: 5800,
+//     description: "크루아상과 쿠키의 만남",
+//     couponApplicable: true,
+//     imageSrc: "/디핌/디핌메뉴/크루키.jpg",
+//   },
+//   {
+//     id: "6",
+//     name: "수제 고구마빵",
+//     price: 3000,
+//     description: "쫄깃한 찹쌀반죽 속 달콤한 고구마 앙금이 가득",
+//     couponApplicable: true,
+//     imageSrc: "/디핌/디핌메뉴/고구마빵.jpg",
+//   },
+//   {
+//     id: "7",
+//     name: "딸기 크림라떼",
+//     price: 5500,
+//     description: "상큼한 딸기과육 베이스와 달콤한 수제크림이 어우러진 라떼",
+//     couponApplicable: true,
+//     imageSrc: "/디핌/디핌메뉴/딸기크림라떼.jpg",
+//   },
+//   {
+//     id: "8",
+//     name: "마롱(밤)라떼",
+//     price: 5800,
+//     description: "고소하고 부드러운 밤 풍미가 가득한 라떼",
+//     couponApplicable: true,
+//     imageSrc: "/디핌/디핌메뉴/마롱(밤)라떼.jpeg",
+//   },
+//   {
+//     id: "9",
+//     name: "아메리카노",
+//     price: 4300,
+//     description: "깊고 진한 에스프레소의 풍미",
+//     couponApplicable: true,
+//     imageSrc: "/디핌/디핌메뉴/아메리카노.jpg",
+//   },
+//   {
+//     id: "10",
+//     name: "바닐라라떼",
+//     price: 5500,
+//     description: "달콤한 바닐라 시럽이 들어간 라떼",
+//     couponApplicable: true,
+//     imageSrc: "/디핌/디핌메뉴/바닐라라떼.jpg",
+//   },
+//   {
+//     id: "11",
+//     name: "브라운치즈 크로플",
+//     price: 6800,
+//     description: "바삭한 크로플 위에 눈꽃처럼 갈아 올린 짭짤 달콤 브라운 치즈",
+//     couponApplicable: false,
+//     imageSrc: "/디핌/디핌메뉴/크로플.jpg",
+//   },
+//   {
+//     id: "12",
+//     name: "매실에이드",
+//     price: 5500,
+//     description: "톡쏘는 탄산수에 건강한 매실청",
+//     couponApplicable: true,
+//     imageSrc: "/디핌/디핌메뉴/매실에이드.jpg",
+//   },
+// ];
 
-const reviews: Review[] = [
-  {
-    id: "1",
-    author: "김민수",
-    rating: 5,
-    date: "2024-12-20",
-    content: "분위기도 좋고 커피 맛도 훌륭해요. 쿠폰 혜택도 만족스럽습니다!",
-    isPrivate: false,
-  },
-  {
-    id: "2",
-    author: "이지혜",
-    rating: 4,
-    date: "2024-12-19",
-    content: "친절한 서비스와 맛있는 디저트. 다시 올 예정입니다.",
-    isPrivate: false,
-  },
-  {
-    id: "3",
-    author: "박철민",
-    rating: 5,
-    date: "2024-12-18",
-    content: "아메리카노 1+1 쿠폰 너무 좋아요! 가성비 최고",
-    isPrivate: true,
-  },
-];
+// const reviews: Review[] = [
+//   {
+//     id: "1",
+//     author: "김민수",
+//     rating: 5,
+//     date: "2024-12-20",
+//     content: "분위기도 좋고 커피 맛도 훌륭해요. 쿠폰 혜택도 만족스럽습니다!",
+//     isPrivate: false,
+//   },
+//   {
+//     id: "2",
+//     author: "이지혜",
+//     rating: 4,
+//     date: "2024-12-19",
+//     content: "친절한 서비스와 맛있는 디저트. 다시 올 예정입니다.",
+//     isPrivate: false,
+//   },
+//   {
+//     id: "3",
+//     author: "박철민",
+//     rating: 5,
+//     date: "2024-12-18",
+//     content: "아메리카노 1+1 쿠폰 너무 좋아요! 가성비 최고",
+//     isPrivate: true,
+//   },
+// ];
 
 export default function StorePage() {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const [store, setStore] = useState<Store>();
+  const { stores, setStores } = usePartnerStore();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<"coupons" | "menu" | "reviews">(
     "coupons"
   );
-  const [showAllCoupons, setShowAllCoupons] = useState(false);
-  const [reviewSort, setReviewSort] = useState<"latest" | "highest" | "lowest">(
-    "latest"
-  );
-  const [selectedCoupon, setSelectedCoupon] = useState<string | null>(null);
-  const [showCouponComplete, setShowCouponComplete] = useState(false);
-  const [issuedCoupon, setIssuedCoupon] = useState<Coupon | null>(null);
+  // const [showAllCoupons, setShowAllCoupons] = useState(false);
+  // const [reviewSort, setReviewSort] = useState<"latest" | "highest" | "lowest">(
+  //   "latest"
+  // );
+  // const [selectedCoupon, setSelectedCoupon] = useState<string | null>(null);
+  // const [showCouponComplete, setShowCouponComplete] = useState(false);
+  // const [issuedCoupon, setIssuedCoupon] = useState<Coupon | null>(null);
 
-  const sortedReviews = [...reviews].sort((a, b) => {
-    switch (reviewSort) {
-      case "highest":
-        return b.rating - a.rating;
-      case "lowest":
-        return a.rating - b.rating;
-      default:
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
+  // const sortedReviews = [...reviews].sort((a, b) => {
+  //   switch (reviewSort) {
+  //     case "highest":
+  //       return b.rating - a.rating;
+  //     case "lowest":
+  //       return a.rating - b.rating;
+  //     default:
+  //       return new Date(b.date).getTime() - new Date(a.date).getTime();
+  //   }
+  // });
+
+  // const publicReviews = sortedReviews.filter((review) => !review.isPrivate);
+
+  // const handleIssueCoupon = (coupon: Coupon) => {
+  //   setIssuedCoupon(coupon);
+  //   setShowCouponComplete(true);
+  // };
+
+  useEffect(() => {
+    console.log("전체 상점", stores);
+    console.log("찾으려는 ID (params):", id);
+
+    if (!id) {
+      console.error("ID가 없습니다!");
+      return;
     }
-  });
 
-  const publicReviews = sortedReviews.filter((review) => !review.isPrivate);
+    if (stores.length === 0) {
+      console.log("stores가 비어있습니다.");
+      return;
+    }
 
-  const handleIssueCoupon = (coupon: Coupon) => {
-    setIssuedCoupon(coupon);
-    setShowCouponComplete(true);
-  };
+    // id가 문자열이므로 비교 시 toString() 사용
+    const foundStore = stores.find((s) => s.id === id);
+
+    if (foundStore) {
+      console.log("찾은 상점:", foundStore);
+      setStore(foundStore);
+    } else {
+      console.log(`ID ${id}와 일치하는 상점을 찾을 수 없습니다.`);
+      setStore(undefined);
+    }
+  }, [id, stores]);
+
+  if (!store && stores.length > 0) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center px-4">
+          <i className="ri-store-2-line text-5xl text-gray-400 mb-4"></i>
+          <p className="text-text mb-2">상점을 찾을 수 없습니다.</p>
+          <p className="text-sm text-text-secondary mb-4">ID: {id}</p>
+          <Button onClick={() => navigate("/map")}>지도로 돌아가기</Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!store) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-text-secondary">상점 정보를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -279,38 +352,64 @@ export default function StorePage() {
       <div className="px-4 pt-6 space-y-6">
         <div className="space-y-3">
           <div className="flex items-start justify-between">
-            <h1 className="text-2xl font-sf font-bold text-text">디핌</h1>
+            <h1 className="text-2xl font-sf font-bold text-text">
+              {store.name}
+            </h1>
             <div className="flex items-center gap-1">
               <i className="ri-star-fill text-accent text-lg" />
               <span className="text-lg font-sf font-semibold text-text">
-                4.8
+                {store.rating}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-4 text-sm text-text-secondary font-sf">
-            <span>리뷰 106개</span>
+            <span>리뷰 {store.reviewCount}개</span>
             <span>•</span>
-            <span>카페</span>
+            <span>{store.category}</span>
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               <i className="ri-map-pin-line text-text-secondary" />
-              <span className="text-sm font-sf text-text">
-                전북 전주시 덕진구 명륜3길 9-1 1층
-              </span>
-              <button className="text-sm font-sf text-primary">길찾기</button>
+              <span className="text-sm font-sf text-text">{store.address}</span>
+              {/* <button className="text-sm font-sf text-primary">길찾기</button> */}
             </div>
-            <div className="flex items-center gap-3">
+            {/* <div className="flex items-center gap-3">
               <i className="ri-time-line text-text-secondary" />
               <span className="text-sm font-sf text-text">11:00 - 22:00</span>
               <span className="text-sm font-sf text-primary">영업중</span>
-            </div>
+            </div> */}
           </div>
         </div>
 
-        <Card className="border-2 border-primary/20">
+        {store.mainCoupon && (
+          <Card className="border-2 border-primary/20">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-sf font-semibold text-text">
+                👍🏻 제휴 혜택
+              </h3>
+              {/* <span className="bg-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
+                쿠폰
+              </span> */}
+            </div>
+            <div className="space-y-2 mb-2">
+              <h4 className="font-sf font-semibold text-text">
+                {store.mainCoupon.title}
+              </h4>
+              {/* <div className="flex items-center gap-2 text-sm">
+                <span className="text-accent font-medium">
+                  {store.mainCoupon.remaining}개 남음
+                </span>
+              </div> */}
+            </div>
+            {/* <Button size="sm" className="px-6">
+              발급받기
+            </Button> */}
+          </Card>
+        )}
+
+        {/* <Card className="border-2 border-primary/20">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-sf font-semibold text-text">
               대표 쿠폰
@@ -350,13 +449,13 @@ export default function StorePage() {
               발급받기
             </Button>
           </div>
-        </Card>
+        </Card> */}
 
-        {/* <div className="flex border-b border-gray-200">
+        <div className="flex border-b border-gray-200">
           {[
-            { key: "coupons", label: "쿠폰", count: coupons.length },
-            { key: "menu", label: "메뉴", count: menuItems.length },
-            { key: "reviews", label: "리뷰", count: publicReviews.length },
+            { key: "coupons", label: "쿠폰" },
+            { key: "menu", label: "메뉴" },
+            { key: "reviews", label: "리뷰" },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -370,7 +469,11 @@ export default function StorePage() {
               <span className="font-sf font-medium">{tab.label}</span>
             </button>
           ))}
-        </div> */}
+        </div>
+        <div className="flex items-center justify-center text-text-secondary">
+          추후 업데이트 예정입니다.
+        </div>
+
         {/* 
         <div className="space-y-4">
           {activeTab === "coupons" && (
@@ -532,7 +635,7 @@ export default function StorePage() {
       </div> */}
 
       {/* 쿠폰 발급 완료 모달 */}
-      {showCouponComplete && issuedCoupon && (
+      {/* {showCouponComplete && issuedCoupon && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50"
@@ -540,7 +643,6 @@ export default function StorePage() {
           />
           <div className="relative bg-white rounded-20 p-6 w-full max-w-sm">
             <div className="text-center space-y-6">
-              {/* 체크 아이콘 애니메이션 */}
               <div className="w-20 h-20 bg-green-100 rounded-full mx-auto flex items-center justify-center">
                 <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center animate-bounce">
                   <i className="ri-check-line text-white text-3xl" />
@@ -602,7 +704,7 @@ export default function StorePage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
