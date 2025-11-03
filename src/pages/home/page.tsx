@@ -323,8 +323,18 @@ export default function Home() {
           </div>
         </div> */}
 
-        <div>
-          <button onClick={fetchRandomPartnerStore}>랜덤버튼</button>
+        <div className="flex ">
+          <div className="flex w-full items-center justify-between">
+            <h2 className="text-lg font-sf font-semibold text-text">
+              오늘의 제휴
+            </h2>
+            <button onClick={fetchRandomPartnerStore}>랜덤버튼</button>
+          </div>
+        </div>
+        <div className="cursor-pointer hover:shadow-md transition-shadow bg-white w-full h-20 rounded-12 flex items-center justify-center flex-shrink-0">
+          <div className="">
+            <p>ㅎㅎ</p>
+          </div>
         </div>
 
         {/* 하단 CTA */}
