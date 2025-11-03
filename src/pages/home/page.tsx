@@ -115,6 +115,7 @@ export default function Home() {
       }
 
       const data: RandInfoType = await response.json();
+
       console.log("랜덤 제휴상점 데이터:", data);
 
       setRandInfo(data);
@@ -323,7 +324,7 @@ export default function Home() {
           </div>
         </div> */}
 
-        <div className="flex ">
+        {/* <div className="flex ">
           <div className="flex w-full items-center justify-between">
             <h2 className="text-lg font-sf font-semibold text-text">
               오늘의 제휴
@@ -335,7 +336,36 @@ export default function Home() {
           <div className="">
             <p>ㅎㅎ</p>
           </div>
-        </div>
+        </div> */}
+        {/* <h2 className="text-lg font-sf font-semibold text-text ">
+          오늘의 제휴
+        </h2> */}
+        <Card
+          className="border-2 border-primary/20 "
+          onClick={fetchRandomPartnerStore}
+        >
+          <div className="flex items-center  justify-between mb-3">
+            <h3 className="text-xl font-sf font-bold text-text">
+              🍀 오늘의 제휴
+            </h3>
+            <span className="bg-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
+              멘트 수정
+            </span>
+          </div>
+          <div className="space-y-2 mb-2">
+            <h4 className="mx-2 font-sf font-medium text-text">
+              {randInfo?.storeName}
+            </h4>
+            {/* <div className="flex items-center gap-2 text-sm">
+                <span className="text-accent font-medium">
+                  {store.mainCoupon.remaining}개 남음
+                </span>
+              </div> */}
+          </div>
+          {/* <Button size="sm" className="px-6">
+              발급받기
+            </Button> */}
+        </Card>
 
         {/* 하단 CTA */}
         {/* <div className="pt-4 pb-6">
