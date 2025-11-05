@@ -384,17 +384,17 @@ export default function StorePage() {
         </div>
 
         {store.mainCoupon && (
-          <Card className="border-2 border-primary/20">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-sf font-semibold text-text">
-                👍🏻 제휴 혜택
+          <Card className="border-2 border-primary/20 ">
+            <div className="flex items-center  justify-between mb-3">
+              <h3 className="text-xl font-sf font-bold text-text">
+                🍀 오늘의 혜택
               </h3>
-              {/* <span className="bg-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
-                쿠폰
-              </span> */}
+              <span className="bg-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
+                제휴
+              </span>
             </div>
             <div className="space-y-2 mb-2">
-              <h4 className="font-sf font-semibold text-text">
+              <h4 className="mx-2 font-sf font-medium text-text">
                 {store.mainCoupon.title}
               </h4>
               {/* <div className="flex items-center gap-2 text-sm">
@@ -470,8 +470,9 @@ export default function StorePage() {
             </button>
           ))}
         </div>
-        <div className="flex items-center justify-center text-text-secondary">
-          추후 업데이트 예정입니다.
+        <div className="flex flex-col items-center justify-center text-text-secondary">
+          <img src="/icons/ND-cat.png" width={200} />
+          <p>추후 업데이트 예정입니다.</p>
         </div>
 
         {/* 

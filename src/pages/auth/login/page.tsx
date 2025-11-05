@@ -5,7 +5,7 @@ import Card from "../../../components/base/Card";
 import { useAuthStore } from "../../../store/useAuthStore";
 
 const affiliationOptions = [
-  //"간호대학",
+  // "간호대학",
   "경상대학",
   // "공과대학",
   // "국제이공학부",
