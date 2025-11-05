@@ -155,7 +155,7 @@ const getMarkerIcon = (markerId: string): string => {
     return "/icons/my-location.png";
   }
   if (markerId.includes("event")) {
-    return "/icons/clover-gold-32px.png";
+    return "/icons/clover-gold-24px.png";
   }
   return "/icons/icon-clover2.png";
 };
