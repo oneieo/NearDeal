@@ -1011,10 +1011,8 @@ export default function MapPage() {
 
       const matchesSearch =
         searchQuery === "" ||
-        store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        store.mainCoupon.title
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase());
+        store.storeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        store.partnerBenefit.toLowerCase().includes(searchQuery.toLowerCase());
 
       return matchesCategory && matchesSearch;
     });
@@ -1085,7 +1083,7 @@ export default function MapPage() {
     const storeMarkers = filteredStores.map((store) => ({
       lat: store.lat,
       lng: store.lng,
-      title: store.name,
+      title: store.storeName,
       content: createStoreMarkerContent(store),
       id: `store-${store.id}`,
       category: store.category,
@@ -1287,16 +1285,56 @@ export default function MapPage() {
     </Card>
   );
 
+  // const BottomSheet = () =>
+  //   showBottomSheet && (
+  //     <div className="fixed inset-0 z-50 pointer-events-none">
+  //       <div
+  //         className="absolute inset-0 bg-black/20"
+  //         onClick={() => setShowBottomSheet(false)}
+  //       />
+  //       <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-20 max-h-96 pointer-events-auto">
+  //         <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-4" />
+  //         <div className="px-4 pb-24 overflow-y-auto">
+  //           <div className="flex items-center justify-between mb-4">
+  //             <h3 className="text-lg font-sf font-semibold text-text">
+  //               {selectedCategoryName
+  //                 ? `${selectedCategoryName} 매장`
+  //                 : "주변 매장"}
+  //             </h3>
+  //             <button
+  //               onClick={() => setShowBottomSheet(false)}
+  //               className="w-8 h-8 flex items-center justify-center"
+  //             >
+  //               <i className="ri-close-line text-text-secondary text-xl" />
+  //             </button>
+  //           </div>
+  //           <div className="space-y-3">
+  //             {filteredStores.map((store) => (
+  //               <StoreCard
+  //                 key={store.id}
+  //                 store={store}
+  //                 onClick={() => handleStoreClick(store.id)}
+  //               />
+  //             ))}
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+
   const BottomSheet = () =>
     showBottomSheet && (
       <div className="fixed inset-0 z-50 pointer-events-none">
         <div
-          className="absolute inset-0 bg-black/20"
+          className="absolute inset-0 bg-black/20 pointer-events-auto"
           onClick={() => setShowBottomSheet(false)}
         />
-        <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-20 max-h-96 overflow-hidden pointer-events-auto">
-          <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-4" />
-          <div className="px-4 pb-24 overflow-y-auto">
+        <div
+          className="absolute bottom-0 left-0 right-0 bg-white rounded-t-20 pointer-events-auto flex flex-col"
+          style={{ maxHeight: "45vh" }}
+        >
+          <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-4 flex-shrink-0" />
+          <div className="px-4 pb-4 flex-shrink-0">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-sf font-semibold text-text">
                 {selectedCategoryName
@@ -1310,6 +1348,8 @@ export default function MapPage() {
                 <i className="ri-close-line text-text-secondary text-xl" />
               </button>
             </div>
+          </div>
+          <div className="px-4 pb-24 overflow-y-auto flex-1 scrollbar-hide">
             <div className="space-y-3">
               {filteredStores.map((store) => (
                 <StoreCard
@@ -1369,10 +1409,12 @@ export default function MapPage() {
           <div className="space-y-3">
             {sortedStores.map((store) => (
               <StoreCard
-                key={store.id}
-                store={store}
+                key={store.partnerStoreId.toString()}
+                store={convertPartnerStoreToStore(store, currentLocation)}
                 showPopularity={sortType === "popularity"}
-                onClick={() => handleListViewStoreClick(store.id)}
+                onClick={() =>
+                  handleListViewStoreClick(store.partnerStoreId.toString())
+                }
               />
             ))}
           </div>
