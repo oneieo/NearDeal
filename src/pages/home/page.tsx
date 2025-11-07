@@ -23,6 +23,7 @@ interface Coupon {
 type RandInfoType = {
   id: number;
   storeName: string;
+  partnerBenefit: string;
 };
 
 // const featuredCoupons: Coupon[] = [
@@ -349,12 +350,12 @@ export default function Home() {
               🍀 오늘의 제휴
             </h3>
             <span className="bg-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
-              멘트 수정
+              {randInfo?.storeName}
             </span>
           </div>
           <div className="space-y-2 mb-2">
             <h4 className="mx-2 font-sf font-medium text-text">
-              {randInfo?.storeName}
+              {randInfo?.partnerBenefit}
             </h4>
             {/* <div className="flex items-center gap-2 text-sm">
                 <span className="text-accent font-medium">
