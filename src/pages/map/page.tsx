@@ -1043,11 +1043,33 @@ export default function MapPage() {
 
     // 랜덤 이벤트 마커 추가
     if (showRandomEvent && currentLocation) {
-      const eventData = Array.from({ length: 5 }, (_, i) => ({
-        lat: currentLocation.lat + (Math.random() - 0.5) * 0.01,
-        lng: currentLocation.lng + (Math.random() - 0.5) * 0.01,
-        title: `랜덤 이벤트 ${i + 1}`,
-      }));
+      const eventData = [
+        {
+          lat: 35.84527776844245,
+          lng: 127.13328332946415,
+          title: "글로벌인재관 어딘가",
+        },
+        {
+          lat: 35.84506318544666,
+          lng: 127.13376448578667,
+          title: "경상대학 후정 어딘가",
+        },
+        {
+          lat: 35.84637860543523,
+          lng: 127.13003627271459,
+          title: "건지광장 어딘가",
+        },
+        {
+          lat: 35.84818181967663,
+          lng: 127.13146167959808,
+          title: "중앙도서관 어딘가",
+        },
+        {
+          lat: 35.844118358407925,
+          lng: 127.13035635696392,
+          title: "인터내셔널센터 어딘가",
+        },
+      ];
 
       markers.push(
         ...eventData.map((event, index) => ({
