@@ -698,7 +698,11 @@ import BottomNavigation from "../../components/feature/BottomNavigation";
 import Card from "../../components/base/Card";
 import NaverMapComponent from "../../components/feature/NaverMapComponent";
 import { useCategoryStore } from "../../store/useCategoryStore";
-import { calculateDistance, formatDistance } from "../../utils/distance";
+import {
+  calculateMyDistance,
+  calculateDistance,
+  formatDistance,
+} from "../../utils/distance";
 import { useAuthStore } from "../../store/useAuthStore";
 import { usePartnerStore } from "../../store/usePartnerStore";
 
@@ -806,7 +810,7 @@ const convertPartnerStoreToStore = (
   currentLocation: Location | null
 ): Store => {
   const distanceInM = currentLocation
-    ? calculateDistance(
+    ? calculateMyDistance(
         currentLocation.lat,
         currentLocation.lng,
         partnerStore.lat,
@@ -980,7 +984,7 @@ export default function MapPage() {
     }
 
     return stores.map((store) => {
-      const distanceInM = calculateDistance(
+      const distanceInM = calculateMyDistance(
         currentLocation.lat,
         currentLocation.lng,
         store.lat,
@@ -1140,7 +1144,7 @@ export default function MapPage() {
   }, [currentLocation, getCurrentLocation]);
 
   const handleListViewStoreClick = useCallback(
-    (storeId: string) => {
+    (storeId: number) => {
       setShowListView(false);
       console.log(storeId);
       handleStoreClick(storeId);
@@ -1366,7 +1370,7 @@ export default function MapPage() {
 
   const ListViewModal = () =>
     showListView && (
-      <div className="fixed inset-0 z-50 bg-white">
+      <div className="fixed inset-0 z-50 bg-white flex flex-col">
         <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
           <div className="flex items-center justify-between">
             <button
@@ -1405,16 +1409,14 @@ export default function MapPage() {
           </div>
         </div>
 
-        <div className="pt-32 pb-20 px-4 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto pt-32 pb-20 px-4">
           <div className="space-y-3">
             {sortedStores.map((store) => (
               <StoreCard
-                key={store.partnerStoreId.toString()}
-                store={convertPartnerStoreToStore(store, currentLocation)}
+                key={store.id}
+                store={store}
                 showPopularity={sortType === "popularity"}
-                onClick={() =>
-                  handleListViewStoreClick(store.partnerStoreId.toString())
-                }
+                onClick={() => handleListViewStoreClick(Number(store.id))}
               />
             ))}
           </div>

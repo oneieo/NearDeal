@@ -325,22 +325,6 @@ export default function Home() {
           </div>
         </div> */}
 
-        {/* <div className="flex ">
-          <div className="flex w-full items-center justify-between">
-            <h2 className="text-lg font-sf font-semibold text-text">
-              오늘의 제휴
-            </h2>
-            <button onClick={fetchRandomPartnerStore}>랜덤버튼</button>
-          </div>
-        </div>
-        <div className="cursor-pointer hover:shadow-md transition-shadow bg-white w-full h-20 rounded-12 flex items-center justify-center flex-shrink-0">
-          <div className="">
-            <p>ㅎㅎ</p>
-          </div>
-        </div> */}
-        {/* <h2 className="text-lg font-sf font-semibold text-text ">
-          오늘의 제휴
-        </h2> */}
         <Card
           className="border-2 border-primary/20 "
           onClick={fetchRandomPartnerStore}
@@ -350,10 +334,14 @@ export default function Home() {
               🍀 오늘의 제휴
             </h3>
             <span className="bg-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-8">
-              {randInfo?.storeName}
+              혜택
             </span>
           </div>
           <div className="space-y-2 mb-2">
+            <h2 className="w-fit font-sf font-semibold text-text bg-slate-100 rounded-12">
+              <p className="px-2 py-1">🏪 {randInfo?.storeName} </p>
+            </h2>
+
             <h4 className="mx-2 font-sf font-medium text-text">
               {randInfo?.partnerBenefit}
             </h4>
