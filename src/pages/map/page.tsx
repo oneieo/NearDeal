@@ -917,7 +917,7 @@ export default function MapPage() {
 
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [showListView, setShowListView] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortType, setSortType] = useState<SortType>("distance");
   const [mapCenter, setMapCenter] = useState<Location>(DEFAULT_LOCATION);
   const [mapKey, setMapKey] = useState(0);
@@ -925,6 +925,7 @@ export default function MapPage() {
   const { affiliation } = useAuthStore();
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
   const { stores, setStores } = usePartnerStore();
+  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -999,6 +1000,29 @@ export default function MapPage() {
     });
   }, [currentLocation, stores]);
 
+  // const filteredStores = useMemo(() => {
+  //   return storesWithDistance.filter((store) => {
+  //     let matchesCategory = true;
+
+  //     if (selectedCategoryName) {
+  //       const selectedCategoryApiValue = CATEGORY_MAPPING[selectedCategoryName];
+
+  //       if (selectedCategoryApiValue === "") {
+  //         matchesCategory = true;
+  //       } else {
+  //         matchesCategory = store.category === selectedCategoryApiValue;
+  //       }
+  //     }
+
+  //     const matchesSearch =
+  //       searchQuery === "" ||
+  //       store.storeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //       store.partnerBenefit.toLowerCase().includes(searchQuery.toLowerCase());
+
+  //     return matchesCategory && matchesSearch;
+  //   });
+  // }, [storesWithDistance, selectedCategoryName, searchQuery]);
+
   const filteredStores = useMemo(() => {
     return storesWithDistance.filter((store) => {
       let matchesCategory = true;
@@ -1015,20 +1039,58 @@ export default function MapPage() {
 
       const matchesSearch =
         searchQuery === "" ||
-        store.storeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        store.partnerBenefit.toLowerCase().includes(searchQuery.toLowerCase());
+        store.name.toLowerCase().includes(searchQuery.toLowerCase()) || // storeName → name
+        store.mainCoupon.title
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()); // partnerBenefit → mainCoupon.title
 
       return matchesCategory && matchesSearch;
     });
   }, [storesWithDistance, selectedCategoryName, searchQuery]);
 
+  const selectedStore = useMemo(() => {
+    return selectedStoreId
+      ? filteredStores.find((store) => store.id === selectedStoreId)
+      : null;
+  }, [selectedStoreId, filteredStores]);
+
   const sortedStores = useMemo(() => {
-    return [...filteredStores].sort((a, b) => {
-      return sortType === "distance"
-        ? a.distanceInM - b.distanceInM
-        : b.popularity - a.popularity;
-    });
-  }, [filteredStores, sortType]);
+    console.log("=== sortedStores 계산 ===");
+    console.log("selectedStoreId:", selectedStoreId);
+
+    return [...filteredStores]
+      .map((store) => {
+        // 선택된 상점이 있으면 그 상점 기준으로 거리 재계산
+        if (sortType === "distance" && selectedStoreId !== null) {
+          const selectedStore = filteredStores.find(
+            (s) => s.id === selectedStoreId
+          );
+
+          if (selectedStore) {
+            const newDistanceInM = calculateDistance(
+              selectedStore.lat,
+              selectedStore.lng,
+              store.lat,
+              store.lng
+            );
+
+            return {
+              ...store,
+              distanceInM: newDistanceInM,
+              distance: formatDistance(newDistanceInM),
+            };
+          }
+        }
+
+        return store;
+      })
+      .sort((a, b) => {
+        if (sortType === "distance") {
+          return a.distanceInM - b.distanceInM;
+        }
+        return b.popularity - a.popularity;
+      });
+  }, [filteredStores, sortType, selectedStoreId]);
 
   const mapMarkers = useMemo(() => {
     const markers = [];
@@ -1107,16 +1169,12 @@ export default function MapPage() {
 
   const handleStoreClick = useCallback(
     (storeId: string) => {
-      console.log("=== handleStoreClick 호출 ===");
-      console.log("storeId:", storeId);
-      console.log("타입:", typeof storeId);
-      console.log("경로:", `/store/${storeId}`);
-
       if (!storeId) {
         console.error("storeId가 없습니다!");
         return;
       }
 
+      setSelectedStoreId(storeId);
       navigate(`/store/${storeId}`);
     },
     [navigate]
@@ -1124,10 +1182,12 @@ export default function MapPage() {
 
   const handleMarkerClick = useCallback((markerId: string) => {
     if (markerId.startsWith("store-")) {
+      const storeId = markerId.replace("store-", "");
+
+      setSelectedStoreId(storeId);
       setShowBottomSheet(true);
     } else if (markerId.startsWith("event-")) {
       console.log("이벤트 마커 클릭:", markerId);
-      // 이벤트 마커 클릭 시 동작 추가 가능
     }
   }, []);
 
@@ -1147,7 +1207,7 @@ export default function MapPage() {
     (storeId: number) => {
       setShowListView(false);
       console.log(storeId);
-      handleStoreClick(storeId);
+      handleStoreClick(storeId.toString());
     },
     [handleStoreClick]
   );
@@ -1160,7 +1220,6 @@ export default function MapPage() {
     }
   }, [currentLocation, filteredStores]);
 
-  // Components
   const SearchBar = () => (
     <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
       <div className="relative">
@@ -1280,51 +1339,14 @@ export default function MapPage() {
                 {store.mainCoupon.title}
               </p>
             </div>
-            <span className="text-xs text-accent font-sf font-medium ml-2">
+            {/* <span className="text-xs text-accent font-sf font-medium ml-2">
               {store.mainCoupon.remaining}개 남음
-            </span>
+            </span> */}
           </div>
         </div>
       </div>
     </Card>
   );
-
-  // const BottomSheet = () =>
-  //   showBottomSheet && (
-  //     <div className="fixed inset-0 z-50 pointer-events-none">
-  //       <div
-  //         className="absolute inset-0 bg-black/20"
-  //         onClick={() => setShowBottomSheet(false)}
-  //       />
-  //       <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-20 max-h-96 pointer-events-auto">
-  //         <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-4" />
-  //         <div className="px-4 pb-24 overflow-y-auto">
-  //           <div className="flex items-center justify-between mb-4">
-  //             <h3 className="text-lg font-sf font-semibold text-text">
-  //               {selectedCategoryName
-  //                 ? `${selectedCategoryName} 매장`
-  //                 : "주변 매장"}
-  //             </h3>
-  //             <button
-  //               onClick={() => setShowBottomSheet(false)}
-  //               className="w-8 h-8 flex items-center justify-center"
-  //             >
-  //               <i className="ri-close-line text-text-secondary text-xl" />
-  //             </button>
-  //           </div>
-  //           <div className="space-y-3">
-  //             {filteredStores.map((store) => (
-  //               <StoreCard
-  //                 key={store.id}
-  //                 store={store}
-  //                 onClick={() => handleStoreClick(store.id)}
-  //               />
-  //             ))}
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
 
   const BottomSheet = () =>
     showBottomSheet && (
@@ -1335,10 +1357,10 @@ export default function MapPage() {
         />
         <div
           className="absolute bottom-0 left-0 right-0 bg-white rounded-t-20 pointer-events-auto flex flex-col"
-          style={{ maxHeight: "45vh" }}
+          style={{ maxHeight: "50vh" }}
         >
           <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-4 flex-shrink-0" />
-          <div className="px-4 pb-4 flex-shrink-0">
+          <div className="px-4 flex-shrink-0">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-sf font-semibold text-text">
                 {selectedCategoryName
@@ -1355,7 +1377,7 @@ export default function MapPage() {
           </div>
           <div className="px-4 pb-24 overflow-y-auto flex-1 scrollbar-hide">
             <div className="space-y-3">
-              {filteredStores.map((store) => (
+              {sortedStores.map((store) => (
                 <StoreCard
                   key={store.id}
                   store={store}
@@ -1368,18 +1390,75 @@ export default function MapPage() {
       </div>
     );
 
+  // const ListViewModal = () =>
+  //   showListView && (
+  //     <div className="fixed inset-0 z-50 bg-white flex flex-col">
+  //       <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
+  //         <div className="flex items-center justify-between">
+  //           <button
+  //             onClick={() => setShowListView(false)}
+  //             className="w-10 h-10 flex items-center justify-center"
+  //           >
+  //             <i className="ri-close-line text-text text-xl" />
+  //           </button>
+  //           <h2 className="text-lg font-sf font-semibold text-text">
+  //             {selectedCategoryName
+  //               ? `${selectedCategoryName} 매장`
+  //               : "주변 매장"}
+  //           </h2>
+  //           <div className="w-10 h-10" />
+  //         </div>
+  //       </div>
+
+  //       <div className="fixed top-16 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
+  //         <div className="flex gap-2">
+  //           {[
+  //             { key: "distance", label: "가까운순" },
+  //             { key: "popularity", label: "인기순" },
+  //           ].map(({ key, label }) => (
+  //             <button
+  //               key={key}
+  //               onClick={() => setSortType(key as SortType)}
+  //               className={`px-4 py-2 rounded-20 text-sm font-sf font-medium transition-all duration-200 ${
+  //                 sortType === key
+  //                   ? "bg-primary text-white"
+  //                   : "bg-gray-200 text-text hover:bg-gray-300"
+  //               }`}
+  //             >
+  //               {label}
+  //             </button>
+  //           ))}
+  //         </div>
+  //       </div>
+
+  //       <div className="flex-1 overflow-y-auto pt-32 pb-20 px-4">
+  //         <div className="space-y-3">
+  //           {sortedStores.map((store) => (
+  //             <StoreCard
+  //               key={store.id}
+  //               store={store}
+  //               showPopularity={sortType === "popularity"}
+  //               onClick={() => handleListViewStoreClick(Number(store.id))}
+  //             />
+  //           ))}
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+
   const ListViewModal = () =>
     showListView && (
       <div className="fixed inset-0 z-50 bg-white flex flex-col">
+        {/* 헤더 */}
         <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
           <div className="flex items-center justify-between">
             <button
               onClick={() => setShowListView(false)}
               className="w-10 h-10 flex items-center justify-center"
             >
-              <i className="ri-close-line text-text text-xl" />
+              <i className="ri-close-line text-2xl" />
             </button>
-            <h2 className="text-lg font-sf font-semibold text-text">
+            <h2 className="text-lg font-semibold">
               {selectedCategoryName
                 ? `${selectedCategoryName} 매장`
                 : "주변 매장"}
@@ -1388,7 +1467,24 @@ export default function MapPage() {
           </div>
         </div>
 
+        {/* 필터 영역 */}
         <div className="fixed top-16 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
+          {/* 선택된 상점 표시 */}
+          {selectedStore && sortType === "distance" && (
+            <div className="mb-3 p-3 bg-blue-50 rounded-lg">
+              <p className="text-sm text-blue-700">
+                📍 <strong>{selectedStore.name}</strong> 기준으로 정렬 중
+                <button
+                  onClick={() => setSelectedStoreId(null)}
+                  className="ml-2 text-blue-600 underline text-xs"
+                >
+                  내 위치 기준으로 변경
+                </button>
+              </p>
+            </div>
+          )}
+
+          {/* 정렬 버튼 */}
           <div className="flex gap-2">
             {[
               { key: "distance", label: "가까운순" },
@@ -1396,8 +1492,8 @@ export default function MapPage() {
             ].map(({ key, label }) => (
               <button
                 key={key}
-                onClick={() => setSortType(key as SortType)}
-                className={`px-4 py-2 rounded-20 text-sm font-sf font-medium transition-all duration-200 ${
+                onClick={() => setSortType(key)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   sortType === key
                     ? "bg-primary text-white"
                     : "bg-gray-200 text-text hover:bg-gray-300"
@@ -1409,7 +1505,12 @@ export default function MapPage() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto pt-32 pb-20 px-4">
+        {/* 상점 리스트 */}
+        <div
+          className={`flex-1 overflow-y-auto pb-20 px-4 ${
+            selectedStore && sortType === "distance" ? "pt-44" : "pt-32"
+          }`}
+        >
           <div className="space-y-3">
             {sortedStores.map((store) => (
               <StoreCard
