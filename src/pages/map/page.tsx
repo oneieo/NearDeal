@@ -815,7 +815,7 @@ const convertPartnerStoreToStore = (
     : 0;
 
   return {
-    id: partnerStore.partnerStoreId.toString(),
+    id: partnerStore?.partnerStoreId,
     name: partnerStore.storeName,
     rating: 4.5,
     reviewCount: 0,
@@ -1409,7 +1409,7 @@ export default function MapPage() {
           <div className="space-y-3">
             {sortedStores.map((store) => (
               <StoreCard
-                key={store.partnerStoreId.toString()}
+                key={store.partnerStoreId}
                 store={convertPartnerStoreToStore(store, currentLocation)}
                 showPopularity={sortType === "popularity"}
                 onClick={() =>
