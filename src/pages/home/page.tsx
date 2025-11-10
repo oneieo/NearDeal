@@ -182,7 +182,7 @@ export default function Home() {
               안녕하세요! 👋
             </h1>
             <p className="text-text-secondary font-sf">
-              오늘도 최고의 할인 혜택을 찾아보세요
+              오늘도 최고의 제휴 혜택을 찾아보세요
             </p>
           </div>
 
@@ -190,7 +190,7 @@ export default function Home() {
           <div className="relative">
             <input
               type="text"
-              placeholder="상점명이나 할인 상품을 검색해보세요"
+              placeholder="상점명을 검색해보세요"
               className="w-full h-12 pl-12 pr-4 bg-white rounded-16 border border-gray-200 text-sm font-sf placeholder-text-secondary focus:outline-none focus:border-primary"
             />
             <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
@@ -325,6 +325,7 @@ export default function Home() {
           </div>
         </div> */}
 
+        {/* TODO: 애니메이션 */}
         <Card
           className="border-2 border-primary/20 "
           onClick={fetchRandomPartnerStore}

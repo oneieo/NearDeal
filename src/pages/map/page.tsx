@@ -766,20 +766,20 @@ const DEFAULT_LOCATION: Location = {
 
 const CATEGORY_MAPPING: Record<string, string> = {
   단과대학: "",
-  총학생회: "STUDENT_COUNCIL",
   음식점: "RESTAURANT",
   카페: "CAFE",
   주점: "BAR",
   기타: "ETC",
+  총학생회: "STUDENT_COUNCIL",
 };
 
 export const CATEGORY_API_MAPPING: Record<string, string> = {
   단과대학: "",
-  총학생회: "STUDENT_COUNCIL",
   음식점: "RESTAURANT",
   카페: "CAFE",
   주점: "BAR",
   기타: "ETC",
+  총학생회: "STUDENT_COUNCIL",
 };
 
 // API 카테고리 -> 표시용 카테고리
@@ -1258,7 +1258,7 @@ export default function MapPage() {
   );
 
   const MapButtons = () => (
-    <div className="absolute bottom-24 right-4 flex flex-col gap-3 z-20">
+    <div className="absolute bottom-32 right-4 flex flex-col gap-3 z-20">
       <button
         onClick={() => setShowRandomEvent(!showRandomEvent)}
         className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
