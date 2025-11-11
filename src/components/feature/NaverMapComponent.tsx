@@ -1,11 +1,5 @@
 // import { useEffect, Suspense, useState } from "react";
-// import {
-//   NaverMap,
-//   Container,
-//   Marker,
-//   //InfoWindow,
-//   useNavermaps,
-// } from "react-naver-maps";
+// import { NaverMap, Container, Marker, useNavermaps } from "react-naver-maps";
 
 // interface MarkerData {
 //   id: string;
@@ -13,6 +7,7 @@
 //   lng: number;
 //   title?: string;
 //   content?: string;
+//   category?: string;
 // }
 
 // interface NaverMapComponentProps {
@@ -28,6 +23,17 @@
 //   onMapReady?: () => void;
 //   onMarkerClick?: (markerId: string) => void;
 // }
+
+// // 마커 아이콘 결정 함수
+// const getMarkerIcon = (markerId: string): string => {
+//   if (markerId.includes("current-location")) {
+//     return "/icons/my-location.png";
+//   }
+//   if (markerId.includes("event")) {
+//     return "/icons/clover-gold-24px.png";
+//   }
+//   return "/icons/icon-clover2.png";
+// };
 
 // // 실제 지도 컴포넌트 (Suspense 내부)
 // function MapContent({
@@ -65,11 +71,7 @@
 //       {markers.map((marker) => (
 //         <div key={marker.id}>
 //           <Marker
-//             icon={
-//               marker.id.includes("current-location")
-//                 ? "/icons/my-location.png"
-//                 : "/icons/icon-clover2.png"
-//             }
+//             icon={getMarkerIcon(marker.id)}
 //             position={new navermaps.LatLng(marker.lat, marker.lng)}
 //             title={marker.title}
 //             onClick={() => handleMarkerClick(marker.id)}
@@ -117,14 +119,8 @@
 //   );
 // }
 
-import { useEffect, Suspense, useState } from "react";
-import {
-  NaverMap,
-  Container,
-  Marker,
-  //InfoWindow,
-  useNavermaps,
-} from "react-naver-maps";
+import { useEffect, Suspense, useState, useRef } from "react";
+import { NaverMap, Container, Marker, useNavermaps } from "react-naver-maps";
 
 interface MarkerData {
   id: string;
@@ -147,10 +143,11 @@ interface NaverMapComponentProps {
   className?: string;
   onMapReady?: () => void;
   onMarkerClick?: (markerId: string) => void;
+  showLabels?: boolean;
 }
 
-// 마커 아이콘 결정 함수
-const getMarkerIcon = (markerId: string): string => {
+// 마커 아이콘 경로 가져오기
+const getMarkerIconPath = (markerId: string): string => {
   if (markerId.includes("current-location")) {
     return "/icons/my-location.png";
   }
@@ -160,6 +157,46 @@ const getMarkerIcon = (markerId: string): string => {
   return "/icons/icon-clover2.png";
 };
 
+// 라벨이 포함된 HTML 아이콘 생성
+const createMarkerWithLabel = (markerId: string, title?: string) => {
+  const iconPath = getMarkerIconPath(markerId);
+  const showLabel =
+    title &&
+    !markerId.includes("current-location") &&
+    !markerId.includes("event");
+
+  return {
+    content: `
+      <div style="position: relative; text-align: center;">
+        ${
+          showLabel
+            ? `
+          <div style="
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            pointer-events: none;
+          ">
+            ${title}
+          </div>
+        `
+            : ""
+        }
+        <img src="${iconPath}" style="width: 24px; height: 24px;" />
+      </div>
+    `,
+    anchor: { x: 12, y: 12 },
+  };
+};
+
 // 실제 지도 컴포넌트 (Suspense 내부)
 function MapContent({
   center,
@@ -167,6 +204,7 @@ function MapContent({
   markers = [],
   onMapReady,
   onMarkerClick,
+  showLabels = true,
 }: NaverMapComponentProps) {
   const navermaps = useNavermaps();
   const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
@@ -181,7 +219,6 @@ function MapContent({
     console.log("Marker clicked in NaverMapComponent:", markerId);
     setSelectedMarker(selectedMarker === markerId ? null : markerId);
 
-    // 상위 컴포넌트로 마커 클릭 이벤트 전달
     if (onMarkerClick) {
       onMarkerClick(markerId);
     }
@@ -194,14 +231,17 @@ function MapContent({
       center={new navermaps.LatLng(center.lat, center.lng)}
     >
       {markers.map((marker) => (
-        <div key={marker.id}>
-          <Marker
-            icon={getMarkerIcon(marker.id)}
-            position={new navermaps.LatLng(marker.lat, marker.lng)}
-            title={marker.title}
-            onClick={() => handleMarkerClick(marker.id)}
-          />
-        </div>
+        <Marker
+          key={marker.id}
+          position={new navermaps.LatLng(marker.lat, marker.lng)}
+          title={marker.title}
+          onClick={() => handleMarkerClick(marker.id)}
+          icon={
+            showLabels
+              ? createMarkerWithLabel(marker.id, marker.title)
+              : getMarkerIconPath(marker.id)
+          }
+        />
       ))}
     </NaverMap>
   );
@@ -217,6 +257,7 @@ export default function NaverMapComponent({
   className = "",
   onMapReady,
   onMarkerClick,
+  showLabels = true,
 }: NaverMapComponentProps) {
   return (
     <div className={`relative ${className}`} style={{ width, height }}>
@@ -237,6 +278,7 @@ export default function NaverMapComponent({
             markers={markers}
             onMapReady={onMapReady}
             onMarkerClick={onMarkerClick}
+            showLabels={showLabels}
           />
         </Suspense>
       </Container>

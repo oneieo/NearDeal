@@ -188,34 +188,35 @@ const defaultCategories: Category[] = [
     icon: "ri-service-fill",
     color: "bg-red-100 text-red-600",
   },
+
   {
     id: "2",
-    name: "총학생회",
-    icon: "ri-star-fill",
+    name: "음식점",
+    icon: "ri-restaurant-fill",
     color: "bg-amber-100 text-amber-600",
   },
   {
     id: "3",
-    name: "음식점",
-    icon: "ri-restaurant-fill",
+    name: "카페",
+    icon: "ri-cup-fill",
     color: "bg-pink-100 text-pink-600",
   },
   {
     id: "4",
-    name: "카페",
-    icon: "ri-cup-fill",
-    color: "bg-blue-100 text-blue-600",
-  },
-  {
-    id: "5",
     name: "주점",
     icon: "ri-beer-fill",
     color: "bg-green-100 text-green-600",
   },
   {
-    id: "6",
+    id: "5",
     name: "기타",
     icon: "ri-shopping-bag-fill",
+    color: "bg-blue-100 text-blue-600",
+  },
+  {
+    id: "6",
+    name: "총학생회",
+    icon: "ri-star-fill",
     color: "bg-purple-100 text-purple-600",
   },
 ];
