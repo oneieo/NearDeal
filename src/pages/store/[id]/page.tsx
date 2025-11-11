@@ -5,6 +5,7 @@ import TopNavigation from "../../../components/feature/TopNavigation";
 import Card from "../../../components/base/Card";
 import Button from "../../../components/base/Button";
 import { usePartnerStore } from "../../../store/usePartnerStore";
+import type { PartnerStore } from "../../../types/partnerStoreType";
 
 interface Coupon {
   id: string;
@@ -52,15 +53,12 @@ interface Store {
   };
 }
 
-const storeImages = [
-  "/디핌/내부/디핌내부2.jpg",
-  "/디핌/내부/디핌내부1.jpg",
-  // "/디핌/내부/디핌카페내부.png",
-  // "/디핌/내부/디핌카페내부2.png",
-  // "https://readdy.ai/api/search-image?query=Modern%20coffee%20shop%20interior%20with%20warm%20lighting%2C%20cozy%20atmosphere%2C%20wooden%20furniture%2C%20minimalist%20design%2C%20professional%20photography%2C%20welcoming%20cafe%20space&width=375&height=200&seq=store1&orientation=landscape",
-  // "https://readdy.ai/api/search-image?query=Coffee%20shop%20counter%20with%20espresso%20machine%2C%20baristas%20working%2C%20clean%20modern%20design%2C%20professional%20cafe%20equipment%2C%20warm%20ambient%20lighting&width=375&height=200&seq=store2&orientation=landscape",
-  // "https://readdy.ai/api/search-image?query=Coffee%20shop%20seating%20area%20with%20comfortable%20chairs%2C%20natural%20light%2C%20plants%2C%20books%2C%20cozy%20cafe%20atmosphere%2C%20minimalist%20interior%20design&width=375&height=200&seq=store3&orientation=landscape",
-];
+const storeImageMap = new Map<string, string[]>([
+  ["CAFE", ["/상점배너/cafe.png"]],
+  ["RESTAURANT", ["/상점배너/restaurant1.png"]],
+  ["BAR", ["/상점배너/bar.png"]],
+  ["ETC", ["/상점배너/etc.png"]],
+]);
 
 // const coupons: Coupon[] = [
 //   {
@@ -227,6 +225,7 @@ export default function StorePage() {
   const [activeTab, setActiveTab] = useState<"coupons" | "menu" | "reviews">(
     "coupons"
   );
+
   // const [showAllCoupons, setShowAllCoupons] = useState(false);
   // const [reviewSort, setReviewSort] = useState<"latest" | "highest" | "lowest">(
   //   "latest"
@@ -330,14 +329,18 @@ export default function StorePage() {
       <div className="relative pt-14">
         <div className="w-full h-48 overflow-hidden">
           <img
-            src={storeImages[currentImageIndex]}
+            src={
+              storeImageMap.get(store.category) || "/디핌/내부/디핌내부2.png"
+            }
             alt="매장 이미지"
             className="w-full h-full object-cover object-top"
           />
         </div>
 
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-          {storeImages.map((_, index) => (
+          {(
+            storeImageMap.get(store.category) || ["/디핌/내부/디핌내부2.png"]
+          ).map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentImageIndex(index)}
@@ -358,13 +361,13 @@ export default function StorePage() {
             <div className="flex items-center gap-1">
               <i className="ri-star-fill text-accent text-lg" />
               <span className="text-lg font-sf font-semibold text-text">
-                {store.rating}
+                5.0
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-4 text-sm text-text-secondary font-sf">
-            <span>리뷰 {store.reviewCount}개</span>
+            <span>리뷰 0개</span>
             <span>•</span>
             <span>{store.category}</span>
           </div>

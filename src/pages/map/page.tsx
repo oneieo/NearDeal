@@ -821,7 +821,7 @@ const convertPartnerStoreToStore = (
   return {
     id: partnerStore.partnerStoreId.toString(),
     name: partnerStore.storeName,
-    rating: 4.5,
+    rating: 5.0,
     reviewCount: 0,
     distance: formatDistance(distanceInM),
     category: partnerStore.category,
@@ -1060,7 +1060,6 @@ export default function MapPage() {
 
     return [...filteredStores]
       .map((store) => {
-        // 선택된 상점이 있으면 그 상점 기준으로 거리 재계산
         if (sortType === "distance" && selectedStoreId !== null) {
           const selectedStore = filteredStores.find(
             (s) => s.id === selectedStoreId
@@ -1149,7 +1148,7 @@ export default function MapPage() {
     const storeMarkers = filteredStores.map((store) => ({
       lat: store.lat,
       lng: store.lng,
-      title: store.storeName,
+      title: store.name,
       content: createStoreMarkerContent(store),
       id: `store-${store.id}`,
       category: store.category,
@@ -1258,7 +1257,7 @@ export default function MapPage() {
   );
 
   const MapButtons = () => (
-    <div className="absolute bottom-32 right-4 flex flex-col gap-3 z-20">
+    <div className="absolute bottom-24 right-4 flex flex-col gap-3 z-20">
       <button
         onClick={() => setShowRandomEvent(!showRandomEvent)}
         className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${

@@ -9,6 +9,9 @@ import { useAuthStore } from "../../store/useAuthStore";
 import { usePartnerStore } from "../../store/usePartnerStore";
 import type { PartnerStoreResponse } from "../../types/partnerStoreType";
 
+// TODO: 현재위치 -> 소속대학으로 변경
+// TODO: 내비바 알림 아이콘 지우기
+
 interface Coupon {
   id: string;
   title: string;
