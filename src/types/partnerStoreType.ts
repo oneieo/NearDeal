@@ -1,5 +1,5 @@
-type StoreCategory = "CAFE" | "RESTAURANT" | "BAR" | "ETC";
-type PartnerCategory =
+export type StoreCategory = "CAFE" | "RESTAURANT" | "BAR" | "ETC";
+export type PartnerCategory =
   | "간호대학"
   | "경상대학"
   | "공과대학"

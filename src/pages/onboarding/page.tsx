@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/base/Button";
 
+// TODO: 온보딩 안 보이게
+
 const onboardingData = [
   {
     id: 1,

@@ -766,20 +766,20 @@ const DEFAULT_LOCATION: Location = {
 
 const CATEGORY_MAPPING: Record<string, string> = {
   단과대학: "",
-  총학생회: "STUDENT_COUNCIL",
   음식점: "RESTAURANT",
   카페: "CAFE",
   주점: "BAR",
   기타: "ETC",
+  총학생회: "STUDENT_COUNCIL",
 };
 
 export const CATEGORY_API_MAPPING: Record<string, string> = {
   단과대학: "",
-  총학생회: "STUDENT_COUNCIL",
   음식점: "RESTAURANT",
   카페: "CAFE",
   주점: "BAR",
   기타: "ETC",
+  총학생회: "STUDENT_COUNCIL",
 };
 
 // API 카테고리 -> 표시용 카테고리
@@ -821,7 +821,7 @@ const convertPartnerStoreToStore = (
   return {
     id: partnerStore.partnerStoreId.toString(),
     name: partnerStore.storeName,
-    rating: 4.5,
+    rating: 5.0,
     reviewCount: 0,
     distance: formatDistance(distanceInM),
     category: partnerStore.category,
@@ -1060,7 +1060,6 @@ export default function MapPage() {
 
     return [...filteredStores]
       .map((store) => {
-        // 선택된 상점이 있으면 그 상점 기준으로 거리 재계산
         if (sortType === "distance" && selectedStoreId !== null) {
           const selectedStore = filteredStores.find(
             (s) => s.id === selectedStoreId
@@ -1149,7 +1148,7 @@ export default function MapPage() {
     const storeMarkers = filteredStores.map((store) => ({
       lat: store.lat,
       lng: store.lng,
-      title: store.storeName,
+      title: store.name,
       content: createStoreMarkerContent(store),
       id: `store-${store.id}`,
       category: store.category,
