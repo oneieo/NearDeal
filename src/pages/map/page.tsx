@@ -793,11 +793,11 @@ const API_CATEGORY_TO_DISPLAY: Record<string, string> = {
 
 const getCategoryIcon = (category: string): string => {
   const icons = {
+    CAFE: "ri-cup-fill",
+    RESTAURANT: "ri-restaurant-fill",
+    BAR: "ri-beer-fill",
+    ETC: "ri-shopping-bag-fill",
     partner: "ri-service-fill",
-    cafe: "ri-cup-fill",
-    restaurant: "ri-restaurant-fill",
-    bar: "ri-beer-fill",
-    etc: "ri-shopping-cart-fill",
     health: "ri-heart-pulse-fill",
     beauty: "ri-scissors-cut-fill",
     default: "ri-store-fill",

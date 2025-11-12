@@ -100,6 +100,7 @@ export default function Home() {
   } = useCategoryStore();
   const navigate = useNavigate();
   const [randInfo, setRandInfo] = useState<RandInfoType>();
+  const { affiliation } = useAuthStore();
 
   const fetchRandomPartnerStore = async () => {
     try {
@@ -156,21 +157,21 @@ export default function Home() {
               <i className="ri-map-pin-fill text-primary text-xl" />
             </div>
             <div>
-              <p className="text-xs text-text-secondary font-sf">현재 위치</p>
+              <p className="text-xs text-text-secondary font-sf">소속대학</p>
               <p className="text-sm font-sf font-medium text-text">
-                전주시 덕진구
+                {affiliation}
               </p>
             </div>
           </div>
         }
         rightAction={
           <div className="flex items-center gap-3">
-            <button className="w-10 h-10 flex items-center justify-center">
+            {/* <button className="w-10 h-10 flex items-center justify-center">
               <i className="ri-notification-fill text-text-secondary text-xl" />
             </button>
             <button className="w-10 h-10 flex items-center justify-center">
               <i className="ri-menu-fill text-text-secondary text-xl" />
-            </button>
+            </button> */}
           </div>
         }
         showBorder={false}
@@ -185,7 +186,7 @@ export default function Home() {
               안녕하세요! 👋
             </h1>
             <p className="text-text-secondary font-sf">
-              오늘도 최고의 제휴 혜택을 찾아보세요
+              오늘도 학교 앞 제휴 혜택을 찾아보세요
             </p>
           </div>
 
@@ -358,6 +359,65 @@ export default function Home() {
           {/* <Button size="sm" className="px-6">
               발급받기
             </Button> */}
+        </Card>
+        <Card
+          className="relative overflow-hidden border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-green-50 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group"
+          onClick={fetchRandomPartnerStore}
+        >
+          {/* 배경 패턴 */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-0 left-0 w-32 h-32 bg-emerald-400 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 right-0 w-40 h-40 bg-green-400 rounded-full blur-3xl"></div>
+          </div>
+
+          {/* 반짝이는 효과 */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+
+          <div className="relative">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl animate-bounce-slow">🍀</span>
+                <h3 className="text-xl font-sf font-bold text-text">
+                  오늘의 제휴
+                </h3>
+              </div>
+              <span className="bg-gradient-to-r from-emerald-500 to-green-500 text-white text-sm font-sf font-bold px-3 py-1 rounded-full shadow-md animate-pulse-slow">
+                혜택
+              </span>
+            </div>
+
+            <div className="space-y-2 mb-2">
+              <h2 className="inline-flex items-center gap-2 font-sf font-semibold text-text bg-white/80 backdrop-blur-sm rounded-12 shadow-sm border border-emerald-100 group-hover:scale-105 transition-transform duration-300">
+                <p className="px-2 py-1 flex items-center gap-1">
+                  <span>🏪</span> {randInfo?.storeName}
+                </p>
+              </h2>
+
+              <div className="bg-gradient-to-r from-emerald-50 to-green-50 p-3 rounded-12 border border-emerald-100">
+                <h4 className="font-sf font-medium text-text">
+                  {randInfo?.partnerBenefit}
+                </h4>
+              </div>
+            </div>
+
+            {/* 클릭 힌트 */}
+            <div className="mt-2 flex items-center justify-center gap-2 text-xs text-gray-500">
+              <svg
+                className="w-3 h-3 animate-bounce"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
+                />
+              </svg>
+              <span className="font-medium">클릭하여 새로고침</span>
+            </div>
+          </div>
         </Card>
 
         {/* 하단 CTA */}
