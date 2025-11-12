@@ -1284,7 +1284,9 @@ export default function MapPage() {
     onClick: () => void;
   }) => (
     <Card
-      className="cursor-pointer hover:shadow-md transition-shadow"
+      className={`${
+        store.distance == "0m" && "bg-slate-100"
+      } cursor-pointer hover:shadow-md transition-shadow`}
       onClick={onClick}
     >
       <div className="flex gap-4">
