@@ -29,10 +29,10 @@ const routes: RouteObject[] = [
       </ProtectedRoute>
     ),
   },
-  {
-    path: "/onboarding",
-    element: <Onboarding />,
-  },
+  // {
+  //   path: "/onboarding",
+  //   element: <Onboarding />,
+  // },
   {
     path: "/auth/login",
     element: <Login />,
