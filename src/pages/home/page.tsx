@@ -104,7 +104,7 @@ export default function Home() {
 
   const handleSearch = () => {
     if (!searchValue.trim()) return;
-    navigate(`/stre?query=${encodeURIComponent(searchValue.trim())}`);
+    navigate(`/store?query=${encodeURIComponent(searchValue.trim())}`);
   };
 
   const fetchRandomPartnerStore = async () => {
