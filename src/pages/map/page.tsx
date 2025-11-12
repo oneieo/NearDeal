@@ -705,6 +705,11 @@ import {
 } from "../../utils/distance";
 import { useAuthStore } from "../../store/useAuthStore";
 import { usePartnerStore } from "../../store/usePartnerStore";
+import {
+  getCategoryColor,
+  getCategoryIcon,
+  getCategoryTextColor,
+} from "../../utils/getIconColor";
 
 // Types
 interface PartnerStore {
@@ -789,20 +794,6 @@ const API_CATEGORY_TO_DISPLAY: Record<string, string> = {
   ETC: "etc",
   BAR: "bar",
   BEAUTY: "beauty",
-};
-
-const getCategoryIcon = (category: string): string => {
-  const icons = {
-    CAFE: "ri-cup-fill",
-    RESTAURANT: "ri-restaurant-fill",
-    BAR: "ri-beer-fill",
-    ETC: "ri-shopping-bag-fill",
-    partner: "ri-service-fill",
-    health: "ri-heart-pulse-fill",
-    beauty: "ri-scissors-cut-fill",
-    default: "ri-store-fill",
-  };
-  return icons[category as keyof typeof icons] || icons.default;
 };
 
 const convertPartnerStoreToStore = (
@@ -1297,11 +1288,15 @@ export default function MapPage() {
       onClick={onClick}
     >
       <div className="flex gap-4">
-        <div className="w-16 h-16 bg-gray-100 rounded-12 flex items-center justify-center flex-shrink-0">
+        <div
+          className={`w-16 h-16 ${getCategoryColor(
+            store.category
+          )} rounded-12 flex items-center justify-center flex-shrink-0`}
+        >
           <i
-            className={`text-text-secondary text-2xl ${getCategoryIcon(
+            className={`text-2xl ${getCategoryIcon(
               store.category
-            )}`}
+            )} ${getCategoryTextColor(store.category)}`}
           />
         </div>
         <div className="flex-1 min-w-0">
