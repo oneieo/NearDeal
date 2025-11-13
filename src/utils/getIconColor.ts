@@ -24,10 +24,10 @@ export const getCategoryColor = (category: string): string => {
 
 export const getCategoryTextColor = (category: string): string => {
   const categoryTextColors: Record<string, string> = {
-    RESTAURANT: "text-amber-600",
-    CAFE: "text-pink-600",
-    BAR: "text-green-600",
-    ETC: "text-blue-600",
+    RESTAURANT: "text-amber-500",
+    CAFE: "text-pink-500",
+    BAR: "text-green-500",
+    ETC: "text-blue-500",
   };
   return categoryTextColors[category] || "text-text-secondary";
 };

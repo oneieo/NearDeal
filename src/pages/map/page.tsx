@@ -1296,7 +1296,7 @@ export default function MapPage() {
           )} rounded-12 flex items-center justify-center flex-shrink-0`}
         >
           <i
-            className={`text-2xl ${getCategoryIcon(
+            className={`text-3xl ${getCategoryIcon(
               store.category
             )} ${getCategoryTextColor(store.category)}`}
           />
@@ -1469,7 +1469,7 @@ export default function MapPage() {
           {selectedStore && sortType === "distance" && (
             <div className="mb-3 p-3 bg-blue-50 rounded-lg">
               <p className="text-sm text-blue-700">
-                📍 <strong>{selectedStore.name}</strong> 기준으로 정렬 중
+                📍 <strong>{selectedStore.name}</strong> 기준
                 <button
                   onClick={() => setSelectedStoreId(null)}
                   className="ml-2 text-blue-600 underline text-xs"
