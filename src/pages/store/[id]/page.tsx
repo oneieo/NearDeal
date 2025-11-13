@@ -219,7 +219,7 @@ const storeImageMap = new Map<string, string[]>([
 export default function StorePage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [store, setStore] = useState<Store>();
+  const [store, setStore] = useState<PartnerStore | null>(null);
   const { stores, setStores } = usePartnerStore();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<"coupons" | "menu" | "reviews">(
@@ -267,7 +267,9 @@ export default function StorePage() {
     }
 
     // id가 문자열이므로 비교 시 toString() 사용
-    const foundStore = stores.find((s) => s.id === id);
+    const foundStore = stores.find(
+      (s) => s.partnerStoreId.toString() === id
+    );
 
     if (foundStore) {
       console.log("찾은 상점:", foundStore);
@@ -356,7 +358,7 @@ export default function StorePage() {
         <div className="space-y-3">
           <div className="flex items-start justify-between">
             <h1 className="text-2xl font-sf font-bold text-text">
-              {store.name}
+              {store.storeName}
             </h1>
             <div className="flex items-center gap-1">
               <i className="ri-star-fill text-accent text-lg" />
