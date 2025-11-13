@@ -1,11 +1,13 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import type { PartnerStore } from "../../types/partnerStoreType"; // 타입 적용
 import TopNavigation from "../../components/feature/TopNavigation";
 import BottomNavigation from "../../components/feature/BottomNavigation";
 import Card from "../../components/base/Card";
+import type { PartnerStore } from "../../types/partnerStoreType";
+import { useAuthStore } from "../../store/useAuthStore";
 
 export default function StoreSearchPage() {
+  const { affiliation } = useAuthStore();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get("keyword") || "";
@@ -14,40 +16,65 @@ export default function StoreSearchPage() {
   const [stores, setStores] = useState<PartnerStore[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // 🔍 검색 API 호출
-  const fetchStores = async () => {
+  // 전체 상점 목록 API (map 페이지에서 쓰던 것과 동일)
+  const fetchAllStores = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/partner-stores/search?keyword=${keyword}`,
+      if (!affiliation) {
+        setError("소속 대학 정보가 없습니다.");
+        return;
+      }
+
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/partner-store?page=0&size=100&partnerCategory=${encodeURIComponent(
+          affiliation
+        )}`,
         {
           method: "GET",
           headers: {
-            Accept: "application/json",
+            Accept: "application/json; charset=UTF-8",
           },
           credentials: "include",
         }
       );
 
-      if (!res.ok) throw new Error("검색 결과를 불러오지 못했습니다.");
+      if (!response.ok) {
+        throw new Error("제휴상점 정보를 가져오는데 실패했습니다.");
+      }
 
-      const data = await res.json();
+      const data = await response.json();
 
-      // API 응답 구조가 { content: [] } 형태라면
-      const list = data.content ? data.content : data;
-
-      setStores(list);
+      // API 응답 구조는 content 배열임
+      const allStores: PartnerStore[] = data.content || [];
+      return allStores;
     } catch (err) {
+      console.error("검색 리스트 로드 오류:", err);
       setError("검색 결과를 불러오는 중 오류가 발생했습니다.");
+      return [];
     } finally {
       setLoading(false);
     }
   };
 
+  // 검색 기능
+  const searchStores = async () => {
+    const allStores = await fetchAllStores();
+    if (!allStores) return;
+
+    // 🔍 프론트에서 storeName으로 검색
+    const filtered = allStores.filter((store) =>
+      store.storeName.toLowerCase().includes(keyword.toLowerCase())
+    );
+
+    setStores(filtered);
+  };
+
   useEffect(() => {
-    if (keyword) fetchStores();
+    if (keyword) searchStores();
   }, [keyword]);
 
   return (
@@ -55,14 +82,11 @@ export default function StoreSearchPage() {
       <TopNavigation title="검색 결과" />
 
       <div className="pt-20 px-4 space-y-4">
-        <h2 className="text-lg font-sf font-semibold">
-          "{keyword}" 검색 결과
-        </h2>
+        <h2 className="text-lg font-sf font-semibold">"{keyword}" 검색 결과</h2>
 
         {loading && <p>불러오는 중...</p>}
         {error && <p className="text-red-500">{error}</p>}
 
-        {/* 🔥 검색 결과 리스트 출력 */}
         {stores.length > 0 ? (
           <div className="space-y-3">
             {stores.map((store) => (
@@ -74,11 +98,7 @@ export default function StoreSearchPage() {
                 <h3 className="font-sf font-bold text-text">
                   {store.storeName}
                 </h3>
-
-                <p className="text-sm text-text-secondary">
-                  {store.address}
-                </p>
-
+                <p className="text-sm text-text-secondary">{store.address}</p>
                 <p className="text-sm text-primary font-medium mt-1">
                   {store.partnerBenefit}
                 </p>
@@ -87,7 +107,9 @@ export default function StoreSearchPage() {
           </div>
         ) : (
           !loading &&
-          !error && <p className="text-text-secondary">검색 결과가 없습니다.</p>
+          !error && (
+            <p className="text-text-secondary">검색 결과가 없습니다.</p>
+          )
         )}
       </div>
 
