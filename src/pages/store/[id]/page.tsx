@@ -219,7 +219,7 @@ const storeImageMap = new Map<string, string[]>([
 export default function StorePage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [store, setStore] = useState<any>(null);
+  const [store, setStore] = useState<Store>();
   const { stores, setStores } = usePartnerStore();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<"coupons" | "menu" | "reviews">(
@@ -267,11 +267,7 @@ export default function StorePage() {
     }
 
     // id가 문자열이므로 비교 시 toString() 사용
-    const foundStore = stores.find(
-      (s) => 
-        s.partnerStoreId.toString() === id ||
-        s.id?.toString() === id
-    );
+    const foundStore = stores.find((s) => s.id === id);
 
     if (foundStore) {
       console.log("찾은 상점:", foundStore);
@@ -281,30 +277,6 @@ export default function StorePage() {
       setStore(undefined);
     }
   }, [id, stores]);
-
-  useEffect(() => {
-    if (store) return;
-    if (!id) return;
-
-    // stores가 비어 있다면 API로 직접 단일 상점 정보를 요청
-    if (stores.length === 0) {
-      const fetchStore = async () => {
-        try {
-          const res = await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/partner-stores/${id}`,
-            { credentials: "include" }
-          );
-          if (!res.ok) throw new Error("상점 불러오기 실패");
-          const data = await res.json();
-          setStore(data);
-        } catch (err) {
-          console.error("상점 API 오류:", err);
-        }
-      };
-
-      fetchStore();
-    }
-  }, [stores, id, store]);
 
   if (!store && stores.length > 0) {
     return (
@@ -384,7 +356,7 @@ export default function StorePage() {
         <div className="space-y-3">
           <div className="flex items-start justify-between">
             <h1 className="text-2xl font-sf font-bold text-text">
-              {store.storeName || store.name}
+              {store.name}
             </h1>
             <div className="flex items-center gap-1">
               <i className="ri-star-fill text-accent text-lg" />
