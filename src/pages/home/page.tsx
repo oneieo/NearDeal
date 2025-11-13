@@ -100,6 +100,12 @@ export default function Home() {
   } = useCategoryStore();
   const navigate = useNavigate();
   const [randInfo, setRandInfo] = useState<RandInfoType>();
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleSearch = () => {
+    if (!searchValue.trim()) return;
+    navigate(`/store?query=${encodeURIComponent(searchValue.trim())}`);
+  };
   const { affiliation } = useAuthStore();
 
   const fetchRandomPartnerStore = async () => {
@@ -195,9 +201,17 @@ export default function Home() {
             <input
               type="text"
               placeholder="상점명을 검색해보세요"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearch();
+              }}
               className="w-full h-12 pl-12 pr-4 bg-white rounded-16 border border-gray-200 text-sm font-sf placeholder-text-secondary focus:outline-none focus:border-primary"
             />
-            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
+            <div
+              onClick={handleSearch}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center"
+            >
               <i className="ri-search-line text-text-secondary" />
             </div>
           </div>
