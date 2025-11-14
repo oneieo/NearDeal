@@ -88,12 +88,12 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* 헤더 */}
       <div className="flex items-center justify-between p-4">
-        <button
+        {/* <button
           onClick={() => navigate("/onboarding")}
           className="w-10 h-10 flex items-center justify-center"
         >
           <i className="ri-arrow-left-line text-text text-xl" />
-        </button>
+        </button> */}
         {/* <button
           onClick={() => navigate("/auth/signup")}
           className="text-primary font-sf font-medium"
