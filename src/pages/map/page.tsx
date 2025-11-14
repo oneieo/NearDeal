@@ -913,6 +913,7 @@ export default function MapPage() {
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [showListView, setShowListView] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isComposing, setIsComposing] = useState(false);
   const [sortType, setSortType] = useState<SortType>("distance");
   const [mapCenter, setMapCenter] = useState<Location>(DEFAULT_LOCATION);
   const [mapKey, setMapKey] = useState(0);
@@ -1221,21 +1222,30 @@ export default function MapPage() {
   }, []);
 
   const SearchBar = memo(() => (
-    <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
-      <div className="relative">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="쿠폰/가게 검색"
-          className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
-        />
-        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
-          <i className="ri-search-line text-text-secondary" />
-        </div>
+  <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
+    <div className="relative">
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => {
+          if (!isComposing) {
+            setSearchQuery(e.target.value);
+          }
+        }}
+        onCompositionStart={() => setIsComposing(true)}
+        onCompositionEnd={(e) => {
+          setIsComposing(false);
+          setSearchQuery(e.target.value);
+        }}
+        placeholder="쿠폰/가게 검색"
+        className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
+      />
+      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
+        <i className="ri-search-line text-text-secondary" />
       </div>
     </div>
-  ));
+  </div>
+));
 
   const CategoryChips = () => (
     <div className="fixed top-28 left-0 right-0 z-40 bg-white px-4 py-3">
