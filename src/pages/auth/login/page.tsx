@@ -102,9 +102,9 @@ export default function LoginPage() {
         </button> */}
       </div>
 
-      <div className="flex-1 px-4 flex flex-col justify-center space-y-8">
+      <div className="flex-1 px-4 flex flex-col justify-start space-y-8">
         {/* 로고 */}
-        <div className="text-center space-y-3">
+        <div className="text-center space-y-3 mt-20">
           <div className="w-20 h-20 bg-primary/10 rounded-full mx-auto flex items-center justify-center">
             {/* <span
               className="text-2xl font-bold text-primary"
