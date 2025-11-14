@@ -1165,6 +1165,7 @@ export default function MapPage() {
       }
 
       setSelectedStoreId(storeId);
+      console.log(storeId);
       navigate(`/store/${storeId}`);
     },
     [navigate]
