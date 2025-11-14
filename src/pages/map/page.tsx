@@ -692,7 +692,7 @@
 //   );
 // }
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import TopNavigation from "../../components/feature/TopNavigation";
 import BottomNavigation from "../../components/feature/BottomNavigation";
 import Card from "../../components/base/Card";
@@ -898,6 +898,9 @@ const useCurrentLocation = () => {
 
 export default function MapPage() {
   const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const keyword = searchParams.get("keyword") || "";
 
   const {
     categories,
@@ -1212,6 +1215,12 @@ export default function MapPage() {
       setMapCenter({ lat: filteredStores[0].lat, lng: filteredStores[0].lng });
     }
   }, [currentLocation, filteredStores]);
+
+  useEffect(() => {
+    if (keyword) {
+      setSearchQuery(keyword);
+    }
+  }, [keyword]);
 
   const SearchBar = () => (
     <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
