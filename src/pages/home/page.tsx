@@ -365,7 +365,8 @@ export default function Home() {
             <div className="space-y-2 mb-2">
               <h2 className="inline-flex items-center gap-2 font-sf font-semibold text-text bg-white/80 backdrop-blur-sm rounded-12 shadow-sm border border-emerald-100 group-hover:scale-105 transition-transform duration-300">
                 <p className="px-2 py-1 flex items-center gap-1">
-                  <span>🏪</span> {randInfo?.storeName}
+                  <span>🏪</span>
+                  {randInfo?.storeName}
                 </p>
               </h2>
 
