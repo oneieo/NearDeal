@@ -19,6 +19,7 @@ import Login from "../pages/auth/login/page";
 import Signup from "../pages/auth/signup/page";
 import NotFound from "../pages/NotFound";
 import { ProtectedRoute } from "../components/feature/ProtectedRoute";
+import StoreSearch from "../pages/store/search";
 
 const routes: RouteObject[] = [
   {
@@ -82,6 +83,14 @@ const routes: RouteObject[] = [
     element: (
       <ProtectedRoute>
         <StoreDetail />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/store",
+    element: (
+      <ProtectedRoute>
+        <StoreSearch />
       </ProtectedRoute>
     ),
   },

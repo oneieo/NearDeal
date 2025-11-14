@@ -104,7 +104,7 @@ export default function Home() {
 
   const handleSearch = () => {
     if (!searchValue.trim()) return;
-    navigate(`/store?query=${encodeURIComponent(searchValue.trim())}`);
+    navigate(`/store?keyword=${encodeURIComponent(searchValue.trim())}`);
   };
   const { affiliation } = useAuthStore();
 
