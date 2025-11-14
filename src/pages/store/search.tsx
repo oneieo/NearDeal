@@ -94,15 +94,9 @@ export default function StoreSearchPage() {
               <Card
                 key={store.partnerStoreId}
                 className="p-4 cursor-pointer hover:shadow-md transition-all"
-//                onClick={async () => {
-//                 setStores(
-//                    stores.map((s) => ({
-//                      
-//                   }))
-//                  );
-//                  
-//                  navigate(`/store/${store.partnerStoreId}`);
-//                }}
+                onClick={() => {
+                  alert("상세 페이지는 준비 중입니다. 곧 업데이트 될 예정입니다.! 😊");
+                }}
               >
                 <h3 className="font-sf font-bold text-text">
                   {store.storeName}
