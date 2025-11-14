@@ -13,10 +13,10 @@ export default function StoreSearchPage() {
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get("keyword") || "";
 
-  const { setSelectedStore } = usePartnerStore();
+  const { setStores } = usePartnerStore();
 
   const [loading, setLoading] = useState(false);
-  const [stores, setStores] = useState<PartnerStore[]>([]);
+  const [stores, setLocalStores] = useState<PartnerStore[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   // 전체 상점 목록 API (map 페이지에서 쓰던 것과 동일)
@@ -31,9 +31,7 @@ export default function StoreSearchPage() {
       }
 
       const response = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/partner-store?page=0&size=100&partnerCategory=${encodeURIComponent(
+        `${import.meta.env.VITE_API_BASE_URL}/partner-store?page=0&size=100&partnerCategory=${encodeURIComponent(
           affiliation
         )}`,
         {
@@ -96,10 +94,15 @@ export default function StoreSearchPage() {
               <Card
                 key={store.partnerStoreId}
                 className="p-4 cursor-pointer hover:shadow-md transition-all"
-                onClick={async () => {
-                  setSelectedStore(store);
-                  navigate(`/store/${store.partnerStoreId}`);
-                }}
+//                onClick={async () => {
+//                 setStores(
+//                    stores.map((s) => ({
+//                      
+//                   }))
+//                  );
+//                  
+//                  navigate(`/store/${store.partnerStoreId}`);
+//                }}
               >
                 <h3 className="font-sf font-bold text-text">
                   {store.storeName}
