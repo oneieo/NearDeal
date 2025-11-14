@@ -1220,7 +1220,7 @@ export default function MapPage() {
     if (keyword) {
       setSearchQuery(keyword);
     }
-  }, [keyword]);
+  }, []);
 
   const SearchBar = () => (
     <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
