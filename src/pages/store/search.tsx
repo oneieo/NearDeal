@@ -1,25 +1,21 @@
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TopNavigation from "../../components/feature/TopNavigation";
 import BottomNavigation from "../../components/feature/BottomNavigation";
 import Card from "../../components/base/Card";
 import type { PartnerStore } from "../../types/partnerStoreType";
 import { useAuthStore } from "../../store/useAuthStore";
-import { usePartnerStore } from "../../store/usePartnerStore";
 
 export default function StoreSearchPage() {
   const { affiliation } = useAuthStore();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get("keyword") || "";
-
-  const { setStores } = usePartnerStore();
 
   const [loading, setLoading] = useState(false);
   const [stores, setLocalStores] = useState<PartnerStore[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // 전체 상점 목록 API (map 페이지에서 쓰던 것과 동일)
+  // 전체 상점 목록 API
   const fetchAllStores = async () => {
     try {
       setLoading(true);
@@ -27,7 +23,7 @@ export default function StoreSearchPage() {
 
       if (!affiliation) {
         setError("소속 대학 정보가 없습니다.");
-        return;
+        return [];
       }
 
       const response = await fetch(
@@ -48,10 +44,7 @@ export default function StoreSearchPage() {
       }
 
       const data = await response.json();
-
-      // API 응답 구조는 content 배열임
-      const allStores: PartnerStore[] = data.content || [];
-      return allStores;
+      return data.content || [];
     } catch (err) {
       console.error("검색 리스트 로드 오류:", err);
       setError("검색 결과를 불러오는 중 오류가 발생했습니다.");
@@ -64,14 +57,12 @@ export default function StoreSearchPage() {
   // 검색 기능
   const searchStores = async () => {
     const allStores = await fetchAllStores();
-    if (!allStores) return;
 
-    // 🔍 프론트에서 storeName으로 검색
     const filtered = allStores.filter((store) =>
       store.storeName.toLowerCase().includes(keyword.toLowerCase())
     );
 
-    setStores(filtered);
+    setLocalStores(filtered);
   };
 
   useEffect(() => {
@@ -94,13 +85,11 @@ export default function StoreSearchPage() {
               <Card
                 key={store.partnerStoreId}
                 className="p-4 cursor-pointer hover:shadow-md transition-all"
-                onClick={() => {
-                  alert("상세 페이지는 준비 중입니다. 곧 업데이트 될 예정입니다.! 😊");
-                }}
+                onClick={() =>
+                  alert("상세 페이지는 준비 중입니다. 곧 업데이트될 예정입니다! 😊")
+                }
               >
-                <h3 className="font-sf font-bold text-text">
-                  {store.storeName}
-                </h3>
+                <h3 className="font-sf font-bold text-text">{store.storeName}</h3>
                 <p className="text-sm text-text-secondary">{store.address}</p>
                 <p className="text-sm text-primary font-medium mt-1">
                   {store.partnerBenefit}
@@ -110,9 +99,7 @@ export default function StoreSearchPage() {
           </div>
         ) : (
           !loading &&
-          !error && (
-            <p className="text-text-secondary">검색 결과가 없습니다.</p>
-          )
+          !error && <p className="text-text-secondary">검색 결과가 없습니다.</p>
         )}
       </div>
 
