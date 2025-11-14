@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { usePartnerStore } from "../../store/usePartnerStore";
 import type { PartnerStoreResponse } from "../../types/partnerStoreType";
+import AffiliationEditModal from "../../components/feature/AffiliationEditModal";
 
 // TODO: 현재위치 -> 소속대학으로 변경
 // TODO: 내비바 알림 아이콘 지우기
@@ -101,7 +102,7 @@ export default function Home() {
   const navigate = useNavigate();
   const [randInfo, setRandInfo] = useState<RandInfoType>();
   const [searchValue, setSearchValue] = useState("");
-
+  const [affilModalView, setAffilModalView] = useState<boolean>(false);
   const handleSearch = () => {
     if (!searchValue.trim()) return;
     navigate(`/store?keyword=${encodeURIComponent(searchValue.trim())}`);
@@ -178,6 +179,12 @@ export default function Home() {
             <button className="w-10 h-10 flex items-center justify-center">
               <i className="ri-menu-fill text-text-secondary text-xl" />
             </button> */}
+            <button
+              onClick={() => setAffilModalView(true)}
+              className="bg-[#6acdc5] text-white text-[0.875rem] font-semibold h-8 w-24 rounded-20 "
+            >
+              단과대학 변경
+            </button>
           </div>
         }
         showBorder={false}
@@ -365,7 +372,8 @@ export default function Home() {
             <div className="space-y-2 mb-2">
               <h2 className="inline-flex items-center gap-2 font-sf font-semibold text-text bg-white/80 backdrop-blur-sm rounded-12 shadow-sm border border-emerald-100 group-hover:scale-105 transition-transform duration-300">
                 <p className="px-2 py-1 flex items-center gap-1">
-                  <span>🏪</span> {randInfo?.storeName}
+                  <span>🏪</span>
+                  {randInfo?.storeName}
                 </p>
               </h2>
 
@@ -406,6 +414,10 @@ export default function Home() {
           </Button>
         </div> */}
       </div>
+      <AffiliationEditModal
+        affilModalView={affilModalView}
+        setAffilModalView={setAffilModalView}
+      />
 
       {/* 하단 네비게이션 */}
       <BottomNavigation />
