@@ -255,62 +255,61 @@ export default function StorePage() {
   useEffect(() => {
     if (!id) return;
 
-  console.log("전체 상점", stores);
-  console.log("찾으려는 ID:", id);
+    console.log("전체 상점", stores);
+    console.log("찾으려는 ID:", id);
 
-  // 1) 먼저 zustand에서 찾기 (지도 페이지에서 이동 시 정상 작동)
-  const foundStore = stores.find((s) => s.partnerStoreId.toString() === id);
+    const foundStore = stores.find((s) => s.id === id);
 
-  if (foundStore) {
-    console.log("zustand에서 상점 찾음:", foundStore);
-    setStore(foundStore);
-    return;
-  }
-
-  console.log("zustand에 없어서 API 단일 조회 실행");
-
-  // 2) 검색 페이지에서 이동 시: API로 단일 상세 조회
-  const fetchStoreDetail = async () => {
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/partner-store/${id}`,
-        {
-          method: "GET",
-          headers: { Accept: "application/json; charset=UTF-8" },
-          credentials: "include",
-        }
-      );
-
-      if (!res.ok) throw new Error("상점 상세 조회 실패");
-
-      const data = await res.json();
-
-      const converted = {
-        id: data.partnerStoreId.toString(),
-        name: data.storeName,
-        address: data.address,
-        category: data.category,
-        lat: data.lat,
-        lng: data.lng,
-        distance: "0m",
-        distanceInM: 0,
-        rating: 5.0,
-        reviewCount: 0,
-        popularity: 0,
-        mainCoupon: {
-          title: data.partnerBenefit ?? "혜택 정보 없음",
-          remaining: 0,
-        },
-      };
-
-      setStore(converted);
-    } catch (err) {
-      console.error(err);
-      setStore(undefined);
+    if (foundStore) {
+      console.log("zustand에서 상점 찾음:", foundStore);
+      setStore(foundStore);
+      return;
     }
-  };
 
-  fetchStoreDetail();
+    console.log("zustand에 없어서 API 단일 조회 실행");
+
+    // 2) 검색 페이지에서 이동 시: API로 단일 상세 조회
+    const fetchStoreDetail = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/partner-store/${id}`,
+          {
+            method: "GET",
+            headers: { Accept: "application/json; charset=UTF-8" },
+            credentials: "include",
+          }
+        );
+
+        if (!res.ok) throw new Error("상점 상세 조회 실패");
+
+        const data = await res.json();
+
+        const converted = {
+          id: data.partnerStoreId.toString(),
+          name: data.storeName,
+          address: data.address,
+          category: data.category,
+          lat: data.lat,
+          lng: data.lng,
+          distance: "0m",
+          distanceInM: 0,
+          rating: 5.0,
+          reviewCount: 0,
+          popularity: 0,
+          mainCoupon: {
+            title: data.partnerBenefit ?? "혜택 정보 없음",
+            remaining: 0,
+          },
+        };
+
+        setStore(converted);
+      } catch (err) {
+        console.error(err);
+        setStore(undefined);
+      }
+    };
+
+    fetchStoreDetail();
   }, [id, stores]);
 
   if (!store && stores.length > 0) {

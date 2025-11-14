@@ -710,6 +710,7 @@ import {
   getCategoryIcon,
   getCategoryTextColor,
 } from "../../utils/getIconColor";
+import AffiliationEditModal from "../../components/feature/AffiliationEditModal";
 
 // Types
 interface PartnerStore {
@@ -914,6 +915,7 @@ export default function MapPage() {
   const [mapKey, setMapKey] = useState(0);
   const [showRandomEvent, setShowRandomEvent] = useState(false);
   const { affiliation } = useAuthStore();
+  const [affilModalView, setAffilModalView] = useState<boolean>(false);
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
   const { stores, setStores } = usePartnerStore();
   const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
@@ -1165,6 +1167,7 @@ export default function MapPage() {
       }
 
       setSelectedStoreId(storeId);
+      console.log(storeId);
       navigate(`/store/${storeId}`);
     },
     [navigate]
@@ -1530,7 +1533,10 @@ export default function MapPage() {
           </button>
         }
         rightAction={
-          <button className="w-10 h-10 flex items-center justify-center">
+          <button
+            className="w-10 h-10 flex items-center justify-center"
+            onClick={() => setAffilModalView(true)}
+          >
             <i className="ri-settings-line text-text text-xl" />
           </button>
         }
@@ -1555,7 +1561,10 @@ export default function MapPage() {
           <MapButtons />
         </div>
       </div>
-
+      <AffiliationEditModal
+        affilModalView={affilModalView}
+        setAffilModalView={setAffilModalView}
+      />
       <BottomSheet />
       <ListViewModal />
       <BottomNavigation />
