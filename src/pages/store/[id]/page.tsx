@@ -267,9 +267,7 @@ export default function StorePage() {
     }
 
     // id가 문자열이므로 비교 시 toString() 사용
-    const foundStore = stores.find(
-      (s) => String(s.partnerStoreId) === String(id)
-    );
+    const foundStore = stores.find((s) => s.id === id);
 
     if (foundStore) {
       console.log("찾은 상점:", foundStore);
