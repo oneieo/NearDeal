@@ -5,12 +5,15 @@ import BottomNavigation from "../../components/feature/BottomNavigation";
 import Card from "../../components/base/Card";
 import type { PartnerStore } from "../../types/partnerStoreType";
 import { useAuthStore } from "../../store/useAuthStore";
+import { usePartnerStore } from "../../store/usePartnerStore";
 
 export default function StoreSearchPage() {
   const { affiliation } = useAuthStore();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get("keyword") || "";
+
+  const { setSelectedStore } = usePartnerStore();
 
   const [loading, setLoading] = useState(false);
   const [stores, setStores] = useState<PartnerStore[]>([]);
@@ -93,7 +96,10 @@ export default function StoreSearchPage() {
               <Card
                 key={store.partnerStoreId}
                 className="p-4 cursor-pointer hover:shadow-md transition-all"
-                onClick={() => navigate(`/store/${store.partnerStoreId}`)}
+                onClick={async () => {
+                  setSelectedStore(store);
+                  navigate(`/store/${store.partnerStoreId}`);
+                }}
               >
                 <h3 className="font-sf font-bold text-text">
                   {store.storeName}
