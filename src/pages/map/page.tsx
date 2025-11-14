@@ -691,7 +691,7 @@
 //     </div>
 //   );
 // }
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import TopNavigation from "../../components/feature/TopNavigation";
 import BottomNavigation from "../../components/feature/BottomNavigation";
@@ -1211,18 +1211,16 @@ export default function MapPage() {
   useEffect(() => {
     if (currentLocation) {
       setMapCenter(currentLocation);
-    } else if (filteredStores.length > 0) {
-      setMapCenter({ lat: filteredStores[0].lat, lng: filteredStores[0].lng });
-    }
-  }, [currentLocation, filteredStores]);
+    } 
+  }, [currentLocation]);
 
   useEffect(() => {
-    if (keyword) {
+    if (keyword && searchQuery === "") {
       setSearchQuery(keyword);
     }
   }, []);
 
-  const SearchBar = () => (
+  const SearchBar = memo(() => (
     <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
       <div className="relative">
         <input
@@ -1237,7 +1235,7 @@ export default function MapPage() {
         </div>
       </div>
     </div>
-  );
+  ));
 
   const CategoryChips = () => (
     <div className="fixed top-28 left-0 right-0 z-40 bg-white px-4 py-3">
