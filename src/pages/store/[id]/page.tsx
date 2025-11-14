@@ -253,29 +253,64 @@ export default function StorePage() {
   // };
 
   useEffect(() => {
-    console.log("전체 상점", stores);
-    console.log("찾으려는 ID (params):", id);
+    if (!id) return;
 
-    if (!id) {
-      console.error("ID가 없습니다!");
-      return;
-    }
+  console.log("전체 상점", stores);
+  console.log("찾으려는 ID:", id);
 
-    if (stores.length === 0) {
-      console.log("stores가 비어있습니다.");
-      return;
-    }
+  // 1) 먼저 zustand에서 찾기 (지도 페이지에서 이동 시 정상 작동)
+  const foundStore = stores.find((s) => s.partnerStoreId.toString() === id);
 
-    // id가 문자열이므로 비교 시 toString() 사용
-    const foundStore = stores.find((s) => s.id === id);
+  if (foundStore) {
+    console.log("zustand에서 상점 찾음:", foundStore);
+    setStore(foundStore);
+    return;
+  }
 
-    if (foundStore) {
-      console.log("찾은 상점:", foundStore);
-      setStore(foundStore);
-    } else {
-      console.log(`ID ${id}와 일치하는 상점을 찾을 수 없습니다.`);
+  console.log("zustand에 없어서 API 단일 조회 실행");
+
+  // 2) 검색 페이지에서 이동 시: API로 단일 상세 조회
+  const fetchStoreDetail = async () => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/partner-store/${id}`,
+        {
+          method: "GET",
+          headers: { Accept: "application/json; charset=UTF-8" },
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) throw new Error("상점 상세 조회 실패");
+
+      const data = await res.json();
+
+      const converted = {
+        id: data.partnerStoreId.toString(),
+        name: data.storeName,
+        address: data.address,
+        category: data.category,
+        lat: data.lat,
+        lng: data.lng,
+        distance: "0m",
+        distanceInM: 0,
+        rating: 5.0,
+        reviewCount: 0,
+        popularity: 0,
+        mainCoupon: {
+          title: data.partnerBenefit ?? "혜택 정보 없음",
+          remaining: 0,
+        },
+      };
+
+      setStore(converted);
+    } catch (err) {
+      console.error(err);
       setStore(undefined);
     }
+  };
+
+  fetchStoreDetail();
   }, [id, stores]);
 
   if (!store && stores.length > 0) {
