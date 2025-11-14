@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TopNavigation from "../../components/feature/TopNavigation";
 import BottomNavigation from "../../components/feature/BottomNavigation";
@@ -8,6 +8,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 
 export default function StoreSearchPage() {
   const { affiliation } = useAuthStore();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get("keyword") || "";
 
@@ -85,9 +86,7 @@ export default function StoreSearchPage() {
               <Card
                 key={store.partnerStoreId}
                 className="p-4 cursor-pointer hover:shadow-md transition-all"
-                onClick={() =>
-                  alert("상세 페이지는 준비 중입니다. 곧 업데이트될 예정입니다! 😊")
-                }
+                onClick={() => navigate(`/store/${store.partnerStoreId}`)}
               >
                 <h3 className="font-sf font-bold text-text">{store.storeName}</h3>
                 <p className="text-sm text-text-secondary">{store.address}</p>
