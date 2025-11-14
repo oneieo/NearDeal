@@ -4,7 +4,7 @@ import Button from "../../../components/base/Button";
 import Card from "../../../components/base/Card";
 import { useAuthStore } from "../../../store/useAuthStore";
 
-const affiliationOptions = [
+export const affiliationOptions = [
   "간호대학",
   "경상대학",
   "공과대학",
