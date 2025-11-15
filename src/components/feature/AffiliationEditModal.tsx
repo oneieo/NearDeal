@@ -51,7 +51,6 @@ const AffiliationEditModal = ({
       setIsLoggedIn(true);
       setAffiliation(clickedOption);
       setAffilModalView(false);
-      navigate("/");
     } catch (error) {
       console.error("로그인 오류:", error);
       alert("로그인에 실패했습니다.");
