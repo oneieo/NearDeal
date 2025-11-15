@@ -691,8 +691,8 @@
 //     </div>
 //   );
 // }
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback, useMemo, memo } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import TopNavigation from "../../components/feature/TopNavigation";
 import BottomNavigation from "../../components/feature/BottomNavigation";
 import Card from "../../components/base/Card";
@@ -896,8 +896,50 @@ const useCurrentLocation = () => {
   return { currentLocation, locationError, getCurrentLocation };
 };
 
+interface SearchBarProps {
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+}
+
+const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
+  const [isComposing, setIsComposing] = useState(false);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!isComposing) {
+            setSearchQuery(e.target.value);
+        }
+    };
+
+    const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
+        setIsComposing(false);
+        setSearchQuery(e.currentTarget.value);
+    };
+
+    return (
+        <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
+            <div className="relative">
+                <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    onCompositionStart={() => setIsComposing(true)}
+                    onCompositionEnd={handleCompositionEnd}
+                    placeholder="쿠폰/가게 검색"
+                    className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
+                />
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
+                    <i className="ri-search-line text-text-secondary" />
+                </div>
+            </div>
+        </div>
+    );
+};
+
 export default function MapPage() {
   const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const keyword = searchParams.get("keyword") || "";
 
   const {
     categories,
@@ -910,6 +952,7 @@ export default function MapPage() {
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [showListView, setShowListView] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  // const [isComposing, setIsComposing] = useState(false);
   const [sortType, setSortType] = useState<SortType>("distance");
   const [mapCenter, setMapCenter] = useState<Location>(DEFAULT_LOCATION);
   const [mapKey, setMapKey] = useState(0);
@@ -1208,27 +1251,15 @@ export default function MapPage() {
   useEffect(() => {
     if (currentLocation) {
       setMapCenter(currentLocation);
-    } else if (filteredStores.length > 0) {
-      setMapCenter({ lat: filteredStores[0].lat, lng: filteredStores[0].lng });
-    }
-  }, [currentLocation, filteredStores]);
+    } 
+  }, [currentLocation]);
 
-  const SearchBar = () => (
-    <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
-      <div className="relative">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="쿠폰/가게 검색"
-          className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
-        />
-        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
-          <i className="ri-search-line text-text-secondary" />
-        </div>
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    if (keyword && searchQuery === "") {
+      setSearchQuery(keyword);
+    }
+  }, []);
+  
 
   const CategoryChips = () => (
     <div className="fixed top-28 left-0 right-0 z-40 bg-white px-4 py-3">
@@ -1543,7 +1574,7 @@ export default function MapPage() {
         showBorder={false}
       />
 
-      <SearchBar />
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <CategoryChips />
 
       <div className="pt-40 h-screen relative">
