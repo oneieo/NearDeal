@@ -15,10 +15,10 @@ const AffiliationEditModal = ({
   setAffilModalView,
 }: ModalViewProps) => {
   const navigate = useNavigate();
-  const [clickedOption, setClickedOption] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const { affiliation, setAffiliation, setIsLoggedIn } =
     useAuthStore.getState();
+  const [clickedOption, setClickedOption] = useState<string>(affiliation || "");
 
   if (!affilModalView) return null;
 

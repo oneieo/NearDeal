@@ -905,34 +905,36 @@ const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
   const [isComposing, setIsComposing] = useState(false);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!isComposing) {
-            setSearchQuery(e.target.value);
-        }
-    };
+    if (!isComposing) {
+      setSearchQuery(e.target.value);
+    }
+  };
 
-    const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
-        setIsComposing(false);
-        setSearchQuery(e.currentTarget.value);
-    };
+  const handleCompositionEnd = (
+    e: React.CompositionEvent<HTMLInputElement>
+  ) => {
+    setIsComposing(false);
+    setSearchQuery(e.currentTarget.value);
+  };
 
-    return (
-        <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
-            <div className="relative">
-                <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    onCompositionStart={() => setIsComposing(true)}
-                    onCompositionEnd={handleCompositionEnd}
-                    placeholder="쿠폰/가게 검색"
-                    className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
-                />
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
-                    <i className="ri-search-line text-text-secondary" />
-                </div>
-            </div>
+  return (
+    <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
+      <div className="relative">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={handleCompositionEnd}
+          placeholder="쿠폰/가게 검색"
+          className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
+        />
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
+          <i className="ri-search-line text-text-secondary" />
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default function MapPage() {
@@ -1251,7 +1253,7 @@ export default function MapPage() {
   useEffect(() => {
     if (currentLocation) {
       setMapCenter(currentLocation);
-    } 
+    }
   }, [currentLocation]);
 
   useEffect(() => {
@@ -1259,7 +1261,6 @@ export default function MapPage() {
       setSearchQuery(keyword);
     }
   }, []);
-  
 
   const CategoryChips = () => (
     <div className="fixed top-28 left-0 right-0 z-40 bg-white px-4 py-3">
@@ -1568,7 +1569,7 @@ export default function MapPage() {
             className="w-10 h-10 flex items-center justify-center"
             onClick={() => setAffilModalView(true)}
           >
-            <i className="ri-settings-line text-text text-xl" />
+            <i className="ri-settings-3-line text-text-secondary text-xl" />
           </button>
         }
         showBorder={false}
