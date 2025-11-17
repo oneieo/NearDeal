@@ -226,7 +226,7 @@ export default function Home() {
 
         {/* 카테고리 */}
         <div className="space-y-4">
-          <h2 className="text-lg font-sf font-semibold text-text">카테고리</h2>
+          {/* <h2 className="text-lg font-sf font-semibold text-text">카테고리</h2> */}
           <div className="grid grid-cols-3 gap-3">
             {categories.map((category) => (
               <button

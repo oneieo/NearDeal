@@ -691,7 +691,7 @@
 //     </div>
 //   );
 // }
-import { useState, useEffect, useCallback, useMemo, memo } from "react";
+import { useState, useEffect, useCallback, useMemo, memo, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import TopNavigation from "../../components/feature/TopNavigation";
 import BottomNavigation from "../../components/feature/BottomNavigation";
@@ -964,6 +964,7 @@ export default function MapPage() {
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
   const { stores, setStores } = usePartnerStore();
   const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
+  const [topCategory, setTopCategory] = useState(affiliation);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -983,7 +984,7 @@ export default function MapPage() {
           `${
             import.meta.env.VITE_API_BASE_URL
           }/partner-store?page=0&size=100&partnerCategory=${encodeURIComponent(
-            affiliation
+            topCategory
           )}`,
           {
             method: "GET",
@@ -1015,7 +1016,7 @@ export default function MapPage() {
     };
 
     fetchPartnerStores();
-  }, [affiliation, currentLocation]);
+  }, [topCategory, affiliation, currentLocation]);
 
   const storesWithDistance = useMemo(() => {
     if (!currentLocation) {
@@ -1093,9 +1094,6 @@ export default function MapPage() {
   }, [selectedStoreId, filteredStores]);
 
   const sortedStores = useMemo(() => {
-    console.log("=== sortedStores 계산 ===");
-    console.log("selectedStoreId:", selectedStoreId);
-
     return [...filteredStores]
       .map((store) => {
         if (sortType === "distance" && selectedStoreId !== null) {
@@ -1194,7 +1192,7 @@ export default function MapPage() {
 
     markers.push(...storeMarkers);
     return markers;
-  }, [currentLocation, filteredStores, showRandomEvent]);
+  }, [currentLocation, filteredStores, showRandomEvent, stores]);
 
   const handleCategoryToggle = useCallback(
     (categoryName: string) => {
@@ -1262,25 +1260,117 @@ export default function MapPage() {
     }
   }, []);
 
-  const CategoryChips = () => (
-    <div className="fixed top-28 left-0 right-0 z-40 bg-white px-4 py-3">
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            onClick={() => handleCategoryToggle(category.name)}
-            className={`px-4 py-2 rounded-20 text-sm font-sf font-medium whitespace-nowrap transition-all duration-200 ${
-              isCategorySelected(category.name)
-                ? "bg-primary text-white"
-                : "bg-gray-200 text-text hover:bg-gray-300"
-            }`}
-          >
-            {category.name}
-          </button>
-        ))}
+  // const CategoryChips = () => (
+  //   <div className="fixed top-28 left-0 right-0 z-40 bg-white px-4 py-3">
+  //     <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+  //       {categories.map((category) => (
+  //         <button
+  //           key={category.id}
+  //           onClick={() => handleCategoryToggle(category.name)}
+  //           className={`px-4 py-2 rounded-20 text-sm font-sf font-medium whitespace-nowrap transition-all duration-200 ${
+  //             isCategorySelected(category.name)
+  //               ? "bg-primary text-white"
+  //               : "bg-gray-200 text-text hover:bg-gray-300"
+  //           }`}
+  //         >
+  //           {category.name}
+  //         </button>
+  //       ))}
+  //     </div>
+  //   </div>
+  // );
+
+  const CategoryChips = () => {
+    const [isTopCategoryOpen, setIsTopCategoryOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          dropdownRef.current &&
+          !dropdownRef.current.contains(event.target as Node)
+        ) {
+          setIsTopCategoryOpen(false);
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    // const topCategories = categories.slice(0, 3);
+    const topCategories = categories
+      .slice(0, 3)
+      .map((cat) =>
+        cat.name === "단과대학" ? { ...cat, name: affiliation } : cat
+      );
+    const bottomCategories = categories.slice(3);
+
+    return (
+      <div className="fixed top-28 left-0 right-0 z-40 bg-white px-4 py-3">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide relative">
+          <div className="relative shrink-0" ref={dropdownRef}>
+            <button
+              onClick={() => setIsTopCategoryOpen(!isTopCategoryOpen)}
+              className={`bg-primary text-white px-4 py-2 rounded-20 text-sm font-sf font-medium whitespace-nowrap transition-all duration-200 flex items-center gap-1 `}
+            >
+              <span>
+                {topCategories.find((cat) => isCategorySelected(cat.name))
+                  ?.name || affiliation}
+              </span>
+              <i
+                className={`ri-arrow-down-s-line transition-transform text-base ${
+                  isTopCategoryOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {isTopCategoryOpen && (
+              <div
+                className="fixed w-10 mt-2 bg-white rounded-12 shadow-xl border border-gray-200 py-2 min-w-[100px] z-[9999]"
+                style={{
+                  left: dropdownRef.current?.getBoundingClientRect().left,
+                  top: dropdownRef.current?.getBoundingClientRect().bottom! + 8,
+                }}
+              >
+                {topCategories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => {
+                      handleCategoryToggle(category.name);
+                      setTopCategory(category.name);
+                      setIsTopCategoryOpen(false);
+                    }}
+                    className={`w-full px-4 py-2.5 text-center text-sm font-sf transition-colors ${
+                      isCategorySelected(category.name)
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-text hover:bg-gray-100"
+                    }`}
+                  >
+                    {category.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {bottomCategories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => handleCategoryToggle(category.name)}
+              className={`px-4 py-2 rounded-20 text-sm font-sf font-medium whitespace-nowrap transition-all duration-200 shrink-0 ${
+                isCategorySelected(category.name)
+                  ? "bg-primary text-white"
+                  : "bg-gray-200 text-text hover:bg-gray-300"
+              }`}
+            >
+              {category.name}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const MapButtons = () => (
     <div className="absolute bottom-24 right-4 flex flex-col gap-3 z-20">
