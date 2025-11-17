@@ -252,7 +252,7 @@ export default function Home() {
                   />
                 </div>
                 <p
-                  className={`text-sm font-sf font-medium ${
+                  className={`whitespace-pre-line text-sm font-sf font-medium ${
                     isCategorySelected(category.id) ? "text-white" : "text-text"
                   }`}
                 >
@@ -418,8 +418,6 @@ export default function Home() {
         affilModalView={affilModalView}
         setAffilModalView={setAffilModalView}
       />
-
-      {/* 하단 네비게이션 */}
       <BottomNavigation />
     </div>
   );
