@@ -970,6 +970,13 @@ export default function MapPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (affiliation) {
+      setTopCategory(affiliation);
+      setSelectedCategory("");
+    }
+  }, [affiliation]);
+
+  useEffect(() => {
     const fetchPartnerStores = async () => {
       if (!affiliation) {
         console.log("소속 단과대학의 제휴 정보가 없습니다.");
@@ -1039,53 +1046,33 @@ export default function MapPage() {
     });
   }, [currentLocation, stores]);
 
-  // const filteredStores = useMemo(() => {
-  //   return storesWithDistance.filter((store) => {
-  //     let matchesCategory = true;
-
-  //     if (selectedCategoryName) {
-  //       const selectedCategoryApiValue = CATEGORY_MAPPING[selectedCategoryName];
-
-  //       if (selectedCategoryApiValue === "") {
-  //         matchesCategory = true;
-  //       } else {
-  //         matchesCategory = store.category === selectedCategoryApiValue;
-  //       }
-  //     }
-
-  //     const matchesSearch =
-  //       searchQuery === "" ||
-  //       store.storeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //       store.partnerBenefit.toLowerCase().includes(searchQuery.toLowerCase());
-
-  //     return matchesCategory && matchesSearch;
-  //   });
-  // }, [storesWithDistance, selectedCategoryName, searchQuery]);
-
   const filteredStores = useMemo(() => {
     return storesWithDistance.filter((store) => {
       let matchesCategory = true;
 
-      if (selectedCategoryName) {
+      const isTopCategory =
+        selectedCategoryName === affiliation ||
+        selectedCategoryName === "총학생회" ||
+        selectedCategoryName === "총동아리";
+
+      if (selectedCategoryName && !isTopCategory) {
         const selectedCategoryApiValue = CATEGORY_MAPPING[selectedCategoryName];
 
-        if (selectedCategoryApiValue === "") {
-          matchesCategory = true;
-        } else {
+        if (selectedCategoryApiValue && selectedCategoryApiValue !== "") {
           matchesCategory = store.category === selectedCategoryApiValue;
         }
       }
 
       const matchesSearch =
         searchQuery === "" ||
-        store.name.toLowerCase().includes(searchQuery.toLowerCase()) || // storeName → name
+        store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         store.mainCoupon.title
           .toLowerCase()
-          .includes(searchQuery.toLowerCase()); // partnerBenefit → mainCoupon.title
+          .includes(searchQuery.toLowerCase());
 
       return matchesCategory && matchesSearch;
     });
-  }, [storesWithDistance, selectedCategoryName, searchQuery]);
+  }, [storesWithDistance, selectedCategoryName, searchQuery, affiliation]);
 
   const selectedStore = useMemo(() => {
     return selectedStoreId
@@ -1260,26 +1247,6 @@ export default function MapPage() {
     }
   }, []);
 
-  // const CategoryChips = () => (
-  //   <div className="fixed top-28 left-0 right-0 z-40 bg-white px-4 py-3">
-  //     <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-  //       {categories.map((category) => (
-  //         <button
-  //           key={category.id}
-  //           onClick={() => handleCategoryToggle(category.name)}
-  //           className={`px-4 py-2 rounded-20 text-sm font-sf font-medium whitespace-nowrap transition-all duration-200 ${
-  //             isCategorySelected(category.name)
-  //               ? "bg-primary text-white"
-  //               : "bg-gray-200 text-text hover:bg-gray-300"
-  //           }`}
-  //         >
-  //           {category.name}
-  //         </button>
-  //       ))}
-  //     </div>
-  //   </div>
-  // );
-
   const CategoryChips = () => {
     const [isTopCategoryOpen, setIsTopCategoryOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -1315,10 +1282,7 @@ export default function MapPage() {
               onClick={() => setIsTopCategoryOpen(!isTopCategoryOpen)}
               className={`bg-primary text-white px-4 py-2 rounded-20 text-sm font-sf font-medium whitespace-nowrap transition-all duration-200 flex items-center gap-1 `}
             >
-              <span>
-                {topCategories.find((cat) => isCategorySelected(cat.name))
-                  ?.name || affiliation}
-              </span>
+              <span>{topCategory}</span>
               <i
                 className={`ri-arrow-down-s-line transition-transform text-base ${
                   isTopCategoryOpen ? "rotate-180" : ""
@@ -1327,7 +1291,7 @@ export default function MapPage() {
             </button>
             {isTopCategoryOpen && (
               <div
-                className="fixed w-10 mt-2 bg-white rounded-12 shadow-xl border border-gray-200 py-2 min-w-[100px] z-[9999]"
+                className="fixed w-fit mt-2 bg-white rounded-12 shadow-xl border border-gray-200 py-2 z-[9999]"
                 style={{
                   left: dropdownRef.current?.getBoundingClientRect().left,
                   top: dropdownRef.current?.getBoundingClientRect().bottom! + 8,
@@ -1341,9 +1305,9 @@ export default function MapPage() {
                       setTopCategory(category.name);
                       setIsTopCategoryOpen(false);
                     }}
-                    className={`w-full px-4 py-2.5 text-center text-sm font-sf transition-colors ${
+                    className={`px-4 py-2 text-center text-sm font-sf transition-colors ${
                       isCategorySelected(category.name)
-                        ? "bg-primary/10 text-primary font-medium"
+                        ? " text-primary font-medium"
                         : "text-text hover:bg-gray-100"
                     }`}
                   >
