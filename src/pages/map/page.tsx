@@ -949,6 +949,7 @@ export default function MapPage() {
     setSelectedCategory,
     toggleCategory,
     isCategorySelected,
+    getSelectedCategory,
   } = useCategoryStore();
 
   const [showBottomSheet, setShowBottomSheet] = useState(false);
@@ -964,17 +965,10 @@ export default function MapPage() {
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
   const { stores, setStores } = usePartnerStore();
   const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
-  const [topCategory, setTopCategory] = useState(affiliation);
+  const { topCategory, setTopCategory } = useCategoryStore();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (affiliation) {
-      setTopCategory(affiliation);
-      setSelectedCategory("");
-    }
-  }, [affiliation]);
 
   useEffect(() => {
     const fetchPartnerStores = async () => {
