@@ -172,10 +172,12 @@ interface CategoryState {
   selectedCategoryId: string;
   selectedCategoryName: string;
   categories: Category[];
+  topCategory: string;
 
   setSelectedCategory: (categoryName: string) => void;
   clearSelectedCategory: () => void;
   toggleCategory: (categoryName: string) => void;
+  setTopCategory: (category: string) => void;
 
   getSelectedCategory: () => Category | null;
   isCategorySelected: (categoryName: string) => boolean;
@@ -188,36 +190,42 @@ const defaultCategories: Category[] = [
     icon: "ri-service-fill",
     color: "bg-red-100 text-red-600",
   },
-
   {
     id: "2",
+    name: "총학생회",
+    icon: "ri-service-fill",
+    color: "bg-purple-100 text-purple-600",
+  },
+  {
+    id: "3",
+    name: "총동아리",
+    icon: "ri-service-fill",
+    color: "bg-orange-100 text-orange-600",
+  },
+
+  {
+    id: "4",
     name: "음식점",
     icon: "ri-restaurant-fill",
     color: "bg-amber-100 text-amber-600",
   },
   {
-    id: "3",
+    id: "5",
     name: "카페",
     icon: "ri-cup-fill",
     color: "bg-pink-100 text-pink-600",
   },
   {
-    id: "4",
+    id: "6",
     name: "주점",
     icon: "ri-beer-fill",
     color: "bg-green-100 text-green-600",
   },
   {
-    id: "5",
+    id: "7",
     name: "기타",
     icon: "ri-shopping-bag-fill",
     color: "bg-blue-100 text-blue-600",
-  },
-  {
-    id: "6",
-    name: "총학생회",
-    icon: "ri-star-fill",
-    color: "bg-purple-100 text-purple-600",
   },
 ];
 
@@ -266,6 +274,7 @@ export const useCategoryStore = create<CategoryState>()(
           );
         }
       },
+      setTopCategory: (category) => set({ topCategory: category }),
 
       // 선택된 카테고리 객체 반환
       getSelectedCategory: () => {

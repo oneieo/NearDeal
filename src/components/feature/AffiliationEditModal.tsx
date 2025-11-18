@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Card from "../base/Card";
 import { affiliationOptions } from "../../pages/auth/login/page";
 import Button from "../base/Button";
+import { useCategoryStore } from "../../store/useCategoryStore";
 
 interface ModalViewProps {
   affilModalView: boolean;
@@ -18,6 +19,7 @@ const AffiliationEditModal = ({
   const [isLoading, setIsLoading] = useState(false);
   const { affiliation, setAffiliation, setIsLoggedIn } =
     useAuthStore.getState();
+  const { setTopCategory, setSelectedCategory } = useCategoryStore();
   const [clickedOption, setClickedOption] = useState<string>(affiliation || "");
 
   if (!affilModalView) return null;
@@ -50,6 +52,7 @@ const AffiliationEditModal = ({
       console.log("로그인 성공:", data);
       setIsLoggedIn(true);
       setAffiliation(clickedOption);
+      setTopCategory(clickedOption);
       setAffilModalView(false);
     } catch (error) {
       console.error("로그인 오류:", error);

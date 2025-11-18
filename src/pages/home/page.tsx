@@ -98,6 +98,7 @@ export default function Home() {
     setSelectedCategory,
     isCategorySelected,
     getSelectedCategory,
+    setTopCategory,
   } = useCategoryStore();
   const navigate = useNavigate();
   const [randInfo, setRandInfo] = useState<RandInfoType>();
@@ -112,7 +113,9 @@ export default function Home() {
   const fetchRandomPartnerStore = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/partner-stores/random`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/partner-store/random?partnerCategory=${affiliation}`,
         {
           method: "GET",
           headers: {
@@ -138,6 +141,7 @@ export default function Home() {
 
   const handleClickCategoryBtn = (name: string) => {
     setSelectedCategory(name);
+    setTopCategory(name === "단과대학" ? affiliation : name);
     console.log(getSelectedCategory()?.name);
     navigate("/map");
   };
@@ -226,7 +230,7 @@ export default function Home() {
 
         {/* 카테고리 */}
         <div className="space-y-4">
-          <h2 className="text-lg font-sf font-semibold text-text">카테고리</h2>
+          {/* <h2 className="text-lg font-sf font-semibold text-text">카테고리</h2> */}
           <div className="grid grid-cols-3 gap-3">
             {categories.map((category) => (
               <button
@@ -252,7 +256,7 @@ export default function Home() {
                   />
                 </div>
                 <p
-                  className={`text-sm font-sf font-medium ${
+                  className={`whitespace-pre-line text-sm font-sf font-medium ${
                     isCategorySelected(category.id) ? "text-white" : "text-text"
                   }`}
                 >
@@ -418,8 +422,6 @@ export default function Home() {
         affilModalView={affilModalView}
         setAffilModalView={setAffilModalView}
       />
-
-      {/* 하단 네비게이션 */}
       <BottomNavigation />
     </div>
   );
