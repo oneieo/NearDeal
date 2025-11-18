@@ -112,7 +112,9 @@ export default function Home() {
   const fetchRandomPartnerStore = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/partner-stores/random`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/partner-store/random?partnerCategory=${affiliation}`,
         {
           method: "GET",
           headers: {
@@ -139,6 +141,8 @@ export default function Home() {
   const handleClickCategoryBtn = (name: string) => {
     setSelectedCategory(name);
     console.log(getSelectedCategory()?.name);
+    // 여기 고치기 ~ TODO
+    // + 랜덤제휴
     navigate("/map");
   };
 
