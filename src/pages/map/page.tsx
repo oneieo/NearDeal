@@ -1127,7 +1127,6 @@ export default function MapPage() {
       });
     }
 
-    // 랜덤 이벤트 마커 추가
     if (showRandomEvent && currentLocation) {
       const eventData = [
         {
