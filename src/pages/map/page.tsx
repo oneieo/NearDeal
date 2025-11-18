@@ -949,6 +949,7 @@ export default function MapPage() {
     setSelectedCategory,
     toggleCategory,
     isCategorySelected,
+    getSelectedCategory,
   } = useCategoryStore();
 
   const [showBottomSheet, setShowBottomSheet] = useState(false);
@@ -970,10 +971,12 @@ export default function MapPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (affiliation) {
-      setTopCategory(affiliation);
-      setSelectedCategory("");
+    console.log(getSelectedCategory()?.name);
+    setSelectedCategory(getSelectedCategory()?.name as string);
+    if (getSelectedCategory()?.name == "총학생회" || "총동아리") {
+      setTopCategory(getSelectedCategory()?.name as string);
     }
+    setTopCategory(affiliation);
   }, [affiliation]);
 
   useEffect(() => {

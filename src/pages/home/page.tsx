@@ -142,7 +142,6 @@ export default function Home() {
     setSelectedCategory(name);
     console.log(getSelectedCategory()?.name);
     // 여기 고치기 ~ TODO
-    // + 랜덤제휴
     navigate("/map");
   };
 
