@@ -141,9 +141,8 @@ export default function Home() {
 
   const handleClickCategoryBtn = (name: string) => {
     setSelectedCategory(name);
-    setTopCategory(name);
+    setTopCategory(name === "단과대학" ? affiliation : name);
     console.log(getSelectedCategory()?.name);
-    // 여기 고치기 ~ TODO
     navigate("/map");
   };
 
