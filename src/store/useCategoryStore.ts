@@ -172,10 +172,12 @@ interface CategoryState {
   selectedCategoryId: string;
   selectedCategoryName: string;
   categories: Category[];
+  topCategory: string;
 
   setSelectedCategory: (categoryName: string) => void;
   clearSelectedCategory: () => void;
   toggleCategory: (categoryName: string) => void;
+  setTopCategory: (category: string) => void;
 
   getSelectedCategory: () => Category | null;
   isCategorySelected: (categoryName: string) => boolean;
@@ -272,6 +274,7 @@ export const useCategoryStore = create<CategoryState>()(
           );
         }
       },
+      setTopCategory: (category) => set({ topCategory: category }),
 
       // 선택된 카테고리 객체 반환
       getSelectedCategory: () => {

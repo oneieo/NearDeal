@@ -98,6 +98,7 @@ export default function Home() {
     setSelectedCategory,
     isCategorySelected,
     getSelectedCategory,
+    setTopCategory,
   } = useCategoryStore();
   const navigate = useNavigate();
   const [randInfo, setRandInfo] = useState<RandInfoType>();
@@ -140,6 +141,7 @@ export default function Home() {
 
   const handleClickCategoryBtn = (name: string) => {
     setSelectedCategory(name);
+    setTopCategory(name);
     console.log(getSelectedCategory()?.name);
     // 여기 고치기 ~ TODO
     navigate("/map");

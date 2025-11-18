@@ -965,19 +965,10 @@ export default function MapPage() {
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
   const { stores, setStores } = usePartnerStore();
   const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
-  const [topCategory, setTopCategory] = useState(affiliation);
+  const { topCategory, setTopCategory } = useCategoryStore();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    console.log(getSelectedCategory()?.name);
-    setSelectedCategory(getSelectedCategory()?.name as string);
-    if (getSelectedCategory()?.name == "총학생회" || "총동아리") {
-      setTopCategory(getSelectedCategory()?.name as string);
-    }
-    setTopCategory(affiliation);
-  }, [affiliation]);
 
   useEffect(() => {
     const fetchPartnerStores = async () => {
