@@ -856,6 +856,13 @@ const createEventMarkerContent = (eventTitle: string): string => `
   </div>
 `;
 
+const createSnackMarkerContent = (snackTitle: string): string => `
+  <div style="padding: 12px; min-width: 150px; text-align: center;">
+    <h4 style="margin: 0 0 8px 0; font-weight: bold; color: #ffd700;">🥯 ${snackTitle}</h4>
+    <p style="margin: 0; font-size: 12px; color: #666;">붕어빵집!</p>
+  </div>
+`;
+
 // Custom hooks
 const useCurrentLocation = () => {
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
@@ -904,6 +911,27 @@ interface SearchBarProps {
 const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
   const [isComposing, setIsComposing] = useState(false);
 
+const enableBlocker = () => {
+  const blocker = document.getElementById("nd-map-blocker");
+  if (blocker) blocker.classList.remove("hidden");
+};
+
+const disableBlocker = () => {
+  const blocker = document.getElementById("nd-map-blocker");
+  if (blocker) blocker.classList.add("hidden");
+};
+
+  // Map pointer events 조절 함수
+  const disableMapInteraction = () => {
+    const map = document.getElementById("nd-map-wrapper");
+    if (map) map.style.pointerEvents = "none";
+  };
+
+  const enableMapInteraction = () => {
+    const map = document.getElementById("nd-map-wrapper");
+    if (map) map.style.pointerEvents = "auto";
+  };
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isComposing) {
       setSearchQuery(e.target.value);
@@ -917,6 +945,21 @@ const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
     setSearchQuery(e.currentTarget.value);
   };
 
+  const handleFocus = () => {
+  enableBlocker();
+  disableMapInteraction();
+};
+
+const handleBlur = () => {
+  disableBlocker();
+  enableMapInteraction();
+};
+
+const handleClick = () => {
+  enableBlocker();
+  disableMapInteraction();
+};
+
   return (
     <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
       <div className="relative">
@@ -925,9 +968,22 @@ const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
           value={searchQuery}
           onChange={handleSearchChange}
           onCompositionStart={() => setIsComposing(true)}
-          onCompositionEnd={handleCompositionEnd}
+          onCompositionEnd={(e) => {
+            setIsComposing(false);
+            setSearchQuery(e.currentTarget.value);
+          }}
           placeholder="쿠폰/가게 검색"
           className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
+
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onClick={handleClick}
+
+          //  Android 입력 버그 방지 옵션
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
+          inputMode="text"
         />
         <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
           <i className="ri-search-line text-text-secondary" />
@@ -959,7 +1015,9 @@ export default function MapPage() {
   const [sortType, setSortType] = useState<SortType>("distance");
   const [mapCenter, setMapCenter] = useState<Location>(DEFAULT_LOCATION);
   const [mapKey, setMapKey] = useState(0);
-  const [showRandomEvent, setShowRandomEvent] = useState(false);
+  const [showRandomEvent, setShowRandomEvent] = useState<boolean>(false);
+  const [showWinterSnack, setShowWinterSnack] = useState<boolean>(false);
+  const [winterSnacks, setWinterSnacks] = useState();
   const { affiliation } = useAuthStore();
   const [affilModalView, setAffilModalView] = useState<boolean>(false);
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
@@ -1108,6 +1166,41 @@ export default function MapPage() {
       });
   }, [filteredStores, sortType, selectedStoreId]);
 
+  useEffect(() => {
+    const fetchWinterSnacks = async () => {
+      try {
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/partner-store?page=0&size=100&partnerCategory=겨울간식`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json; charset=UTF-8",
+            },
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("붕어빵집 정보를 가져오는데 실패했습니다.");
+        }
+
+        const data = await response.json();
+        console.log("붕어빵집 데이터:", data);
+
+        setWinterSnacks(data.content);
+      } catch (err) {
+        console.error("붕어빵집 데이터 로드 오류:", err);
+        setError(err instanceof Error ? err.message : "알 수 없는 오류");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWinterSnacks();
+  }, []);
+
   const mapMarkers = useMemo(() => {
     const markers = [];
 
@@ -1161,6 +1254,18 @@ export default function MapPage() {
       );
     }
 
+    if (showWinterSnack && currentLocation) {
+      const snackMarkers = winterSnacks.map((snack) => ({
+        lat: snack.lat,
+        lng: snack.lng,
+        title: snack.name,
+        content: createSnackMarkerContent(snack.title),
+        id: `snack-${snack.partnerStoreId}`,
+        category: snack.category,
+      }));
+      markers.push(...snackMarkers);
+    }
+
     const storeMarkers = filteredStores.map((store) => ({
       lat: store.lat,
       lng: store.lng,
@@ -1172,7 +1277,14 @@ export default function MapPage() {
 
     markers.push(...storeMarkers);
     return markers;
-  }, [currentLocation, filteredStores, showRandomEvent, stores]);
+  }, [
+    currentLocation,
+    filteredStores,
+    showRandomEvent,
+    stores,
+    showWinterSnack,
+    winterSnacks,
+  ]);
 
   const handleCategoryToggle = useCallback(
     (categoryName: string) => {
@@ -1333,7 +1445,7 @@ export default function MapPage() {
     <div className="absolute bottom-24 right-4 flex flex-col gap-3 z-20">
       <button
         onClick={() => setShowRandomEvent(!showRandomEvent)}
-        className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
+        className={`w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
           showRandomEvent ? "bg-primary text-white" : "bg-white text-primary"
         }`}
         title="랜덤 이벤트 표시"
@@ -1341,14 +1453,41 @@ export default function MapPage() {
         <i className="ri-gift-fill text-xl" />
       </button>
       <button
+        onClick={() => setShowWinterSnack(!showWinterSnack)}
+        className={`w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
+          showWinterSnack ? "bg-primary text-white" : "bg-white text-primary"
+        }`}
+        title="붕어빵집 표시"
+      >
+        {showWinterSnack ? (
+          <img
+            src={"/icons/taiyaki-white.png"}
+            width={24}
+            height={24}
+            alt="붕어빵"
+            className="object-contain"
+            style={{ imageRendering: "-webkit-optimize-contrast" }}
+          />
+        ) : (
+          <img
+            src={"/icons/taiyaki-green.png"}
+            width={24}
+            height={24}
+            alt="붕어빵"
+            className="object-contain"
+            style={{ imageRendering: "-webkit-optimize-contrast" }}
+          />
+        )}
+      </button>
+      <button
         onClick={() => setShowListView(true)}
-        className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
+        className="w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
       >
         <i className="ri-list-unordered text-primary text-xl" />
       </button>
       <button
         onClick={handleMyLocation}
-        className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
+        className="w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
         title="내 위치로 이동"
       >
         <i className="ri-navigation-fill text-primary text-xl" />
@@ -1626,7 +1765,12 @@ export default function MapPage() {
       <CategoryChips />
 
       <div className="pt-40 h-screen relative">
-        <div className="w-full h-full relative overflow-hidden">
+       <div className="w-full h-full relative overflow-hidden" id="nd-map-wrapper">
+        <div
+          id="nd-map-blocker"
+          className="absolute inset-0 z-50 hidden"
+        ></div>
+
           <NaverMapComponent
             key={mapKey}
             width="100%"
