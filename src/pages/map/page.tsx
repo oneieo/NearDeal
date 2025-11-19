@@ -918,7 +918,7 @@ const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
   };
 
   return (
-    <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
+    <div className="fixed top-12 left-0 right-0 z-50 bg-white px-4 py-3 border-b border-gray-200">
       <div className="relative">
         <input
           type="text"
@@ -1268,7 +1268,7 @@ export default function MapPage() {
     const bottomCategories = categories.slice(3);
 
     return (
-      <div className="fixed top-28 left-0 right-0 z-40 bg-white px-4 py-3">
+      <div className="fixed top-28 left-0 right-0 z-30 bg-white px-4 py-3">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide relative">
           <div className="relative shrink-0" ref={dropdownRef}>
             <button
@@ -1634,7 +1634,7 @@ export default function MapPage() {
             center={mapCenter}
             zoom={15}
             markers={mapMarkers}
-            className="absolute inset-0"
+            className="absolute inset-0 z-10"
             onMarkerClick={handleMarkerClick}
           />
           <MapButtons />
