@@ -157,6 +157,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchRandomPartnerStore();
+    setTopCategory(affiliation);
   }, []);
 
   return (
