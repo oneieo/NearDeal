@@ -896,10 +896,6 @@ const useCurrentLocation = () => {
     );
   }, []);
 
-  useEffect(() => {
-    getCurrentLocation();
-  }, [getCurrentLocation]);
-
   return { currentLocation, locationError, getCurrentLocation };
 };
 
@@ -1003,6 +999,13 @@ export default function MapPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    getCurrentLocation();
+    if (!topCategory) {
+      setTopCategory(affiliation);
+    }
+  }, [getCurrentLocation]);
 
   useEffect(() => {
     const fetchPartnerStores = async () => {
