@@ -1396,7 +1396,7 @@ export default function MapPage() {
     <div className="absolute bottom-24 right-4 flex flex-col gap-3 z-20">
       <button
         onClick={() => setShowRandomEvent(!showRandomEvent)}
-        className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
+        className={`w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
           showRandomEvent ? "bg-primary text-white" : "bg-white text-primary"
         }`}
         title="랜덤 이벤트 표시"
@@ -1405,7 +1405,7 @@ export default function MapPage() {
       </button>
       <button
         onClick={() => setShowWinterSnack(!showWinterSnack)}
-        className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
+        className={`w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
           showWinterSnack ? "bg-primary text-white" : "bg-white text-primary"
         }`}
         title="붕어빵집 표시"
@@ -1414,13 +1414,13 @@ export default function MapPage() {
       </button>
       <button
         onClick={() => setShowListView(true)}
-        className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
+        className="w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
       >
         <i className="ri-list-unordered text-primary text-xl" />
       </button>
       <button
         onClick={handleMyLocation}
-        className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
+        className="w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
         title="내 위치로 이동"
       >
         <i className="ri-navigation-fill text-primary text-xl" />
