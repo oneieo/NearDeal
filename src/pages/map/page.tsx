@@ -909,19 +909,46 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
-  const [isComposing, setIsComposing] = useState(false);
+  //const [isComposing, setIsComposing] = useState(false);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!isComposing) {
-      setSearchQuery(e.target.value);
-    }
+  const enableBlocker = () => {
+    const blocker = document.getElementById("nd-map-blocker");
+    if (blocker) blocker.classList.remove("hidden");
   };
 
-  const handleCompositionEnd = (
-    e: React.CompositionEvent<HTMLInputElement>
-  ) => {
-    setIsComposing(false);
-    setSearchQuery(e.currentTarget.value);
+  const disableBlocker = () => {
+    const blocker = document.getElementById("nd-map-blocker");
+    if (blocker) blocker.classList.add("hidden");
+  };
+
+  // Map pointer events 조절 함수
+  const disableMapInteraction = () => {
+    const map = document.getElementById("nd-map-wrapper");
+    if (map) map.style.pointerEvents = "none";
+  };
+
+  const enableMapInteraction = () => {
+    const map = document.getElementById("nd-map-wrapper");
+    if (map) map.style.pointerEvents = "auto";
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleFocus = () => {
+    enableBlocker();
+    disableMapInteraction();
+  };
+
+  const handleBlur = () => {
+    disableBlocker();
+    enableMapInteraction();
+  };
+
+  const handleClick = () => {
+    enableBlocker();
+    disableMapInteraction();
   };
 
   return (
@@ -931,8 +958,6 @@ const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
           type="text"
           value={searchQuery}
           onChange={handleSearchChange}
-          onCompositionStart={() => setIsComposing(true)}
-          onCompositionEnd={handleCompositionEnd}
           placeholder="쿠폰/가게 검색"
           className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
         />
