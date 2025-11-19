@@ -911,6 +911,27 @@ interface SearchBarProps {
 const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
   const [isComposing, setIsComposing] = useState(false);
 
+const enableBlocker = () => {
+  const blocker = document.getElementById("nd-map-blocker");
+  if (blocker) blocker.classList.remove("hidden");
+};
+
+const disableBlocker = () => {
+  const blocker = document.getElementById("nd-map-blocker");
+  if (blocker) blocker.classList.add("hidden");
+};
+
+  // Map pointer events 조절 함수
+  const disableMapInteraction = () => {
+    const map = document.getElementById("nd-map-wrapper");
+    if (map) map.style.pointerEvents = "none";
+  };
+
+  const enableMapInteraction = () => {
+    const map = document.getElementById("nd-map-wrapper");
+    if (map) map.style.pointerEvents = "auto";
+  };
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isComposing) {
       setSearchQuery(e.target.value);
@@ -924,6 +945,21 @@ const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
     setSearchQuery(e.currentTarget.value);
   };
 
+  const handleFocus = () => {
+  enableBlocker();
+  disableMapInteraction();
+};
+
+const handleBlur = () => {
+  disableBlocker();
+  enableMapInteraction();
+};
+
+const handleClick = () => {
+  enableBlocker();
+  disableMapInteraction();
+};
+
   return (
     <div className="fixed top-12 left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-200">
       <div className="relative">
@@ -932,9 +968,22 @@ const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
           value={searchQuery}
           onChange={handleSearchChange}
           onCompositionStart={() => setIsComposing(true)}
-          onCompositionEnd={handleCompositionEnd}
+          onCompositionEnd={(e) => {
+            setIsComposing(false);
+            setSearchQuery(e.currentTarget.value);
+          }}
           placeholder="쿠폰/가게 검색"
           className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
+
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onClick={handleClick}
+
+          //  Android 입력 버그 방지 옵션
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
+          inputMode="text"
         />
         <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
           <i className="ri-search-line text-text-secondary" />
@@ -1716,7 +1765,12 @@ export default function MapPage() {
       <CategoryChips />
 
       <div className="pt-40 h-screen relative">
-        <div className="w-full h-full relative overflow-hidden">
+       <div className="w-full h-full relative overflow-hidden" id="nd-map-wrapper">
+        <div
+          id="nd-map-blocker"
+          className="absolute inset-0 z-50 hidden"
+        ></div>
+
           <NaverMapComponent
             key={mapKey}
             width="100%"
