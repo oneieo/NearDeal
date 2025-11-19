@@ -34,7 +34,9 @@ const getMarkerIconPath = (markerId: string): string => {
     return "/icons/clover-gold-24px.png";
   }
   if (markerId.includes("snack")) {
-    return "/icons/winter-snack-24px.png";
+    // return "/icons/winter-snack-24px.png";
+    return "/icons/붕어빵1-36px.png";
+    // return "/icons/붕어빵2-36px.png";
   }
   return "/icons/icon-clover2.png";
 };
