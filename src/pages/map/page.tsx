@@ -1604,7 +1604,7 @@ export default function MapPage() {
     );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background">
       <TopNavigation
         leftAction={
           <button className="w-10 h-10 flex items-center justify-center">
@@ -1625,7 +1625,7 @@ export default function MapPage() {
       <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <CategoryChips />
 
-      <div className="flex-1 relative">
+      <div className="pt-40 h-screen relative">
         <div className="w-full h-full relative overflow-hidden">
           <NaverMapComponent
             key={mapKey}
