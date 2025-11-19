@@ -33,8 +33,10 @@ const getMarkerIconPath = (markerId: string): string => {
   if (markerId.includes("event")) {
     return "/icons/clover-gold-24px.png";
   }
+  if (markerId.includes("snack")) {
+    return "/icons/winter-snack-24px.png";
+  }
   return "/icons/icon-clover2.png";
-  // return "/icons/clover-marker-vivid-36px.png";
 };
 
 const createMarkerWithLabel = (markerId: string, title?: string) => {
@@ -42,7 +44,8 @@ const createMarkerWithLabel = (markerId: string, title?: string) => {
   const showLabel =
     title &&
     !markerId.includes("current-location") &&
-    !markerId.includes("event");
+    !markerId.includes("event") &&
+    !markerId.includes("snack");
 
   return {
     content: `
