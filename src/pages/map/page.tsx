@@ -909,7 +909,7 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
-  const [isComposing, setIsComposing] = useState(false);
+  //const [isComposing, setIsComposing] = useState(false);
 
 const enableBlocker = () => {
   const blocker = document.getElementById("nd-map-blocker");
@@ -933,16 +933,7 @@ const disableBlocker = () => {
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!isComposing) {
-      setSearchQuery(e.target.value);
-    }
-  };
-
-  const handleCompositionEnd = (
-    e: React.CompositionEvent<HTMLInputElement>
-  ) => {
-    setIsComposing(false);
-    setSearchQuery(e.currentTarget.value);
+    setSearchQuery(e.target.value);
   };
 
   const handleFocus = () => {
@@ -967,11 +958,6 @@ const handleClick = () => {
           type="text"
           value={searchQuery}
           onChange={handleSearchChange}
-          onCompositionStart={() => setIsComposing(true)}
-          onCompositionEnd={(e) => {
-            setIsComposing(false);
-            setSearchQuery(e.currentTarget.value);
-          }}
           placeholder="쿠폰/가게 검색"
           className="w-full h-12 pl-12 pr-4 bg-gray-100 rounded-16 border-none text-sm font-sf placeholder-text-secondary focus:outline-none focus:bg-white focus:shadow-sm"
 
