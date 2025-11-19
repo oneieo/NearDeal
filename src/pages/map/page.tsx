@@ -856,6 +856,13 @@ const createEventMarkerContent = (eventTitle: string): string => `
   </div>
 `;
 
+const createSnackMarkerContent = (snackTitle: string): string => `
+  <div style="padding: 12px; min-width: 150px; text-align: center;">
+    <h4 style="margin: 0 0 8px 0; font-weight: bold; color: #ffd700;">🥯 ${snackTitle}</h4>
+    <p style="margin: 0; font-size: 12px; color: #666;">붕어빵집!</p>
+  </div>
+`;
+
 // Custom hooks
 const useCurrentLocation = () => {
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
@@ -994,7 +1001,9 @@ export default function MapPage() {
   const [sortType, setSortType] = useState<SortType>("distance");
   const [mapCenter, setMapCenter] = useState<Location>(DEFAULT_LOCATION);
   const [mapKey, setMapKey] = useState(0);
-  const [showRandomEvent, setShowRandomEvent] = useState(false);
+  const [showRandomEvent, setShowRandomEvent] = useState<boolean>(false);
+  const [showWinterSnack, setShowWinterSnack] = useState<boolean>(false);
+  const [winterSnacks, setWinterSnacks] = useState();
   const { affiliation } = useAuthStore();
   const [affilModalView, setAffilModalView] = useState<boolean>(false);
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
@@ -1143,6 +1152,41 @@ export default function MapPage() {
       });
   }, [filteredStores, sortType, selectedStoreId]);
 
+  useEffect(() => {
+    const fetchWinterSnacks = async () => {
+      try {
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/partner-store?page=0&size=100&partnerCategory=겨울간식`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json; charset=UTF-8",
+            },
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("붕어빵집 정보를 가져오는데 실패했습니다.");
+        }
+
+        const data = await response.json();
+        console.log("붕어빵집 데이터:", data);
+
+        setWinterSnacks(data.content);
+      } catch (err) {
+        console.error("붕어빵집 데이터 로드 오류:", err);
+        setError(err instanceof Error ? err.message : "알 수 없는 오류");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWinterSnacks();
+  }, []);
+
   const mapMarkers = useMemo(() => {
     const markers = [];
 
@@ -1196,6 +1240,18 @@ export default function MapPage() {
       );
     }
 
+    if (showWinterSnack && currentLocation) {
+      const snackMarkers = winterSnacks.map((snack) => ({
+        lat: snack.lat,
+        lng: snack.lng,
+        title: snack.name,
+        content: createSnackMarkerContent(snack.title),
+        id: `snack-${snack.partnerStoreId}`,
+        category: snack.category,
+      }));
+      markers.push(...snackMarkers);
+    }
+
     const storeMarkers = filteredStores.map((store) => ({
       lat: store.lat,
       lng: store.lng,
@@ -1207,7 +1263,14 @@ export default function MapPage() {
 
     markers.push(...storeMarkers);
     return markers;
-  }, [currentLocation, filteredStores, showRandomEvent, stores]);
+  }, [
+    currentLocation,
+    filteredStores,
+    showRandomEvent,
+    stores,
+    showWinterSnack,
+    winterSnacks,
+  ]);
 
   const handleCategoryToggle = useCallback(
     (categoryName: string) => {
@@ -1368,7 +1431,7 @@ export default function MapPage() {
     <div className="absolute bottom-24 right-4 flex flex-col gap-3 z-20">
       <button
         onClick={() => setShowRandomEvent(!showRandomEvent)}
-        className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
+        className={`w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
           showRandomEvent ? "bg-primary text-white" : "bg-white text-primary"
         }`}
         title="랜덤 이벤트 표시"
@@ -1376,14 +1439,41 @@ export default function MapPage() {
         <i className="ri-gift-fill text-xl" />
       </button>
       <button
+        onClick={() => setShowWinterSnack(!showWinterSnack)}
+        className={`w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
+          showWinterSnack ? "bg-primary text-white" : "bg-white text-primary"
+        }`}
+        title="붕어빵집 표시"
+      >
+        {showWinterSnack ? (
+          <img
+            src={"/icons/taiyaki-white.png"}
+            width={24}
+            height={24}
+            alt="붕어빵"
+            className="object-contain"
+            style={{ imageRendering: "-webkit-optimize-contrast" }}
+          />
+        ) : (
+          <img
+            src={"/icons/taiyaki-green.png"}
+            width={24}
+            height={24}
+            alt="붕어빵"
+            className="object-contain"
+            style={{ imageRendering: "-webkit-optimize-contrast" }}
+          />
+        )}
+      </button>
+      <button
         onClick={() => setShowListView(true)}
-        className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
+        className="w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
       >
         <i className="ri-list-unordered text-primary text-xl" />
       </button>
       <button
         onClick={handleMyLocation}
-        className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
+        className="w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
         title="내 위치로 이동"
       >
         <i className="ri-navigation-fill text-primary text-xl" />
