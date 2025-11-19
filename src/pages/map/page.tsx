@@ -1410,7 +1410,25 @@ export default function MapPage() {
         }`}
         title="붕어빵집 표시"
       >
-        <i className="ri-restaurant-fill text-xl" />
+        {showWinterSnack ? (
+          <img
+            src={"/icons/taiyaki-white.png"}
+            width={24}
+            height={24}
+            alt="붕어빵"
+            className="object-contain"
+            style={{ imageRendering: "-webkit-optimize-contrast" }}
+          />
+        ) : (
+          <img
+            src={"/icons/taiyaki-green.png"}
+            width={24}
+            height={24}
+            alt="붕어빵"
+            className="object-contain"
+            style={{ imageRendering: "-webkit-optimize-contrast" }}
+          />
+        )}
       </button>
       <button
         onClick={() => setShowListView(true)}
