@@ -23,7 +23,7 @@ export const affiliationOptions = [
   "자연과학대학",
   "치과대학",
   // "한옥학과",
-  // "환경생명자원대학",
+  "환경생명자원대학",
 ];
 
 export default function LoginPage() {
