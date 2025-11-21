@@ -372,7 +372,7 @@ export default function Home() {
                 </h3>
               </div>
               <span className="bg-gradient-to-r from-emerald-400 to-primary text-white text-sm font-sf font-bold px-3 py-1 rounded-full shadow-md animate-pulse-slow">
-                혜택
+                {affiliation} 혜택
               </span>
             </div>
 
