@@ -7,6 +7,31 @@ import Button from "../../../components/base/Button";
 import { usePartnerStore } from "../../../store/usePartnerStore";
 import type { PartnerStore } from "../../../types/partnerStoreType";
 
+const ALL_CATEGORIES: string[] = [
+  "총학생회",
+  "총동아리연합회",
+  "간호대학",
+  "경상대학",
+  "공과대학",
+  "국제이공학부",
+  "농업생명과학대학",
+  "사범대학",
+  "사회과학대학",
+  "생활과학대학",
+  "수의과대학",
+  "약학대학",
+  "예술대학",
+  "융합자율전공학부",
+  "융합학부",
+  "의과대학",
+  "인문대학",
+  "자연과학대학",
+  "치과대학",
+  "한옥학과",
+  "환경생명자원대학",
+];
+
+
 interface Coupon {
   id: string;
   title: string;
@@ -51,6 +76,11 @@ interface Store {
     title: string;
     remaining: number;
   };
+}
+
+interface AffiliationInfo {
+  category: string;
+  storeId: string; 
 }
 
 const storeImageMap = new Map<string, string[]>([
@@ -226,6 +256,10 @@ export default function StorePage() {
     "coupons"
   );
 
+  // [추가] 동일 가게의 다른 제휴처 목록 상태
+  const [affiliations, setAffiliations] = useState<AffiliationInfo[]>([]);
+  const [isLoadingAffiliations, setIsLoadingAffiliations] = useState(false);
+
   // const [showAllCoupons, setShowAllCoupons] = useState(false);
   // const [reviewSort, setReviewSort] = useState<"latest" | "highest" | "lowest">(
   //   "latest"
@@ -255,18 +289,31 @@ export default function StorePage() {
   useEffect(() => {
     if (!id) return;
 
-    console.log("전체 상점", stores);
-    console.log("찾으려는 ID:", id);
+    // 상세 페이지 이동 시 스크롤 최상단으로 이동
+    window.scrollTo(0, 0);
 
-    const foundStore = stores.find((s) => s.id === id);
+    const foundStore = stores.find((s) => s.partnerStoreId.toString() === id);
 
     if (foundStore) {
-      console.log("zustand에서 상점 찾음:", foundStore);
-      setStore(foundStore);
+      setStore({
+        id: foundStore.partnerStoreId.toString(),
+        name: foundStore.storeName,
+        address: foundStore.address,
+        category: foundStore.partnerCategory, 
+        lat: foundStore.lat,
+        lng: foundStore.lng,
+        distance: "0m",
+        distanceInM: 0,
+        rating: 5.0,
+        reviewCount: 0,
+        popularity: 0,
+        mainCoupon: {
+          title: foundStore.partnerBenefit,
+          remaining: 0,
+        },
+      });
       return;
     }
-
-    console.log("zustand에 없어서 API 단일 조회 실행");
 
     // 2) 검색 페이지에서 이동 시: API로 단일 상세 조회
     const fetchStoreDetail = async () => {
@@ -311,6 +358,77 @@ export default function StorePage() {
 
     fetchStoreDetail();
   }, [id, stores]);
+
+  // [추가] 현재 가게와 이름/주소가 같은 다른 제휴처 찾기
+  useEffect(() => {
+    if (!store) return;
+
+    const fetchSiblingStores = async () => {
+      setIsLoadingAffiliations(true);
+      try {
+        // 병렬 요청
+        const promises = ALL_CATEGORIES.map((cat) =>
+          fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/partner-store?page=0&size=100&partnerCategory=${encodeURIComponent(
+              cat
+            )}`,
+            {
+              method: "GET",
+              headers: { Accept: "application/json; charset=UTF-8" },
+              credentials: "include",
+            }
+          ).then((res) => (res.ok ? res.json() : { content: [] }))
+        );
+
+        const results = await Promise.all(promises);
+        const allStores = results.flatMap((data) => data.content || []);
+
+        // 현재 가게와 이름, 주소가 같은 가게만 필터링
+        // API 결과에 없는 단과대는 여기서 걸러짐
+        const siblings = allStores.filter((s) => {
+            const isNameMatch = s.storeName.trim() === store.name.trim();
+            // 주소의 앞부분(시/구/동 정도)만 비교하여 같은 지점인지 확인
+            const isAddressMatch = s.address.trim().substring(0, 5) === store.address.trim().substring(0, 5); 
+            return isNameMatch && isAddressMatch;
+        });
+
+        const uniqueAffiliations: AffiliationInfo[] = [];
+        const seenCategories = new Set<string>();
+
+        siblings.forEach((s) => {
+          if (!seenCategories.has(s.partnerCategory)) {
+            seenCategories.add(s.partnerCategory);
+            uniqueAffiliations.push({
+              category: s.partnerCategory,
+              storeId: s.partnerStoreId.toString(),
+            });
+          }
+        });
+
+        // [정렬 로직] 총학생회 -> 총동아리 -> 가나다순
+        uniqueAffiliations.sort((a, b) => {
+          const priority = ["총학생회", "총동아리"];
+          
+          const idxA = priority.indexOf(a.category);
+          const idxB = priority.indexOf(b.category);
+
+          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+          if (idxA !== -1) return -1;
+          if (idxB !== -1) return 1;
+          
+          return a.category.localeCompare(b.category);
+        });
+
+        setAffiliations(uniqueAffiliations);
+      } catch (err) {
+        console.error("제휴처 목록 조회 실패", err);
+      } finally {
+        setIsLoadingAffiliations(false);
+      }
+    };
+
+    fetchSiblingStores();
+  }, [store]); // store 정보가 로드되면 실행
 
   if (!store && stores.length > 0) {
     return (
