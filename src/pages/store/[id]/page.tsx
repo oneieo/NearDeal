@@ -369,7 +369,7 @@ export default function StorePage() {
         // 병렬 요청
         const promises = ALL_CATEGORIES.map((cat) =>
           fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/partner-store?page=0&size=100&partnerCategory=${encodeURIComponent(
+            `${import.meta.env.VITE_API_BASE_URL}/partner-store?page=0&size=1000&partnerCategory=${encodeURIComponent(
               cat
             )}`,
             {
@@ -393,13 +393,11 @@ export default function StorePage() {
         // 비교 로직 (공백 제거 후 비교)
         const normalize = (str: string) => str.replace(/\s+/g, "").trim();
         const targetName = normalize(store.name);
-        const targetAddress = normalize(store.address).substring(0, 10);
 
         const siblings = allStores.filter((s) => {
             const sName = normalize(s.storeName);
-            const sAddress = normalize(s.address).substring(0, 10);
             
-            return sName === targetName && sAddress === targetAddress;
+            return sName === targetName;
         });
 
 
