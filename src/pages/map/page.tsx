@@ -1420,6 +1420,20 @@ export default function MapPage() {
     );
   };
 
+  const DeliciousEvent = () => (
+    <div className="absolute bottom-24 left-4 flex flex-col gap-3 z-20">
+      {/* <button
+        className={`w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
+          showRandomEvent ? "bg-primary text-white" : "bg-white text-primary"
+        }`}
+        title="우마이 점심 이벤트"
+      >
+        <i className="ri-gift-fill text-xl" />
+      </button> */}
+      우마이 점심 이벤트
+    </div>
+  );
+
   const MapButtons = () => (
     <div className="absolute bottom-24 right-4 flex flex-col gap-3 z-20">
       <button
@@ -1755,6 +1769,7 @@ export default function MapPage() {
             className="absolute inset-0"
             onMarkerClick={handleMarkerClick}
           />
+          {/* <DeliciousEvent /> */}
           <MapButtons />
         </div>
       </div>
