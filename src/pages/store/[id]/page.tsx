@@ -9,7 +9,7 @@ import type { PartnerStore } from "../../../types/partnerStoreType";
 
 const ALL_CATEGORIES: string[] = [
   "총학생회",
-  "총동아리연합회",
+  "총동아리",
   "간호대학",
   "경상대학",
   "공과대학",
@@ -256,7 +256,7 @@ export default function StorePage() {
     "coupons"
   );
 
-  // [추가] 동일 가게의 다른 제휴처 목록 상태
+  // 동일 가게의 다른 제휴처 목록 상태
   const [affiliations, setAffiliations] = useState<AffiliationInfo[]>([]);
   const [isLoadingAffiliations, setIsLoadingAffiliations] = useState(false);
 
@@ -292,14 +292,14 @@ export default function StorePage() {
     // 상세 페이지 이동 시 스크롤 최상단으로 이동
     window.scrollTo(0, 0);
 
-    const foundStore = stores.find((s) => s.partnerStoreId.toString() === id);
+    const foundStore = stores.find((s) => String(s.partnerStoreId) === id);
 
     if (foundStore) {
       setStore({
-        id: foundStore.partnerStoreId.toString(),
+        id: String(foundStore.partnerStoreId),
         name: foundStore.storeName,
         address: foundStore.address,
-        category: foundStore.partnerCategory, 
+        category: foundStore.partnerCategory,
         lat: foundStore.lat,
         lng: foundStore.lng,
         distance: "0m",
@@ -377,20 +377,31 @@ export default function StorePage() {
               headers: { Accept: "application/json; charset=UTF-8" },
               credentials: "include",
             }
-          ).then((res) => (res.ok ? res.json() : { content: [] }))
+           )
+            .then((res) => {
+              if (!res.ok) {
+                return { content: [] };
+              }
+              return res.json();
+            })
+            .catch(() => ({ content: [] }))
         );
 
         const results = await Promise.all(promises);
         const allStores = results.flatMap((data) => data.content || []);
 
-        // 현재 가게와 이름, 주소가 같은 가게만 필터링
-        // API 결과에 없는 단과대는 여기서 걸러짐
+        // 비교 로직 (공백 제거 후 비교)
+        const normalize = (str: string) => str.replace(/\s+/g, "").trim();
+        const targetName = normalize(store.name);
+        const targetAddress = normalize(store.address).substring(0, 10);
+
         const siblings = allStores.filter((s) => {
-            const isNameMatch = s.storeName.trim() === store.name.trim();
-            // 주소의 앞부분(시/구/동 정도)만 비교하여 같은 지점인지 확인
-            const isAddressMatch = s.address.trim().substring(0, 5) === store.address.trim().substring(0, 5); 
-            return isNameMatch && isAddressMatch;
+            const sName = normalize(s.storeName);
+            const sAddress = normalize(s.address).substring(0, 10);
+            
+            return sName === targetName && sAddress === targetAddress;
         });
+
 
         const uniqueAffiliations: AffiliationInfo[] = [];
         const seenCategories = new Set<string>();
