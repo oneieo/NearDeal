@@ -34,9 +34,11 @@ const getMarkerIconPath = (markerId: string): string => {
     return "/icons/clover-gold-24px.png";
   }
   if (markerId.includes("snack")) {
-    // return "/icons/winter-snack-24px.png";
+    if (markerId.includes("1014")) {
+      return "/icons/호두과자마커.png";
+    }
+    console.log(markerId);
     return "/icons/붕어빵1-36px.png";
-    // return "/icons/붕어빵2-36px.png";
   }
   return "/icons/icon-clover2.png";
 };
