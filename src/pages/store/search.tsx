@@ -98,11 +98,22 @@ export default function StoreSearchPage() {
                 className="p-4 cursor-pointer hover:shadow-md transition-all"
                 onClick={() => navigate(`/store/${store.partnerStoreId}`)}
               >
-                <h3 className="font-sf font-bold text-text">{store.storeName}</h3>
-                <p className="text-sm text-text-secondary">{store.address}</p>
-                <p className="text-sm text-primary font-medium mt-1">
-                  {store.partnerBenefit}
-                </p>
+                {/* 가게 이름 */}
+                <h3 className="font-sf font-bold text-text text-lg">{store.storeName}</h3>
+                
+                {/* 가게 주소 */}
+                <div className="flex items-center gap-1 mt-1 mb-3">
+                  <i className="ri-map-pin-line text-text-secondary text-xs" />
+                  <p className="text-sm text-text-secondary">{store.address}</p>
+                </div>
+
+                {/* [수정] 제휴 혜택 대신 제휴 주체(partnerCategory) 표시 */}
+                <div className="flex items-center">
+                  <span className="bg-primary/10 text-primary text-xs font-sf font-bold px-2 py-1.5 rounded-8 flex items-center gap-1">
+                    <i className="ri-shake-hands-line"></i>
+                    {store.partnerCategory} 제휴
+                  </span>
+                </div>
               </Card>
             ))}
           </div>
