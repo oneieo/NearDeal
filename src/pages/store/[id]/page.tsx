@@ -396,7 +396,6 @@ export default function StorePage() {
 
         const siblings = allStores.filter((s) => {
             const sName = normalize(s.storeName);
-            
             return sName === targetName;
         });
 
@@ -544,8 +543,37 @@ export default function StorePage() {
               <span className="text-sm font-sf text-text">11:00 - 22:00</span>
               <span className="text-sm font-sf text-primary">영업중</span>
             </div> */}
+
+            {/* [위치 수정] 주소 바로 아래로 이동 */}
+            {affiliations.length > 0 && (
+              <div className="pt-2">
+                <p className="text-xs text-text-secondary mb-2 font-sf">
+                  다른 제휴 혜택 보기
+                </p>
+                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                  {affiliations.map((aff) => (
+                    <button
+                      key={aff.category}
+                      onClick={() => {
+                          if (aff.storeId !== store.id) {
+                              navigate(`/store/${aff.storeId}`);
+                          }
+                      }}
+                      className={`whitespace-nowrap px-3 py-1.5 rounded-full text-sm font-sf transition-all border ${
+                        aff.storeId === store.id
+                          ? "bg-primary text-white border-primary font-bold shadow-sm"
+                          : "bg-white text-text-secondary border-gray-200 hover:bg-gray-50"
+                      }`}
+                    >
+                      {aff.category}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
+  
 
         {store.mainCoupon && (
           <Card className="border-2 border-primary/20 ">
