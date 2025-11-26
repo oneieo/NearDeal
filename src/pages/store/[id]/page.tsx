@@ -544,19 +544,23 @@ export default function StorePage() {
               <span className="text-sm font-sf text-primary">영업중</span>
             </div> */}
 
-            {/* [위치 수정] 주소 바로 아래로 이동 */}
             {affiliations.length > 0 && (
-              <div className="pt-2">
-                <p className="text-xs text-text-secondary mb-2 font-sf">
-                  다른 제휴 혜택 보기
-                </p>
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="flex items-center gap-1.5 mb-2.5">
+                  <i className="ri-arrow-left-right-line text-primary/80 text-sm" />
+                  <span className="text-xs font-bold text-text-secondary font-sf">
+                    다른 제휴 혜택 확인하기
+                  </span>
+                </div>
                 <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
                   {affiliations.map((aff) => (
                     <button
                       key={aff.category}
                       onClick={() => {
                           if (aff.storeId !== store.id) {
-                              navigate(`/store/${aff.storeId}`);
+                              // [기능 수정] { replace: true } 옵션 추가
+                              // 뒤로가기 시 이전 단과대 페이지가 아닌, 목록/지도 페이지로 이동
+                              navigate(`/store/${aff.storeId}`, { replace: true });
                           }
                       }}
                       className={`whitespace-nowrap px-3 py-1.5 rounded-full text-sm font-sf transition-all border ${
