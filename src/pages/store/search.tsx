@@ -6,6 +6,11 @@ import Card from "../../components/base/Card";
 import type { PartnerStore } from "../../types/partnerStoreType";
 import { useAuthStore } from "../../store/useAuthStore";
 
+// [수정] 여러 제휴 정보를 담기 위해 기존 타입 확장
+interface GroupedPartnerStore extends Omit<PartnerStore, "partnerCategory"> {
+  partnerCategories: string[]; // 예: ["공과대학", "총학생회"]
+}
+
 export default function StoreSearchPage() {
   const { affiliation } = useAuthStore();
   const navigate = useNavigate();
@@ -13,8 +18,35 @@ export default function StoreSearchPage() {
   const keyword = searchParams.get("keyword") || "";
 
   const [loading, setLoading] = useState(false);
-  const [stores, setLocalStores] = useState<PartnerStore[]>([]);
+  // [수정] 상태 타입을 확장된 인터페이스로 변경
+  const [stores, setLocalStores] = useState<GroupedPartnerStore[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  // [수정] 가게 이름과 주소가 같으면 하나로 합치고 제휴 정보만 배열로 모으는 함수
+  const groupStores = (rawStores: PartnerStore[]): GroupedPartnerStore[] => {
+    const map = new Map<string, GroupedPartnerStore>();
+
+    rawStores.forEach((store) => {
+      // 가게를 식별하는 키 (이름+주소로 유니크하다고 가정)
+      const key = `${store.storeName}-${store.address}`;
+
+      if (map.has(key)) {
+        // 이미 있는 가게라면 제휴 정보(category)만 배열에 추가
+        const existing = map.get(key)!;
+        if (!existing.partnerCategories.includes(store.partnerCategory)) {
+          existing.partnerCategories.push(store.partnerCategory);
+        }
+      } else {
+        // 처음 발견된 가게라면 새로 등록
+        map.set(key, {
+          ...store,
+          partnerCategories: [store.partnerCategory],
+        });
+      }
+    });
+
+    return Array.from(map.values());
+  };
 
   // 전체 상점 목록 API
   const fetchAllStores = async () => {
@@ -22,15 +54,10 @@ export default function StoreSearchPage() {
       setLoading(true);
       setError(null);
 
-      if (!affiliation) {
-        setError("소속 대학 정보가 없습니다.");
-        return [];
-      }
-
+      // [수정] 내 소속(affiliation) 필터를 제거하여 전체 검색이 되도록 함
+      // 주의: 백엔드 API가 파라미터 없이 호출 시 전체 리스트를 반환한다고 가정
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/partner-store?page=0&size=100&partnerCategory=${encodeURIComponent(
-          affiliation
-        )}`,
+        `${import.meta.env.VITE_API_BASE_URL}/partner-store?page=0&size=100`, 
         {
           method: "GET",
           headers: {
@@ -45,7 +72,11 @@ export default function StoreSearchPage() {
       }
 
       const data = await response.json();
-      return data.content || [];
+      const content = data.content || [];
+      
+      // [수정] 받아온 데이터를 그룹화하여 리턴
+      return groupStores(content);
+
     } catch (err) {
       console.error("검색 리스트 로드 오류:", err);
       setError("검색 결과를 불러오는 중 오류가 발생했습니다.");
@@ -59,6 +90,7 @@ export default function StoreSearchPage() {
   const searchStores = async () => {
     const allStores = await fetchAllStores();
 
+    // 그룹화된 데이터에서 이름으로 필터링
     const filtered = allStores.filter((store) =>
       store.storeName.toLowerCase().includes(keyword.toLowerCase())
     );
@@ -94,7 +126,7 @@ export default function StoreSearchPage() {
           <div className="space-y-3">
             {stores.map((store) => (
               <Card
-                key={store.partnerStoreId}
+                key={store.partnerStoreId} // 그룹핑된 첫 번째 ID 사용
                 className="p-4 cursor-pointer hover:shadow-md transition-all"
                 onClick={() => navigate(`/store/${store.partnerStoreId}`)}
               >
@@ -107,12 +139,17 @@ export default function StoreSearchPage() {
                   <p className="text-sm text-text-secondary">{store.address}</p>
                 </div>
 
-                {/* [수정] 제휴 혜택 대신 제휴 주체(partnerCategory) 표시 */}
-                <div className="flex items-center">
-                  <span className="bg-primary/10 text-primary text-xs font-sf font-bold px-2 py-1.5 rounded-8 flex items-center gap-1">
-                    <i className="ri-shake-hands-line"></i>
-                    {store.partnerCategory} 제휴
-                  </span>
+                {/* [수정] 제휴 주체 리스트(partnerCategories) 전체 표시 */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {store.partnerCategories.map((cat, index) => (
+                    <span 
+                      key={index}
+                      className="bg-primary/10 text-primary text-xs font-sf font-bold px-2 py-1.5 rounded-8 flex items-center gap-1"
+                    >
+                      <i className="ri-shake-hands-line"></i>
+                      {cat} 제휴
+                    </span>
+                  ))}
                 </div>
               </Card>
             ))}
