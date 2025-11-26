@@ -72,7 +72,17 @@ export default function StoreSearchPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <TopNavigation title="검색 결과" />
+      <TopNavigation 
+        title="검색 결과" 
+        leftAction={
+          <button
+            onClick={() => navigate(-1)}
+            className="w-10 h-10 flex items-center justify-center"
+          >
+            <i className="ri-arrow-left-line text-text text-xl" />
+          </button>
+        }
+      />
 
       <div className="pt-20 px-4 space-y-4">
         <h2 className="text-lg font-sf font-semibold">"{keyword}" 검색 결과</h2>
