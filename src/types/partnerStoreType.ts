@@ -27,6 +27,7 @@ export interface PartnerStore {
   category: StoreCategory;
   storeName: string;
   address: string;
+  businessHours: string;
   openingTime: string;
   closingTime: string;
   breakStartTime: string;

@@ -31,7 +31,6 @@ const ALL_CATEGORIES: string[] = [
   "환경생명자원대학",
 ];
 
-
 interface Coupon {
   id: string;
   title: string;
@@ -64,6 +63,7 @@ interface Store {
   id: string;
   name: string;
   address: string;
+  businessHours: string;
   category: string;
   lat: number;
   lng: number;
@@ -80,7 +80,7 @@ interface Store {
 
 interface AffiliationInfo {
   category: string;
-  storeId: string; 
+  storeId: string;
 }
 
 const storeImageMap = new Map<string, string[]>([
@@ -288,8 +288,6 @@ export default function StorePage() {
 
   useEffect(() => {
     if (!id) return;
-
-    // 상세 페이지 이동 시 스크롤 최상단으로 이동
     window.scrollTo(0, 0);
 
     const foundStore = stores.find((s) => String(s.partnerStoreId) === id);
@@ -299,6 +297,7 @@ export default function StorePage() {
         id: String(foundStore.partnerStoreId),
         name: foundStore.storeName,
         address: foundStore.address,
+        businessHours: foundStore.businessHours,
         category: foundStore.partnerCategory,
         lat: foundStore.lat,
         lng: foundStore.lng,
@@ -335,6 +334,7 @@ export default function StorePage() {
           id: data.partnerStoreId.toString(),
           name: data.storeName,
           address: data.address,
+          businessHours: data.businessHours,
           category: data.category,
           lat: data.lat,
           lng: data.lng,
@@ -369,7 +369,9 @@ export default function StorePage() {
         // 병렬 요청
         const promises = ALL_CATEGORIES.map((cat) =>
           fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/partner-store?page=0&size=1000&partnerCategory=${encodeURIComponent(
+            `${
+              import.meta.env.VITE_API_BASE_URL
+            }/partner-store?page=0&size=1000&partnerCategory=${encodeURIComponent(
               cat
             )}`,
             {
@@ -377,7 +379,7 @@ export default function StorePage() {
               headers: { Accept: "application/json; charset=UTF-8" },
               credentials: "include",
             }
-           )
+          )
             .then((res) => {
               if (!res.ok) {
                 return { content: [] };
@@ -395,10 +397,9 @@ export default function StorePage() {
         const targetName = normalize(store.name);
 
         const siblings = allStores.filter((s) => {
-            const sName = normalize(s.storeName);
-            return sName === targetName;
+          const sName = normalize(s.storeName);
+          return sName === targetName;
         });
-
 
         const uniqueAffiliations: AffiliationInfo[] = [];
         const seenCategories = new Set<string>();
@@ -416,14 +417,14 @@ export default function StorePage() {
         // [정렬 로직] 총학생회 -> 총동아리 -> 가나다순
         uniqueAffiliations.sort((a, b) => {
           const priority = ["총학생회", "총동아리"];
-          
+
           const idxA = priority.indexOf(a.category);
           const idxB = priority.indexOf(b.category);
 
           if (idxA !== -1 && idxB !== -1) return idxA - idxB;
           if (idxA !== -1) return -1;
           if (idxB !== -1) return 1;
-          
+
           return a.category.localeCompare(b.category);
         });
 
@@ -538,23 +539,26 @@ export default function StorePage() {
               <span className="text-sm font-sf text-text">{store.address}</span>
               {/* <button className="text-sm font-sf text-primary">길찾기</button> */}
             </div>
-            {/* <div className="flex items-center gap-3">
+            <div className="flex items-start gap-3">
               <i className="ri-time-line text-text-secondary" />
-              <span className="text-sm font-sf text-text">11:00 - 22:00</span>
-              <span className="text-sm font-sf text-primary">영업중</span>
-            </div> */}
+              <span className="text-sm font-sf text-text whitespace-pre-line">
+                {store.businessHours.replace(/,/g, "\n")}
+              </span>
+              {/* <span className="text-sm font-sf text-primary">영업중</span> */}
+            </div>
 
             {affiliations.length > 0 && (
               <div className="flex items-start gap-3">
-                <i className="ri-shake-hands-line text-text-secondary mt-1.5" /> {/* 주소 핀과 정렬 맞춤 */}
+                <i className="ri-shake-hands-line text-text-secondary mt-1.5" />{" "}
+                {/* 주소 핀과 정렬 맞춤 */}
                 <div className="flex gap-2 overflow-x-auto no-scrollbar py-1 flex-1">
                   {affiliations.map((aff) => (
                     <button
                       key={aff.category}
                       onClick={() => {
-                          if (aff.storeId !== store.id) {
-                              navigate(`/store/${aff.storeId}`, { replace: true });
-                          }
+                        if (aff.storeId !== store.id) {
+                          navigate(`/store/${aff.storeId}`, { replace: true });
+                        }
                       }}
                       className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-sf transition-all border ${
                         aff.storeId === store.id
@@ -570,7 +574,6 @@ export default function StorePage() {
             )}
           </div>
         </div>
-  
 
         {store.mainCoupon && (
           <Card className="border-2 border-primary/20 ">

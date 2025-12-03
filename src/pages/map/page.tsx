@@ -1543,12 +1543,10 @@ export default function MapPage() {
 
       <button
         onClick={() => setShowSpecialPromo(true)}
-        className={`w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
-          showSpecialPromo ? "bg-red-500 text-white" : "bg-white text-red-500"
-        }`}
+        className="w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
         title="점심 특선 확인"
       >
-        <i className="ri-percent-line text-xl font-bold" />
+        <i className="ri-percent-line text-primary text-xl" />
       </button>
 
       <button
@@ -1848,6 +1846,7 @@ export default function MapPage() {
             className="absolute inset-0"
             onMarkerClick={handleMarkerClick}
           />
+          {/* <DeliciousEvent /> */}
           <MapButtons />
         </div>
       </div>
