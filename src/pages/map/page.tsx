@@ -997,6 +997,9 @@ export default function MapPage() {
   const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
   const { topCategory, setTopCategory } = useCategoryStore();
 
+  // 추가 부분: 이벤트 팝업 상태
+  const [showEventModal, setShowEventModal] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -1420,19 +1423,104 @@ export default function MapPage() {
     );
   };
 
-  const DeliciousEvent = () => (
-    <div className="absolute bottom-24 left-4 flex flex-col gap-3 z-20">
-      {/* <button
-        className={`w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all ${
-          showRandomEvent ? "bg-primary text-white" : "bg-white text-primary"
+  // 추가 부분: 왼쪽 하단 플로팅 배너 컴포넌트
+  const EventBanner = () => {
+    const [isExpanded, setIsExpanded] = useState(true);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsExpanded(false);
+      }, 3500);
+      return () => clearTimeout(timer);
+    }, []);
+
+    const handleBannerClick = () => {
+      if (isExpanded) {
+        setShowEventModal(true);
+      } else {
+        setIsExpanded(true);
+      }
+    };
+
+    return (
+      <button
+        onClick={handleBannerClick}
+        className={`absolute bottom-24 left-4 z-20 bg-gray-900/90 backdrop-blur-sm shadow-lg flex items-center overflow-hidden transition-all duration-500 ease-in-out ${
+          isExpanded 
+            ? "w-[160px] rounded-full py-2 pl-2 pr-4 gap-3" 
+            : "w-12 h-12 rounded-full justify-center p-0 gap-0"
         }`}
-        title="우마이 점심 이벤트"
       >
-        <i className="ri-gift-fill text-xl" />
-      </button> */}
-      우마이 점심 이벤트
-    </div>
-  );
+        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
+          <i className="ri-gift-2-fill text-white text-lg" />
+        </div>
+        
+        <div className={`flex flex-col items-start whitespace-nowrap transition-all duration-500 ${
+          isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0"
+        }`}>
+          <span className="text-white text-xs font-bold leading-tight">
+            점심 특선 확인
+          </span>
+          <div className="flex items-center gap-1">
+            <span className="text-gray-300 text-[10px] leading-tight">
+              이벤트 바로가기
+            </span>
+            <i className="ri-arrow-right-s-line text-gray-400 text-[10px]" />
+          </div>
+        </div>
+      </button>
+    );
+  };
+
+  // 추가 부분: 이벤트 이미지 모달 컴포넌트
+  const EventModal = () => {
+    return (
+      <div 
+        className={`fixed inset-0 z-[60] flex items-center justify-center p-4 transition-all duration-300 ease-in-out ${
+          showEventModal ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
+        }`}
+      >
+        {/* 뒷배경 오버레이 */}
+        <div 
+          className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+          onClick={() => setShowEventModal(false)}
+        />
+        
+        {/* 모달 컨텐츠 */}
+        <div 
+          className={`relative bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl transition-all duration-300 transform ${
+            showEventModal ? "scale-100 translate-y-0" : "scale-95 translate-y-4"
+          }`}
+        >
+          {/* 닫기 버튼: top-3 -> top-5 */}
+          <button 
+            onClick={() => setShowEventModal(false)}
+            className="absolute top-5 right-4 z-10 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors backdrop-blur-md"
+          >
+            <i className="ri-close-line text-white text-xl" />
+          </button>
+
+          {/* 이미지 영역 */}
+          <div className="w-full bg-gray-100 min-h-[300px] flex items-center justify-center">
+            <img 
+              src="/floating-banner/umai.png" 
+              alt="우마이 점심특선" 
+              className="w-full h-auto object-contain"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.parentElement!.innerHTML = '<div class="p-8 text-center text-gray-500">이미지 로딩 실패</div>';
+              }}
+            />
+          </div>
+          
+          <div className="p-4 bg-white">
+            <h3 className="font-bold text-lg mb-1">우마이 점심특선 이벤트!</h3>
+            <p className="text-sm text-gray-500">지금 바로 매장에서 확인하세요.</p>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const MapButtons = () => (
     <div className="absolute bottom-24 right-4 flex flex-col gap-3 z-20">
@@ -1472,6 +1560,7 @@ export default function MapPage() {
           />
         )}
       </button>
+
       <button
         onClick={() => setShowListView(true)}
         className="w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
@@ -1770,6 +1859,9 @@ export default function MapPage() {
             onMarkerClick={handleMarkerClick}
           />
           {/* <DeliciousEvent /> */}
+
+          <EventBanner />
+
           <MapButtons />
         </div>
       </div>
@@ -1777,6 +1869,8 @@ export default function MapPage() {
         affilModalView={affilModalView}
         setAffilModalView={setAffilModalView}
       />
+
+      <EventModal />
       <BottomSheet />
       <ListViewModal />
       <BottomNavigation />
