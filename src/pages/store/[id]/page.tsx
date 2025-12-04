@@ -90,6 +90,67 @@ const storeImageMap = new Map<string, string[]>([
   ["ETC", ["/상점배너/etc.png"]],
 ]);
 
+// 상세 페이지용 이벤트 모달 컴포넌트
+const StoreEventModal = ({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
+  return (
+    <div
+      className={`fixed inset-0 z-[999] flex items-center justify-center p-4 transition-all duration-300 ease-in-out ${
+        isOpen
+          ? "opacity-100 visible"
+          : "opacity-0 invisible pointer-events-none"
+      }`}
+    >
+      {/* 배경 클릭 시 닫기 */}
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+        onClick={onClose}
+      />
+
+      <div
+        className={`relative bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl transition-all duration-300 transform ${
+          isOpen ? "scale-100 translate-y-0" : "scale-95 translate-y-4"
+        }`}
+      >
+        {/* 닫기(X) 버튼 */}
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-4 z-10 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors backdrop-blur-md"
+        >
+          <i className="ri-close-line text-white text-xl" />
+        </button>
+
+        {/* 이미지 */}
+        <div className="w-full bg-gray-100 min-h-[300px] flex items-center justify-center">
+          <img
+            src="/floating-banner/umai.png"
+            alt="우마이 점심특선"
+            className="w-full h-auto object-contain"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
+        </div>
+
+        {/* 하단 텍스트 */}
+        <div className="p-4 bg-white">
+          <h3 className="font-bold text-lg mb-1 leading-tight text-text">
+            우마이 점심특선!
+          </h3>
+          <p className="text-sm text-gray-500">
+            할인된 가격으로 만나보세요.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // const coupons: Coupon[] = [
 //   {
 //     id: "1",
@@ -255,6 +316,9 @@ export default function StorePage() {
   const [activeTab, setActiveTab] = useState<"coupons" | "menu" | "reviews">(
     "coupons"
   );
+  const [showEventModal, setShowEventModal] = useState(false);
+  // 우마이 가게 ID 목록
+  const UMAI_IDS = ["939", "472", "654", "309", "726", "783", "550", "840", "897"];
 
   // 동일 가게의 다른 제휴처 목록 상태
   const [affiliations, setAffiliations] = useState<AffiliationInfo[]>([]);
@@ -286,6 +350,21 @@ export default function StorePage() {
   //   setShowCouponComplete(true);
   // };
 
+  // 우마이 가게 진입 시 팝업 로직
+  useEffect(() => {
+    const today = new Date();
+    const expirationDate = new Date('2025-12-12T23:59:59'); 
+
+    const hasSeenPopup = sessionStorage.getItem("hasSeenUmaiPopup");
+
+    // (ID가 있고) AND (우마이 ID 리스트에 포함) AND (날짜 유효) AND (아직 안 봤음!)
+    if (id && UMAI_IDS.includes(id) && today <= expirationDate && !hasSeenPopup) { 
+      setShowEventModal(true);
+      
+      sessionStorage.setItem("hasSeenUmaiPopup", "true");
+    }
+  }, [id]);
+  
   useEffect(() => {
     if (!id) return;
     window.scrollTo(0, 0);
@@ -813,6 +892,12 @@ export default function StorePage() {
           )}
         </div> */}
       </div>
+
+      {/* 상세페이지 진입 시 이벤트 모달 렌더링 */}
+      <StoreEventModal 
+        isOpen={showEventModal} 
+        onClose={() => setShowEventModal(false)} 
+      />
 
       {/* 고정 CTA */}
       {/* <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
