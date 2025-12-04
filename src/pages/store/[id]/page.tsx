@@ -353,12 +353,15 @@ export default function StorePage() {
   // 우마이 가게 진입 시 팝업 로직
   useEffect(() => {
     const today = new Date();
-    // 이벤트 마감일: 2025년 12월 12일 23:59:59
     const expirationDate = new Date('2025-12-12T23:59:59'); 
 
-    // 조건: (ID가 있고) AND (우마이 ID 리스트에 포함되며) AND (날짜가 안 지났으면)
-    if (id && UMAI_IDS.includes(id) && today <= expirationDate) { 
+    const hasSeenPopup = sessionStorage.getItem("hasSeenUmaiPopup");
+
+    // (ID가 있고) AND (우마이 ID 리스트에 포함) AND (날짜 유효) AND (아직 안 봤음!)
+    if (id && UMAI_IDS.includes(id) && today <= expirationDate && !hasSeenPopup) { 
       setShowEventModal(true);
+      
+      sessionStorage.setItem("hasSeenUmaiPopup", "true");
     }
   }, [id]);
   
