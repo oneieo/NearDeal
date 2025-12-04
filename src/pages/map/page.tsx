@@ -965,15 +965,21 @@ const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
   );
 };
 
+// 플로팅 배너 추가
 const EventBanner = ({ onOpen }: { onOpen: () => void }) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsExpanded(false);
-    }, 3500);
+    let timer: NodeJS.Timeout;
+
+    if (isExpanded) {
+      timer = setTimeout(() => {
+        setIsExpanded(false);
+      }, 3500);
+    }
+
     return () => clearTimeout(timer);
-  }, []);
+  }, [isExpanded]); // [] -> [isExpanded]로 변경
 
   const handleBannerClick = () => {
     if (isExpanded) {
@@ -983,7 +989,6 @@ const EventBanner = ({ onOpen }: { onOpen: () => void }) => {
       setIsExpanded(true);
     }
   };
-
   return (
     <button
       onClick={handleBannerClick}
@@ -1039,19 +1044,16 @@ const EventModal = ({
           : "opacity-0 invisible pointer-events-none"
       }`}
     >
-      {/* 뒷배경 오버레이 */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
       />
 
-      {/* 모달 컨텐츠 */}
       <div
         className={`relative bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl transition-all duration-300 transform ${
           isOpen ? "scale-100 translate-y-0" : "scale-95 translate-y-4"
         }`}
       >
-        {/* 닫기 버튼 */}
         <button
           onClick={onClose}
           className="absolute top-5 right-4 z-10 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors backdrop-blur-md"
@@ -1059,7 +1061,6 @@ const EventModal = ({
           <i className="ri-close-line text-white text-xl" />
         </button>
 
-        {/* 이미지 영역 */}
         <div className="w-full bg-gray-100 min-h-[300px] flex items-center justify-center">
           <img
             src="/floating-banner/umai.png"
