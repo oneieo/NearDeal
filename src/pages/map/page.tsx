@@ -1424,31 +1424,49 @@ export default function MapPage() {
   };
 
   // 추가 부분: 왼쪽 하단 플로팅 배너 컴포넌트
-  const EventBanner = () => (
-    <button
-      onClick={() => setShowEventModal(true)}
-      className="absolute bottom-24 left-4 z-20 bg-gray-900/90 rounded-full pl-2 pr-4 py-2 shadow-lg flex items-center gap-3 backdrop-blur-sm animate-fade-in-up"
-      style={{ maxWidth: "200px" }}
-    >
-      {/* 아이콘 영역 */}
-      <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
-        <i className="ri-gift-2-fill text-white text-lg" />
-      </div>
-      
-      {/* 텍스트 영역 */}
-      <div className="flex flex-col items-start">
-        <span className="text-white text-xs font-bold leading-tight">
-          점심 특선 확인
-        </span>
-        <div className="flex items-center gap-1">
-          <span className="text-gray-300 text-[10px] leading-tight">
-            이벤트 바로가기
-          </span>
-          <i className="ri-arrow-right-s-line text-gray-400 text-[10px]" />
+  const EventBanner = () => {
+    const [isExpanded, setIsExpanded] = useState(true);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsExpanded(false);
+      }, 3500);
+
+      return () => clearTimeout(timer);
+    }, []);
+
+    return (
+      <button
+        onClick={() => setShowEventModal(true)}
+        // transition-all duration-500
+        className={`absolute bottom-24 left-4 z-20 bg-gray-900/90 backdrop-blur-sm shadow-lg flex items-center overflow-hidden transition-all duration-500 ease-in-out ${
+          isExpanded 
+            ? "w-[160px] rounded-full py-2 pl-2 pr-4 gap-3"  // 펼쳐졌을 때: 길게
+            : "w-12 h-12 rounded-full justify-center p-0 gap-0" // 접혔을 때: 동그랗게
+        }`}
+      >
+        {/* 아이콘 영역*/}
+        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
+          <i className="ri-gift-2-fill text-white text-lg" />
         </div>
-      </div>
-    </button>
-  );
+        
+        {/* 텍스트 영역 */}
+        <div className={`flex flex-col items-start whitespace-nowrap transition-all duration-500 ${
+          isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0"
+        }`}>
+          <span className="text-white text-xs font-bold leading-tight">
+            점심 특선 확인
+          </span>
+          <div className="flex items-center gap-1">
+            <span className="text-gray-300 text-[10px] leading-tight">
+              이벤트 바로가기
+            </span>
+            <i className="ri-arrow-right-s-line text-gray-400 text-[10px]" />
+          </div>
+        </div>
+      </button>
+    );
+  };
 
   // 추가 부분: 이벤트 이미지 모달 컴포넌트
   const EventModal = () =>
@@ -1470,7 +1488,7 @@ export default function MapPage() {
 
           <div className="w-full bg-gray-100 min-h-[300px] flex items-center justify-center">
             <img 
-              src="/floating-banner/umai.jpg" 
+              src="/floating-banner/umai.png" 
               alt="우마이 점심특선" 
               className="w-full h-auto object-contain"
               onError={(e) => {
