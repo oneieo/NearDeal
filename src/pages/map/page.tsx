@@ -996,7 +996,9 @@ export default function MapPage() {
   const { stores, setStores } = usePartnerStore();
   const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
   const { topCategory, setTopCategory } = useCategoryStore();
-  const [showSpecialPromo, setShowSpecialPromo] = useState(false);
+
+  // 추가 부분: 이벤트 팝업 상태
+  const [showEventModal, setShowEventModal] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -1421,82 +1423,67 @@ export default function MapPage() {
     );
   };
 
-  // [NEW] 우마이 점심 특선 팝업 모달 컴포넌트
-  const SpecialPromoModal = () =>
-    showSpecialPromo && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center px-4 animate-fade-in">
-        <div
+  // 추가 부분: 왼쪽 하단 플로팅 배너 컴포넌트
+  const EventBanner = () => (
+    <button
+      onClick={() => setShowEventModal(true)}
+      className="absolute bottom-24 left-4 z-20 bg-gray-900/90 rounded-full pl-2 pr-4 py-2 shadow-lg flex items-center gap-3 backdrop-blur-sm animate-fade-in-up"
+      style={{ maxWidth: "200px" }}
+    >
+      {/* 아이콘 영역 */}
+      <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
+        <i className="ri-gift-2-fill text-white text-lg" />
+      </div>
+      
+      {/* 텍스트 영역 */}
+      <div className="flex flex-col items-start">
+        <span className="text-white text-xs font-bold leading-tight">
+          점심 특선 확인
+        </span>
+        <div className="flex items-center gap-1">
+          <span className="text-gray-300 text-[10px] leading-tight">
+            이벤트 바로가기
+          </span>
+          <i className="ri-arrow-right-s-line text-gray-400 text-[10px]" />
+        </div>
+      </div>
+    </button>
+  );
+
+  // 추가 부분: 이벤트 이미지 모달 컴포넌트
+  const EventModal = () =>
+    showEventModal && (
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div 
           className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-          onClick={() => setShowSpecialPromo(false)}
+          onClick={() => setShowEventModal(false)}
         />
-        <div className="bg-white rounded-24 w-full max-w-sm relative z-10 overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
-          <button
-            onClick={() => setShowSpecialPromo(false)}
-            className="absolute top-3 right-3 z-20 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-md"
+        
+        {/* 모달 컨텐츠 */}
+        <div className="relative bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl animate-scale-in">
+          <button 
+            onClick={() => setShowEventModal(false)}
+            className="absolute top-3 right-3 z-10 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
           >
-            <i className="ri-close-line text-xl" />
+            <i className="ri-close-line text-white text-xl" />
           </button>
 
-          <div className="relative h-56 bg-gray-200 shrink-0">
-            <img
-              src="/icons/umai.jpg"
-              alt="우마이 점심특선"
-              className="w-full h-full object-cover"
+          <div className="w-full bg-gray-100 min-h-[300px] flex items-center justify-center">
+            <img 
+              src="/floating-banner/umai.jpg" 
+              alt="우마이 점심특선" 
+              className="w-full h-auto object-contain"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.parentElement!.innerHTML = '<div class="p-8 text-center text-gray-500">이미지를 찾을 수 없습니다.<br/>(src 경로를 확인해주세요)</div>';
+              }}
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 pt-12">
-              <span className="inline-block px-2 py-0.5 bg-orange-500 text-white text-xs font-bold rounded-4 mb-1">
-                12/12까지
-              </span>
-              <h3 className="text-xl font-bold text-white">우마이 점심 특선</h3>
-            </div>
           </div>
 
-          <div className="p-5 overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="text-sm text-gray-500 line-through">11,000원</p>
-                <p className="text-2xl font-bold text-red-500">9,000원</p>
-              </div>
-              <div className="text-right">
-                <span className="block text-xs text-gray-500">운영 시간</span>
-                <span className="text-sm font-bold text-gray-800">
-                  11:00 ~ 17:00
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-3 bg-gray-50 p-4 rounded-16">
-              <div className="flex gap-3">
-                <div className="w-1 bg-orange-500 rounded-full h-auto" />
-                <div>
-                  <p className="font-bold text-gray-800 text-sm mb-1">
-                    메인 메뉴 택 1
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    닭도리 / 김치찌개 / 제육볶음
-                  </p>
-                </div>
-              </div>
-              <div className="h-px bg-gray-200" />
-              <div className="flex gap-3">
-                <div className="w-1 bg-green-500 rounded-full h-auto" />
-                <div>
-                  <p className="font-bold text-gray-800 text-sm mb-1">
-                    기본 제공
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    반찬세트 + 계란 지짐이 + 공깃밥
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setShowSpecialPromo(false)}
-              className="w-full mt-5 bg-primary text-white py-3 rounded-16 font-bold text-lg hover:bg-primary-dark transition-colors"
-            >
-              확인했습니다
-            </button>
+          {/* 하단 설명 */}
+          <div className="p-4 bg-white">
+            <h3 className="font-bold text-lg mb-1">우마이 점심특선 이벤트!</h3>
+            <p className="text-sm text-gray-500">지금 바로 매장에서 확인하세요.</p>
           </div>
         </div>
       </div>
@@ -1539,14 +1526,6 @@ export default function MapPage() {
             style={{ imageRendering: "-webkit-optimize-contrast" }}
           />
         )}
-      </button>
-
-      <button
-        onClick={() => setShowSpecialPromo(true)}
-        className="w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
-        title="점심 특선 확인"
-      >
-        <i className="ri-percent-line text-primary text-xl" />
       </button>
 
       <button
@@ -1847,6 +1826,9 @@ export default function MapPage() {
             onMarkerClick={handleMarkerClick}
           />
           {/* <DeliciousEvent /> */}
+
+          <EventBanner />
+
           <MapButtons />
         </div>
       </div>
@@ -1854,6 +1836,8 @@ export default function MapPage() {
         affilModalView={affilModalView}
         setAffilModalView={setAffilModalView}
       />
+
+      <EventModal />
       <BottomSheet />
       <ListViewModal />
       <BottomNavigation />
