@@ -711,6 +711,7 @@ import {
   getCategoryTextColor,
 } from "../../utils/getIconColor";
 import AffiliationEditModal from "../../components/feature/AffiliationEditModal";
+import ReactGA from "react-ga4";
 
 // Types
 interface PartnerStore {
@@ -983,6 +984,15 @@ const EventBanner = ({ onOpen }: { onOpen: () => void }) => {
 
   const handleBannerClick = () => {
     if (isExpanded) {
+      // 펼쳐진 상태에서 클릭했을 때 구글로 신호 보냄
+      ReactGA.event({
+        category: "Event Banner", // 분류: 이벤트 배너
+        action: "Click_Umai",     // 행동: 우마이 클릭
+        label: "플로팅배너_확인",    // 라벨: 상세 내용
+      });
+
+      console.log("GA 이벤트 전송 완료!"); // 테스트용
+
       setIsExpanded(false);
       onOpen();
     } else {
